@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head th:replace="fragments/head :: head('témakereső - ELTE IK')"></head>
+
+<body>
+
+	<header th:replace="fragments/header :: header"></header>
+
+	<main id="registration" class="container" role="main" style="display: none;">
+
+		<div class="row">
+			<div class="col-md-8">
+	           	<h1>regisztráció</h1>
+	        </div>
+		</div>
+		<form>
+			<div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">témavezetőként?</label>
+                <div class="col-md-4">
+					<input type="checkbox" value="true" v-model="isSupervisor" id="is-supervisor"/>
+				</div>
+            </div>
+			
+			<div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">név</label>
+                <div class="col-md-4">
+					<input type="text" class="form-control"
+					v-model="account.name"
+					v-bind:class="{error: $v.account.name.$error, valid: !$v.account.name.$invalid}" /> 
+				</div>
+            </div>
+            <div class="form-group row messages" v-if="$v.account.name.$dirty &amp;&amp; !$v.account.name.required">
+                <label class="col-md-3 col-form-label"></label>
+                <div class="col-md-7 errors">
+                    <span>A mező kitöltése kötelező!</span>
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">felhasználónév</label>
+                <div class="col-md-4">
+					<input type="text" class="form-control" 
+					v-model="account.username"
+					v-bind:class="{error: $v.account.username.$error, valid: !$v.account.username.$invalid}" /> 
+				</div>
+            </div>
+            <div class="form-group row messages" v-if="$v.account.username.$dirty &amp;&amp; !$v.account.username.required">
+                <label class="col-md-3 col-form-label"></label>
+                <div class="col-md-7 errors">
+                    <span>A mező kitöltése kötelező!</span>
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">e-mail cím</label>
+                <div class="col-md-4">
+					<input type="email" class="form-control" 
+					v-model="account.email"
+					v-bind:class="{error: $v.account.email.$error, valid: !$v.account.email.$invalid}" /> 
+				</div>
+            </div>
+            <div class="form-group row messages" v-if="$v.account.email.$dirty &amp;&amp; !$v.account.email.required">
+                <label class="col-md-3 col-form-label"></label>
+                <div class="col-md-7 errors">
+                    <span>A mező kitöltése kötelező!</span>
+                </div>
+            </div>
+            <div class="form-group row messages" v-if="$v.account.email.$dirty &amp;&amp; !$v.account.email.email">
+                <label class="col-md-3 col-form-label"></label>
+                <div class="col-md-7 errors">
+                    <span>Nem megfelelő formátum!</span>
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">jelszó</label>
+                <div class="col-md-4">
+					<input type="password" class="form-control" 
+					v-model="account.password"
+					v-bind:class="{error: $v.account.password.$error || !$v.account.passwordsAreSame.passwordsAreSame, valid: !$v.account.password.$invalid &amp;&amp; $v.account.passwordsAreSame.passwordsAreSame}" /> 
+				</div>
+            </div>
+            <div class="form-group row messages" v-if="$v.account.password.$dirty &amp;&amp; !$v.account.password.required">
+                <label class="col-md-3 col-form-label"></label>
+                <div class="col-md-7 errors">
+                    <span>A mező kitöltése kötelező!</span>
+                </div>
+            </div>
+            <div class="form-group row messages" v-if="$v.account.password.$dirty &amp;&amp; !$v.account.password.minLength">
+                <label class="col-md-3 col-form-label"></label>
+                <div class="col-md-7 errors">
+                    <span>Minimum 8 karakter hosszú jelszó szükséges!</span>
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">jelszó még egyszer</label>
+                <div class="col-md-4">
+					<input type="password" class="form-control" 
+					v-model="account.password2"
+					v-bind:class="{error: $v.account.password2.$error || !$v.account.passwordsAreSame.passwordsAreSame, valid: !$v.account.password2.$invalid &amp;&amp; $v.account.passwordsAreSame.passwordsAreSame}" /> 
+				</div>
+            </div>
+            <div class="form-group row messages" v-if="$v.account.password2.$dirty &amp;&amp; !$v.account.password2.required">
+                <label class="col-md-3 col-form-label"></label>
+                <div class="col-md-7 errors">
+                    <span>A mező kitöltése kötelező!</span>
+                </div>
+            </div>
+            <div class="form-group row messages" v-if="$v.account.password2.$dirty &amp;&amp; !$v.account.password2.minLength">
+                <label class="col-md-3 col-form-label"></label>
+                <div class="col-md-7 errors">
+                    <span>Minimum 8 karakter hosszú jelszó szükséges!</span>
+                </div>
+            </div>
+            <div class="form-group row messages" v-if="$v.account.password.$dirty &amp;&amp; $v.account.password2.$dirty &amp;&amp; $v.account.password.minLength &amp;&amp; $v.account.password2.minLength &amp;&amp; !$v.account.passwordsAreSame.passwordsAreSame">
+                <label class="col-md-3 col-form-label"></label>
+                <div class="col-md-7 errors">
+                    <span>A jelszavak nem egyeznek!</span>
+                </div>
+            </div>
+         	
+			<div v-if="isSupervisor == true">
+				<div class="form-group row">
+	                <label class="col-md-3 text-right col-form-label">beosztás</label>
+	                <div class="col-md-4">
+						<input type="text" class="form-control" 
+						v-model="supervisor.title"/> 
+					</div>
+	            </div>
+	            
+	            <div class="form-group row">
+	                <label class="col-md-3 text-right col-form-label">munkahely</label>
+	                <div class="col-md-4">
+						<input type="text" class="form-control" 
+						v-model="supervisor.workplace"/> 
+					</div>
+	            </div>
+	            
+	            <div class="form-group row">
+	                <label class="col-md-3 text-right col-form-label">telefon</label>
+	                <div class="col-md-4">
+						<input type="text" class="form-control" 
+						v-model="supervisor.phone"/> 
+					</div>
+	            </div>
+	            
+	            <div class="form-group row">
+	                <label class="col-md-3 text-right col-form-label">honlap</label>
+	                <div class="col-md-4">
+						<input type="text" class="form-control" 
+						v-model="supervisor.website"/> 
+					</div>
+	            </div>
+	            
+	            <div class="form-group row">
+	                <label class="col-md-3 text-right col-form-label">szoba</label>
+	                <div class="col-md-4">
+						<input type="text" class="form-control" 
+						v-model="supervisor.room"/> 
+					</div>
+	            </div>
+	            
+	            <div class="form-group row">
+	                <label class="col-md-3 text-right col-form-label">fogadóórák</label>
+	                <div class="col-md-4">
+						<input type="text" class="form-control" 
+						v-model="supervisor.officeHours"/> 
+					</div>
+	            </div>
+	            
+	            <div class="form-group row">
+	                <label class="col-md-3 text-right col-form-label">külsős?</label>
+	                <div class="col-md-4">
+						<input type="checkbox" value="true" v-model="supervisor.external" id="is-external"/>
+					</div>
+	            </div>
+	     		
+			</div>
+			
+			<div class="form-group row">
+				<label class="col-md-3 col-form-label"></label>
+				<div class="col-md-7">
+				    <input type="button" class="btn btn-primary simple-button" v-on:click="saveUser" value="mentés"/>
+				</div>
+			</div>
+
+		</form>
+	</main>
+
+	<div th:replace="fragments/scripts :: scripts"></div>
+
+	<footer th:replace="fragments/footer :: footer"></footer>
+
+	<script>
+		
+		/*<![CDATA[*/
+			
+		Vue.use(window.vuelidate.default);
+		var required = window.validators.required;
+		var minLength = window.validators.minLength;
+		var email = window.validators.email;
+
+		var app = new Vue({
+			el: '#registration',
+			data: {
+				isSupervisor: null,
+				
+				account: {
+					name: null,
+					email: null,
+					username: null,
+					password: null,
+					password2: null
+				},
+				
+				supervisor: {
+					name: null, 
+					title: null,
+					workplace: null,
+					phone: null,
+					website: null,
+					room: null,
+					officeHours: null,
+					external: null,
+					account: {}
+				}
+				
+			// 	messages: [],
+			// 	errors: []
+			},
+			validations: function() {		
+				var self = this;
+				if(self.isSupervisor == true) {
+					return {
+						account: {
+							name: {required: required},
+							email: {required: required, email: email},
+							username: {required: required},
+							password: {required: required, minLength: minLength(8)},
+							password2: {required: required, minLength: minLength(8)},
+							passwordsAreSame: {
+								passwordsAreSame : function() {
+									return self.account.password == self.account.password2;
+								}
+							}
+						},
+						supervisor: {
+							name: {required: required}
+						}
+					}
+				} else {
+					return {
+						account: {
+							name: {required: required},
+							email: {required: required, email: email},
+							username: {required: required},
+							password: {required: required, minLength: minLength(8)},
+							password2: {required: required, minLength: minLength(8)},
+							passwordsAreSame: {
+								passwordsAreSame : function() {
+									return self.account.password == self.account.password2;
+								}
+							}
+						}
+					}
+				}
+			},
+			mounted : function() {
+				setDisplay('#registration', 'block'); // it doesn't show up by default
+			},
+			methods: {
+				saveUser: function() {
+					var self = this;
+					
+					if(self.isSupervisor == true) self.supervisor.name = self.account.name;
+					
+					console.log(self.account);
+					console.log(self.supervisor);
+					
+					self.$v.account.$touch();
+					if(self.$v.account.$error) return;
+					if(self.isSupervisor == true) {
+						self.$v.supervisor.$touch();
+						if(self.$v.supervisor.$error) return;
+					}
+					
+					if(self.isSupervisor == true) {
+						self.supervisor.account = self.account;
+						console.log(self.account);
+						console.log(self.supervisor);
+						axios.post(contextPath + 'api/supervisors', self.supervisor, apiHeader )
+							.then(function(response) {
+								console.log(response);
+								redirect(contextPath + 'login');
+							});
+					} else {
+						axios.post(contextPath + 'api/accounts', self.account, apiHeader )
+							.then(function(response) {
+								console.log(response);
+								redirect(contextPath + 'login');
+							});
+					}			
+				}
+			}
+		});
+		/*]]>*/
+	</script>
+
+</body>
+</html>

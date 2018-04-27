@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head th:replace="fragments/head :: head('témakereső - ELTE IK')"></head>
+
+<body>
+
+	<header th:replace="fragments/header :: header"></header>
+
+	<main id="start" class="container" role="main" style="display: none;">
+		<div class="jumbotron jumbotron-fluid">
+			<h1 class="display-4 text-center"><i class="fas fa-search"></i> témakereső</h1>
+			<p class="lead text-center">Az oktatók, konzulensek által megadott
+				témák között szakdolgozatodhoz, dimplomamunkádhoz illetve
+				kutatási projektedhez kereshetsz témákat.</p>
+		</div>
+
+		<form>
+			<div class="form-row justify-content-center">
+				<div class="col-md-4">
+					<input type="text" class="form-control" v-model="filters.name" placeholder="cím"/> 
+				</div>
+				<div class="col-md-4">
+					<input type="text" class="form-control" v-model="filters.description" placeholder="leírás"/> 
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="col-md-4">
+					<select class="form-control" v-model="filters.type">
+				      <option disabled="true" value='null'>típus</option>
+				      <option v-for="type in values.types" v-bind:value="type.id">{{ type.name }}</option>
+				    </select>
+				</div>
+				<div class="col-md-4">
+					<select class="form-control" v-model="filters.category">
+				      <option disabled="true" value='null'>kategória</option>
+				      <option v-for="category in values.categories" v-bind:value="category.id">{{ category.name }}</option>
+				    </select>
+				</div>
+				<div class="col-md-4">
+					<select class="form-control" v-model="filters.supervisor">
+				      <option disabled="true" value='null'>témavezető</option>
+				      <option v-for="supervisor in values.supervisors" v-bind:value="supervisor.id">{{ supervisor.name }}</option>
+				    </select>
+				</div>
+			</div>
+			<div class="form-row justify-content-center">
+				<div v-for="status in values.statuses" class="form-check form-check-inline">
+					<input class="form-check-input"  name="status" type="radio" v-model="filters.status" v-bind:value="status.id"/>
+					<label class="form-check-label" for="one">{{status.name}}</label>
+				</div>
+			</div>
+			<div class="form-row justify-content-center">
+				<input type="button" class="btn btn-primary button" v-on:click="getTopics(0, 5)" value="keresés" style="margin: 40px 10px; font-weight:300"></input>
+			</div>
+			
+		</form>
+			
+		<h2 class="text-center" v-if="topics" id="topic-list">témák</h2>
+		
+		<div class="table-responsive" v-if="topics">
+			<table class="table table-hover" >
+				<thead class="thead-light">
+					<tr>
+						<th>#</th>
+						<th v-on:click="getTopicsWithSort('name')">cím
+							<span v-show="isAscending('name')"><i class="fas fa-caret-down"></i></span>
+					       	<span v-show="isDescending('name')"><i class="fas fa-caret-up"></i></span>
+					    </th>
+					    <th v-on:click="getTopicsWithSort('supervisor')">témavezető
+							<span v-show="isAscending('supervisor')"><i class="fas fa-caret-down"></i></span>
+					       	<span v-show="isDescending('supervisor')"><i class="fas fa-caret-up"></i></span>
+					    </th>
+					    <th v-on:click="getTopicsWithSort('category')">kategória
+							<span v-show="isAscending('category')"><i class="fas fa-caret-down"></i></span>
+					       	<span v-show="isDescending('category')"><i class="fas fa-caret-up"></i></span>
+					    </th>
+					    <th v-on:click="getTopicsWithSort('status')">állapot
+							<span v-show="isAscending('status')"><i class="fas fa-caret-down"></i></span>
+					       	<span v-show="isDescending('status')"><i class="fas fa-caret-up"></i></span>
+					    </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="topic in topics.content">
+						<td>{{topic.id}}</td>
+						<td><a v-bind:href="getTopicLink(topic)">{{topic.name}}</a></td>
+						<td>{{topic.supervisor}}</td>
+						<td>{{topic.category}}</td>
+						<td>{{topic.status.name}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>	
+		<nav v-if="topics">
+			<ul class="pagination justify-content-center" style="margin: 10px 0;">
+				<li class="page-item" v-on:click="getTopics(0, topics.size, topics.sort)" v-bind:class="{ disabled: topics.first }"><a class="page-link" href="#topic-list">első</a></li>
+				<li class="page-item" v-on:click="getTopics(topics.number - 1, topics.size, topics.sort)" v-bind:class="{ disabled: topics.first }"><a class="page-link" href="#topic-list">előző</a></li>
+				<li class="page-item" v-if="topics.number - 1 &#62; 0" v-on:click="getTopics(topics.number - 2, topics.size, topics.sort)"><a class="page-link" href="#topic-list">{{topics.number - 1}}</a></li>
+				<li class="page-item" v-if="topics.number &#62; 0" v-on:click="getTopics(topics.number - 1, topics.size, topics.sort)"><a class="page-link" href="#topic-list">{{topics.number}}</a></li>
+				<li class="page-item active"><a class="page-link" href="#topic-list">{{topics.number + 1}}</a></li>
+				<li class="page-item" v-if="topics.number + 1 &#60; topics.totalPages" v-on:click="getTopics(topics.number + 1, topics.size, topics.sort)"><a class="page-link" href="#topic-list">{{topics.number + 2}}</a></li>
+				<li class="page-item" v-if="topics.number + 2 &#60; topics.totalPages" v-on:click="getTopics(topics.number + 2, topics.size, topics.sort)"><a class="page-link" href="#topic-list">{{topics.number + 3}}</a></li>
+				<li class="page-item" v-on:click="getTopics(topics.number + 1, topics.size, topics.sort)" v-bind:class="{ disabled: topics.last }"><a class="page-link" href="#topic-list">következő</a></li>
+				<li class="page-item" v-on:click="getTopics(topics.totalPages - 1, topics.size, topics.sort)" v-bind:class="{ disabled: topics.last }"><a class="page-link" href="#topic-list">utolsó</a></li>
+			</ul>
+		</nav>
+	</main>
+
+	<div th:replace="fragments/scripts :: scripts"></div>
+
+	<footer th:replace="fragments/footer :: footer"></footer>
+
+	<script>
+	
+		/*<![CDATA[*/
+		var app = new Vue({
+			el: '#start',
+			data: {
+				topics: null,
+				
+				filters: {
+					name: null,
+					description: null,
+					type: null,
+					category: null,
+					supervisor: null,
+					status: null
+				},
+				
+				values: {
+					categories: [],
+					types: [],
+					supervisors: [],
+					statuses: []
+				}
+			// partner: null,
+
+			// messages: [],
+			// errors: []
+			},
+			created: function() {
+				var self = this;
+				
+				// collecting params
+	            var values = ["categories", "types", "supervisors", "statuses"];
+	            var promises = []; // collecting all promises
+	            for (var i = 0; i < values.length; i++) {
+	                promises.push(this.getValues(values[i].toLowerCase()));
+	            };
+	            // after everything arrived, loop through the responses and bind to the data
+	            axios.all(promises).then(function (response) {
+	                for (var i = 0; i < response.length; i++) {
+	                    self.values[values[i]] = response[i].data;
+	                }
+	            });
+
+			},
+			mounted: function() {
+				setDisplay('#start', 'block'); // it doesn't show up by default
+			},
+			methods: {
+				getTopics: function(page, size, sort) {
+					var self = this;
+					// TODO sort
+					
+					var params = {
+						size: size,
+						page: page
+					}
+					if (sort != null) 				params.sort = sort[0].property + ',' + sort[0].direction;
+					if(self.filters.name)			params.name = self.filters.name;
+					if(self.filters.description) 	params.description = self.filters.description;
+					if(self.filters.type) 			params.type = self.filters.type;
+					if(self.filters.category) 		params.category = self.filters.category;
+					if(self.filters.supervisor) 	params.supervisor = self.filters.supervisor;
+					if(self.filters.status) 		params.status = self.filters.status;
+	              
+					console.log(params);            
+					//console.log($.param(params));         
+					
+					axios.get(contextPath + 'api/topics', { params: params })
+						.then(function(response) {
+							self.topics = response.data;
+							Vue.nextTick()
+							.then(function () {
+								$('html').animate({
+							        scrollTop: $("#topic-list").offset().top
+							    }, 500);
+							})
+						});
+				},
+				getTopicsWithSort: function(prop) {
+					var self = this;
+					self.getTopics(0, self.topics.size, [{property: prop, direction: (self.topics.sort && self.topics.sort[0].descending ? 'ASC' : 'DESC') }])
+				},
+				isAscending: function (prop) {
+					var self = this;
+					return self.topics.sort && self.topics.sort[0].property == prop && self.topics.sort[0].ascending;
+				},
+				isDescending: function (prop) {
+					var self = this;
+					return self.topics.sort && self.topics.sort[0].property == prop && self.topics.sort[0].descending;
+				},
+				getTopicLink: function(topic) {
+					return contextPath + 'topics/' + topic.id;
+				},
+				getValues: function(name) {
+					return axios.get(contextPath + 'api/constants/' + name);
+				}
+			}
+		});
+		/*]]>*/
+	</script>
+
+</body>
+</html>

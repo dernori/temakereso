@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head th:replace="fragments/head :: head('témakereső - ELTE IK')"></head>
+
+<body>
+
+	<p hidden="" id="topic" th:text="${id}"></p>
+	<span hidden="" id="username" sec:authorize="isAuthenticated()" sec:authentication="principal.username"></span>
+
+	<header th:replace="fragments/header :: header"></header>
+
+	<main id="form-topic" class="container" role="main" style="display: none;">
+
+		<div class="row">
+			<div class="col-md-8">
+	           	<h1>témabejelentő kitöltése</h1>
+	        </div>
+		</div>
+		<form>
+			<div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">típus</label>
+                <div class="col-md-4">
+					<select class="form-control" v-model="form.type">
+				      <option disabled="true" selected='true'></option>
+				      <option value="BSC_FORM">Bsc. szakdolgozat</option>
+				      <option value="MSC_FORM">Msc. diplomamunka</option>
+				    </select>
+				</div>
+            </div>
+			<div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">név</label>
+                <div class="col-md-7">
+					<input type="text" class="form-control" v-model="form.name"/> 
+				</div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">Neptun kód</label>
+                <div class="col-md-7">
+					<input type="text" class="form-control" v-model="form.neptun" placeholder="AAA111"/> 
+				</div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">tagozat</label>
+                <div class="col-md-4">
+					<select class="form-control" v-model="form.mode">
+				      <option disabled="true" selected='true'></option>
+				      <option value="nappali">nappali</option>
+				      <option value="esti">esti</option>
+				    </select>
+				</div>
+            </div>
+            
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">szak</label>
+                <div class="col-md-7">
+					<input type="text" class="form-control" v-model="form.major" placeholder="programtervező informatikus BSc"/> 
+				</div>
+            </div>
+                        
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">témavezető neve</label>
+                <div class="col-md-7">
+					<input type="text" class="form-control" v-model="form.supervisorName"/> 
+				</div>
+            </div>
+            
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">témavezető munkahelyének neve és címe</label>
+                <div class="col-md-7">
+					<input type="text" class="form-control" v-model="form.supervisorWorkplace"/> 
+				</div>
+            </div>
+            
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">témavezető beosztása és iskolai végzettsége:</label>
+                <div class="col-md-7">
+					<input type="text" class="form-control" v-model="form.supervisorTitle"/> 
+				</div>
+            </div>
+            
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">dolgozat címe</label>
+                <div class="col-md-7">
+					<input type="text" class="form-control" v-model="form.title"/> 
+				</div>
+            </div>
+            
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">dolgozat témája</label>
+                <div class="col-md-7">
+					<textarea class="form-control" v-model="form.description"></textarea> 
+				</div>
+            </div>        
+            
+            <div class="form-group row">
+                <label class="col-md-3 text-right col-form-label">dátum</label>
+                <div class="col-md-7">
+					<div class="input-group">
+						<div class="input-group-prepend">
+                    		<span class="input-group-text" id="input-addon-left">20</span>
+                    	</div>
+					  	<input type="text" class="form-control" v-model="form.date" placeholder="18.01.01" id="input-addon-right"/>
+					</div>  
+				</div>
+            </div>
+            
+			<div class="form-group row">
+				<label class="col-md-3 col-form-label"></label>
+				<div class="col-md-7">
+				    <a class="btn btn-primary simple-button" v-bind:href="fillForm()">kitöltés</a>
+				</div>
+			</div>
+		</form>
+	</main>
+
+	<div th:replace="fragments/scripts :: scripts"></div>
+
+	<footer th:replace="fragments/footer :: footer"></footer>
+
+	<script>
+		
+		/*<![CDATA[*/
+			
+		Vue.use(window.vuelidate.default);
+		var required = window.validators.required;
+
+		var app = new Vue({
+			el: '#form-topic',
+			data: {
+				supervisor: null, 
+
+				form: {
+					type: null,
+					name: null, 
+					neptun: null, 
+					mode: null,
+					major: null, 
+					supervisorName: null, 
+					supervisorWorkplace: null,
+					supervisorTitle: null, 
+					title: null, 
+					date: null,
+					description: null
+				},
+				
+			// 	messages: [],
+			// 	errors: []
+			},
+			created : function() {
+				var self = this;
+				
+				// if we are filling a form form an existing topic
+				if(self.getTopicId() != -1) {
+					self.getTopic();
+				}
+				
+				// if a user is logged in
+				if(self.getUsername() != '') {
+					self.getAccount();
+				}
+								
+			},
+			mounted : function() {
+				setDisplay('#form-topic', 'block'); // it doesn't show up by default
+			},
+			methods: {
+				getTopic: function() {
+					var self = this;
+					axios.get(contextPath + 'api/topics/' + self.getTopicId())
+						.then(function(response) {
+							let topic = response.data;
+							console.log(topic);
+							self.form.type = (topic.type.id == 'BSC_THESIS' ? 'BSC_FORM' : 'MSC_FORM');
+							self.form.title = topic.name;
+							self.form.description = topic.description;
+							self.form.supervisorName = topic.supervisor.name;
+							self.form.supervisorWorkplace = topic.supervisor.workplace;
+							self.form.supervisorTitle = topic.supervisor.title;
+						});
+				},
+	            getAccount: function() {
+	            	var self = this;
+					axios.get(contextPath + 'api/accounts/' + self.getUsername())
+						.then(function(response) {
+							let account = response.data;
+							self.form.name = account.name;
+						});
+				},
+				getTopicId: function() {
+					let topic = $('#topic')[0].innerHTML;
+					return (topic == '' ? -1 : topic);
+				},
+				getUsername: function() {
+					return $('#username')[0] ? $('#username')[0].innerHTML : '';
+				},
+				fillForm: function() {
+					var self = this;
+					var params = {}
+					for (var key in self.form) {
+					    if (self.form.hasOwnProperty(key) && self.form[key] != null) {
+					        params[key] = self.form[key];
+					    }
+					}
+	                return contextPath + 'api/fillform?' + $.param(params);
+				}
+			}
+		});
+		/*]]>*/
+	</script>
+
+</body>
+</html>

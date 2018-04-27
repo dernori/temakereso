@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -27,12 +28,18 @@ public class Attachment {
 	
 	@Column(nullable = false) 
 	private Long fileId;
-	
-	@Column(length = 1000, nullable = false) 
-	private String description;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date uploadDate;
-
+	
+	@PrePersist
+	public void prePersist() {
+		this.uploadDate = new Date();
+	}
+	
+	public Attachment(Long id, String name) {
+		this.fileId = id;
+		this.name = name;
+	}
 }

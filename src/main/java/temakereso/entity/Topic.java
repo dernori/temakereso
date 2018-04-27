@@ -3,6 +3,7 @@ package temakereso.entity;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,11 +15,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import temakereso.helper.TopicStatus;
 import temakereso.helper.TopicType;
 
 @Data
@@ -41,7 +44,8 @@ public class Topic {
     private String description;
     
     @Column(nullable = false)
-    private Boolean active;
+    @Enumerated(EnumType.STRING)
+    private TopicStatus status;
     
     @Column(nullable = false)
     private Boolean archive;
@@ -51,17 +55,25 @@ public class Topic {
 	private Date creationDate;
     
     @ManyToOne
-	@JoinColumn(name = "category")
+    @JoinColumn(name = "supervisor", nullable = false)
+    private Supervisor supervisor;
+    
+    @ManyToOne
+	@JoinColumn(name = "category", nullable = false)
 	private Category category;
     
     @ManyToOne
 	@JoinColumn(name = "student")
-    private Account student;
+    private Account student;    
+    
+    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    private Set<Attachment> attachments; 
+    
+    @PrePersist
+	public void prePersist() {
+    	this.status = TopicStatus.OPEN;
+    	this.archive = Boolean.FALSE;
+		this.creationDate = new Date();
+	}
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Tag> tags;    
-    
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Attachment> attachments;    
-    
 }
