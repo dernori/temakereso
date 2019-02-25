@@ -2,6 +2,7 @@ package temakereso;
 
 import java.util.Arrays;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,7 +32,6 @@ public class Application extends SpringBootServletInitializer {
 	private PasswordEncoder passwordEncoder;
 	
 	private static Class<Application> applicationClass = Application.class;
-	//private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(applicationClass, args);
@@ -71,12 +71,11 @@ public class Application extends SpringBootServletInitializer {
     public static PasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder(11);
     }
-	
-//	@Bean
-//	public CommandLineRunner demo() {
-//		return (args) -> {
-//			LOGGER.info("Application started.");
-//		};
-//	}
+
+    @Bean
+	public static ModelMapper modelMapper() {
+		return  new ModelMapper();
+	}
+
 
 }

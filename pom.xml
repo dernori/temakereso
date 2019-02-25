@@ -14,6 +14,7 @@
 
 	<properties>
 		<sendgrid-version>3.0.9</sendgrid-version>
+		<modelmapper-version>2.3.0</modelmapper-version>
 		<apache-poi-version>3.17</apache-poi-version>
 		<swagger-version>2.6.1</swagger-version>
 		<junit-version>4.11</junit-version>
@@ -38,6 +39,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
 
 		<dependency>
@@ -112,6 +118,12 @@
 			<artifactId>sendgrid-java</artifactId>
 			<version>${sendgrid-version}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
+
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>${modelmapper-version}</version>
+		</dependency>
 		
 	</dependencies>
 
@@ -120,6 +132,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<addResources>true</addResources>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

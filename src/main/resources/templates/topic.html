@@ -3,170 +3,258 @@
 <head th:replace="fragments/head :: head('témakereső - ELTE IK')"></head>
 
 <body>
-	
-	<p hidden="" id="topic" th:text="${id}"></p>
-	<span hidden="" id="account" sec:authorize="isAuthenticated()" sec:authentication="principal.id"></span>
 
-	<header th:replace="fragments/header :: header"></header>
+<p hidden="" id="topic" th:text="${id}"></p>
+<span hidden="" id="account" sec:authorize="isAuthenticated()" sec:authentication="principal.id"></span>
 
-	<main id="view-topic" class="container" role="main" style="display: none;">
-	
-		<section v-if="topic">
-			<div class="row" id="headline">
-				<div class="col-md-8">
-		           	<h1>{{topic.name}}</h1>
-		        </div>
-		        <div class="col-md-4 text-right" >
-                	<input type="button" class="btn btn-primary simple-button" v-on:click="editTopic" sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_SUPERVISOR')" v-if="topic.supervisor.account.id == getAccountId()" value="szerkesztés"/>
-                	<input type="button" class="btn btn-primary simple-button" v-if="topic.type.id == 'BSC_THESIS' || topic.type.id == 'MSC_THESIS'" v-on:click="fillFormFromTopic" value="témabejelentő generálása"/>
-		        </div>
-			</div>
-			
-			<div class="row">
-            	<div class="col-md-3"><h4>alapadatok</h4></div>
-            </div>
-			<div class="row">
-                <label class="control-label col-md-3 text-right">típus</label>
-                <div class="col-md-3">{{topic.type.name}}</div>
-            </div>
-             <div class="row">
-                <label class="control-label col-md-3 text-right">kategória</label>
-                <div class="col-md-9">{{topic.category.name}}</div>
-            </div>
-            <div class="row">
-                <label class="control-label col-md-3 text-right">állapot</label>
-                <div class="col-md-9">{{topic.status.name}}</div>
-            </div>
-            <div class="row">
-                <label class="control-label col-md-3 text-right">archív</label>
-                <div class="col-md-9">{{formatBoolean(topic.archive)}}</div>
-            </div>
-            <div class="row">
-                <label class="control-label col-md-3 text-right">létrehozás dátuma</label>
-                <div class="col-md-3">{{formatDate(topic.creationDate, 'YYYY. MM. DD.')}}</div>
-            </div>
-            
-            <div class="row">
-            	<div class="col-md-3"><h4>témavezető</h4></div>
-            </div>
-			<div class="row">
-                <label class="control-label col-md-3 text-right">név</label>
-                <div class="col-md-3">{{topic.supervisor.name}}</div>
-            </div>
-            <div class="row">
-                <label class="control-label col-md-3 text-right">beosztás</label>
-                <div class="col-md-9">{{topic.supervisor.title}}</div>
-            </div>
-            <div class="row">
-                <label class="control-label col-md-3 text-right">munkahely</label>
-                <div class="col-md-9">{{topic.supervisor.workplace}}</div>
-            </div>
-            <div class="row">
-                <label class="control-label col-md-3 text-right">telefonszám</label>
-                <div class="col-md-9">{{topic.supervisor.phone}}</div>
-            </div>  
-            <div class="row">
-                <label class="control-label col-md-3 text-right">honlap</label>
-                <div class="col-md-9">{{topic.supervisor.website}}</div>
-            </div>
-            <div class="row">
-                <label class="control-label col-md-3 text-right">szoba</label>
-                <div class="col-md-9">{{topic.supervisor.room}}</div>
-            </div>  
-            <div class="row">
-                <label class="control-label col-md-3 text-right">fogadóórák</label>
-                <div class="col-md-9">{{topic.supervisor.officeHours}}</div>
-            </div>            
-            <div class="row">
-                <label class="control-label col-md-3 text-right">külsős</label>
-                <div class="col-md-9">{{formatBoolean(topic.supervisor.external)}}</div>
-            </div>
-            <div class="row">
-                <label class="control-label col-md-3 text-right">hitelesítve</label>
-                <div class="col-md-9">{{formatBoolean(topic.supervisor.confirmed)}}</div>
-            </div>
-       
-        	<div class="row">
-            	<div class="col-md-3"><h4>részletes leírás</h4></div>
-            </div>
-        	<div class="row">
-            	<div class="col-md-12">{{topic.description}}</div>
-            </div>
-            
-            <div v-if="topic.attachments.length > 0">
-	   			<div class="row">
-	            	<div class="col-md-3"><h4>mellékletek</h4></div>
-	            </div>
-	            <div class="row" v-for="(attachment, index) in topic.attachments">
-	                <label class="col-md-3 control-label"></label>
-	                <div class="controls col-md-9">
-	                    <a v-bind:href="getFileLink(attachment)">{{attachment.name}}</a>
-	                </div>
-	            </div>
-            </div>
-		</section>
-		
-		<!-- 
-    private Account student;     
-		 -->
+<header th:replace="fragments/header :: header"></header>
 
-	</main>
+<main id="view-topic" class="container" role="main" style="display: none;">
 
-	<div th:replace="fragments/scripts :: scripts"></div>
+    <section v-if="topic &amp;&amp; appliedStudents">
+        <div class="row" id="headline">
+            <div class="col-md-8">
+                <h1>{{topic.name}}</h1>
+            </div>
+            <div class="col-md-4 text-right">
+                <input type="button" class="btn btn-primary simple-button" v-on:click="editTopic"
+                       sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_SUPERVISOR')"
+                       v-if="topic.supervisor.account.id == getAccountId()" value="szerkesztés"/>
+                <input type="button" class="btn btn-primary simple-button"
+                       v-if="topic.type.id == 'BSC_THESIS' || topic.type.id == 'MSC_THESIS'"
+                       v-on:click="fillFormFromTopic" value="témabejelentő generálása"/>
+                <input type="button" class="btn btn-primary simple-button"
+                       sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_SUPERVISOR')"
+                       v-if="isTopicReserved"
+                       v-on:click="setStatusDone" value="elkészült"/>
+                <input type="button" class="btn btn-primary simple-button"
+                       sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_STUDENT')"
+                       v-if="isTopicFree &amp;&amp; !studentApplied"
+                       v-on:click="applyStudent" value="jelentkezés"/>
+                <p v-if="studentApplied">jelentkezett</p>
+            </div>
+        </div>
 
-	<footer th:replace="fragments/footer :: footer"></footer>
+        <div class="row">
+            <div class="col-md-3"><h4>alapadatok</h4></div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">típus</label>
+            <div class="col-md-3">{{topic.type.name}}</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">kategória</label>
+            <div class="col-md-9">{{topic.category.name}}</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">állapot</label>
+            <div class="col-md-9">{{topic.status.name}}</div>
+        </div>
+        <div class="row" v-if="topic.student">
+            <label class="control-label col-md-3 text-right">hallgató</label>
+            <div class="col-md-9">{{topic.student.name}}</div>
+        </div>
+        <div class="row" v-else="">
+            <label class="control-label col-md-3 text-right">jelentkezett hallgatók</label>
+            <div class="col-md-9">
+                <div class="table-responsive" v-if="appliedStudents &amp;&amp; appliedStudents.length > 0">
+                    <table class="table table-hover">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>#</th>
+                            <th>név</th>
+                            <th>neptun kód</th>
+                            <th>tagozat</th>
+                            <th>műveletek</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="student in appliedStudents">
+                            <td>{{student.id}}</td>
+                            <td>{{student.name}}</td>
+                            <td>{{student.code}}</td>
+                            <td>{{student.training.name}}</td>
+                            <td class="text-right"><span class="clickable" v-on:click="acceptApplication(student)"><i class="fas fa-check"></i></span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <span v-else="">Még egy hallgató sem jelenkezett erre a témára.</span>
+            </div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">archív</label>
+            <div class="col-md-9">{{formatBoolean(topic.archive)}}</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">létrehozás dátuma</label>
+            <div class="col-md-3">{{formatDate(topic.creationDate, 'YYYY. MM. DD.')}}</div>
+        </div>
 
-	<script>
+        <div class="row">
+            <div class="col-md-3"><h4>témavezető</h4></div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">név</label>
+            <div class="col-md-3">{{topic.supervisor.name}}</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">beosztás</label>
+            <div class="col-md-9">{{topic.supervisor.title}}</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">munkahely</label>
+            <div class="col-md-9">{{topic.supervisor.workplace}}</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">telefonszám</label>
+            <div class="col-md-9">{{topic.supervisor.phone}}</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">honlap</label>
+            <div class="col-md-9">{{topic.supervisor.website}}</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">szoba</label>
+            <div class="col-md-9">{{topic.supervisor.room}}</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">fogadóórák</label>
+            <div class="col-md-9">{{topic.supervisor.officeHours}}</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">külsős</label>
+            <div class="col-md-9">{{formatBoolean(topic.supervisor.external)}}</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-md-3 text-right">hitelesítve</label>
+            <div class="col-md-9">{{formatBoolean(topic.supervisor.confirmed)}}</div>
+        </div>
 
-		/*<![CDATA[*/
-		var app = new Vue({
-			el : '#view-topic',
-			data : {
-				topic : null
-			},
-			created : function() {
-				var self = this;
+        <div class="row">
+            <div class="col-md-3"><h4>részletes leírás</h4></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">{{topic.description}}</div>
+        </div>
 
-				// getting topic
-				self.getTopic()
-					.then(function(response) {
-						self.topic = response.data;
-				});
-				
-			},
-			mounted : function() {
-				setDisplay('#view-topic', 'block'); // it doesn't show up by default
-			},
-			methods : {
-				getTopic : function() {
-					return axios.get(contextPath + 'api/topics/' + this.getTopicId());
-				},
-				getTopicId: function() {
-					let topic = $('#topic')[0].innerHTML;
-					return (topic == '' ? -1 : topic);
-				},
-				getAccountId: function() {
-					return $('#account')[0].innerHTML;
-				},
-				getFileLink: function (attachment) {
-	                return contextPath + 'api/files/' + attachment.fileId;
-	            },
-				formatDate: function(longTime, formatText) {
-					return formatDate(longTime, formatText);
-				},
-				formatBoolean: function(value) {
-					return value != null ? (value == true ? 'igen' : 'nem') : '';
-				},
-				editTopic: function() {
-					redirect(contextPath + 'topics/' + this.getTopicId() + '/edit');
-				},
-				fillFormFromTopic: function() {
-					redirect(contextPath + 'forms/' + this.getTopicId());
-				}
-			}
-		});
-		/*]]>*/
-	</script>
+        <div v-if="topic.attachments.length > 0">
+            <div class="row">
+                <div class="col-md-3"><h4>mellékletek</h4></div>
+            </div>
+            <div class="row" v-for="(attachment, index) in topic.attachments">
+                <label class="col-md-3 control-label"></label>
+                <div class="controls col-md-9">
+                    <a :href="getFileLink(attachment)">{{attachment.name}}</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="fragments/scripts :: scripts"></div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<script>
+
+  /*<![CDATA[*/
+  var app = new Vue({
+    el: '#view-topic',
+    data: {
+      topic: null,
+      appliedStudents: null,
+      student: null
+    },
+    computed: {
+      isTopicFree: function () {
+        return this.topic.status.id === 'OPEN' && this.topic.student === null;
+      },
+      isTopicReserved: function () {
+        return this.topic.status.id === 'RESERVED' && this.topic.student !== null;
+      },
+      studentApplied: function () {
+        return this.appliedStudents.some(function (student) {
+          return student.account.id === this.getAccountId();
+        }.bind(this));
+      }
+    },
+    created: function () {
+      this.getTopic();
+      this.getAppliedStudents();
+      this.getStudent();
+    },
+    mounted: function () {
+      setDisplay('#view-topic', 'block'); // it doesn't show up by default
+    },
+    methods: {
+      getTopic: function () {
+        axios.get(`${contextPath}api/topics/${this.getTopicId()}`)
+          .then(function (response) {
+            this.topic = response.data;
+          }.bind(this));
+      },
+      getTopicId: function () {
+        let topic = $('#topic')[0];
+        return (topic ? topic.innerHTML : -1);
+      },
+      getStudent: function () {
+        if (this.getAccountId() === -1 ) return;
+        axios.get(`${contextPath}api/students`, {params: {accountId: this.getAccountId()}})
+          .then(function (response) {
+            this.student = response.data;
+          }.bind(this));
+      },
+      getAppliedStudents: function () {
+        axios.get(`${contextPath}api/topics/${this.getTopicId()}/students`)
+          .then(function (response) {
+            console.log(response.data)
+            this.appliedStudents = response.data;
+          }.bind(this));
+      },
+      getAccountId: function () {
+        let account = $('#account')[0];
+        return (account ? parseInt(account.innerHTML) : -1);
+      },
+      getFileLink: function (attachment) {
+        return `${contextPath}api/files/${attachment.fileId}`;
+      },
+      formatDate: function (longTime, formatText) {
+        return formatDate(longTime, formatText);
+      },
+      formatBoolean: function (value) {
+        return value != null ? (value == true ? 'igen' : 'nem') : '';
+      },
+      editTopic: function () {
+        redirect(`${contextPath}topics/${this.getTopicId()}/edit`);
+      },
+      fillFormFromTopic: function () {
+        redirect(`${contextPath}forms/${this.getTopicId()}`);
+      },
+      setStatusDone: function () {
+        axios.put(`${contextPath}api/topics/${this.getTopicId()}/done`)
+          .then(function (response) {
+            this.getTopic();
+          }.bind(this));
+      },
+      applyStudent: function () {
+        if (!this.student.id) return; // error message
+        axios.post(`${contextPath}api/topics/${this.getTopicId()}/students`, {studentId: this.student.id})
+          .then(function (response) {
+            this.getAppliedStudents();
+          }.bind(this));
+      },
+      acceptApplication: function (student) {
+        axios.put(`${contextPath}api/topics/${this.getTopicId()}/student`, {studentId: student.id})
+          .then(function (response) {
+            this.getTopic();
+          }.bind(this));
+      }
+    }
+  });
+  /*]]>*/
+</script>
 
 </body>
 </html>

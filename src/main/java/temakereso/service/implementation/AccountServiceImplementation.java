@@ -1,38 +1,45 @@
 package temakereso.service.implementation;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import temakereso.entity.Account;
+import temakereso.helper.AccountDto;
 import temakereso.repository.AccountRepository;
 import temakereso.service.AccountService;
 
 @Service
+@RequiredArgsConstructor
 public class AccountServiceImplementation implements AccountService {
-	
-	@Autowired
-    private AccountRepository accountRepository;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+
+    private final AccountRepository accountRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final ModelMapper modelMapper;
 
     @Override
-	public void createAccount(Account account){
+    public void createAccount(Account account) {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         accountRepository.save(account);
     }
 
-	@Override
-	public Account getByUsername(String username) {
-		return accountRepository.findByUsername(username);
-	}
+    @Override
+    public AccountDto getByUsername(String username) {
+        return modelMapper.map(accountRepository.findByUsername(username), AccountDto.class);
+    }
 
-	@Override
-	public void modifyEmail(String username, String email) {
-		Account savedAccount = accountRepository.findByUsername(username);
-		savedAccount.setEmail(email);
-		accountRepository.save(savedAccount);
-	}
-    
+    @Override
+    public void modifyEmail(String username, String email) {
+        Account savedAccount = accountRepository.findByUsername(username);
+        savedAccount.setEmail(email);
+        accountRepository.save(savedAccount);
+    }
+
+    @Override
+    public Account getOneById(Long id) {
+        return accountRepository.findOne(id);
+    }
+
 }

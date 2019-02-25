@@ -16,7 +16,7 @@ public interface CategoryService {
 	/**
 	 * Creates a new category
 	 * 
-	 * @param category
+	 * @param category category to be created
 	 * @return the saved category
 	 */
 	Category createCategory(Category category);
@@ -24,9 +24,17 @@ public interface CategoryService {
 	/**
 	 * Modifies a category
 	 * 
-	 * @param category
+	 * @param category category to be modified
 	 * @return the modified category
 	 */
 	Category modifyCategory(Category category);
+
+	/**
+	 * Finds a category by its id
+	 *
+	 * @param id of a category
+	 * @return category with the given id
+	 */
+	Category getOneById(Long id);
 
 }

@@ -74,6 +74,10 @@
 							<span v-show="isAscending('category')"><i class="fas fa-caret-down"></i></span>
 					       	<span v-show="isDescending('category')"><i class="fas fa-caret-up"></i></span>
 					    </th>
+						<th v-on:click="getTopicsWithSort('type')">típus
+							<span v-show="isAscending('type')"><i class="fas fa-caret-down"></i></span>
+							<span v-show="isDescending('type')"><i class="fas fa-caret-up"></i></span>
+						</th>
 					    <th v-on:click="getTopicsWithSort('status')">állapot
 							<span v-show="isAscending('status')"><i class="fas fa-caret-down"></i></span>
 					       	<span v-show="isDescending('status')"><i class="fas fa-caret-up"></i></span>
@@ -86,6 +90,7 @@
 						<td><a v-bind:href="getTopicLink(topic)">{{topic.name}}</a></td>
 						<td>{{topic.supervisor}}</td>
 						<td>{{topic.category}}</td>
+						<td>{{topic.type.name}}</td>
 						<td>{{topic.status.name}}</td>
 					</tr>
 				</tbody>

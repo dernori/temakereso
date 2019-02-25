@@ -29,11 +29,5 @@ public class HomeController {
 		model.addAttribute("id", id);
         return "topic";
     }
-	
-	// TODO help page
-	@GetMapping(value={"/help"})
-    public String help() {
-        return "help";
-    }
 
 }

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head th:replace="fragments/head :: head('témakereső - ELTE IK')"></head>
+
+<body>
+
+<span hidden="" id="account" sec:authorize="isAuthenticated()" sec:authentication="principal.id"></span>
+
+<header th:replace="fragments/header :: header"></header>
+
+<main id="applications" class="container" role="main" style="display: none;">
+
+    <h2 class="text-center topic-list">jelentkezéseim</h2>
+
+    <div class="table-responsive" v-if="appliedTopics &amp;&amp; appliedTopics.length > 0">
+        <table class="table table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th>#</th>
+                <th>cím</th>
+                <th>témavezető</th>
+                <th>kategória</th>
+                <th>típus</th>
+                <th>állapot</th>
+                <th>műveletek</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="topic in appliedTopics">
+                <td>{{topic.id}}</td>
+                <td><a v-bind:href="getTopicLink(topic)">{{topic.name}}</a></td>
+                <td>{{topic.supervisor.name}}</td>
+                <td>{{topic.category.name}}</td>
+                <td>{{topic.type.name}}</td>
+                <td>{{topic.status.name}}</td>
+                <td class="text-right"><span class="clickable" v-on:click="removeApplication(topic)"><i class="fas fa-trash"></i></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p v-else="">Jelenleg nincs aktív jelentkezésed egy témára sem.</p>
+
+
+    <h2 class="text-center topic-list mt-5">témáim</h2>
+
+    <div class="table-responsive" v-if="assignedTopics &amp;&amp; assignedTopics.length > 0">
+        <table class="table table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th>#</th>
+                <th>cím</th>
+                <th>témavezető</th>
+                <th>kategória</th>
+                <th>típus</th>
+                <th>állapot</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="topic in assignedTopics">
+                <td>{{topic.id}}</td>
+                <td><a v-bind:href="getTopicLink(topic)">{{topic.name}}</a></td>
+                <td>{{topic.supervisor.name}}</td>
+                <td>{{topic.category.name}}</td>
+                <td>{{topic.type.name}}</td>
+                <td>{{topic.status.name}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p v-else="">Jelenleg nem vagy hozzárendelve egy témához sem.</p>
+</main>
+
+<div th:replace="fragments/scripts :: scripts"></div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<script>
+
+  /*<![CDATA[*/
+  var app = new Vue({
+    el: '#applications',
+    data: {
+      student: null,
+      appliedTopics: null,
+      assignedTopics: null
+
+      // messages: [],
+      // errors: []
+    },
+    created: function () {
+      this.getStudent()
+        .then(function (response) {
+          this.student = response.data;
+          this.getTopicsAssignedToStudent();
+          this.getStudentAppliedTopics();
+        }.bind(this));
+    },
+    mounted: function () {
+      setDisplay('#applications', 'block'); // it doesn't show up by default
+    },
+    methods: {
+      getAccountId: function () {
+        return parseInt($('#account')[0].innerHTML);
+      },
+      getStudent: function () {
+        return axios.get(`${contextPath}api/students`, {params: {accountId: this.getAccountId()}})
+      },
+      getStudentAppliedTopics: function () {
+        axios.get(`${contextPath}api/students/${this.student.id}/topics/applied`)
+          .then( function (response) {
+            this.appliedTopics = response.data;
+          }.bind(this));
+      },
+      getTopicsAssignedToStudent: function () {
+        axios.get(`${contextPath}api/students/${this.student.id}/topics/assigned`)
+          .then( function (response) {
+            this.assignedTopics = response.data;
+          }.bind(this));
+      },
+      getTopicLink: function (topic) {
+        return `${contextPath}topics/${topic.id}`;
+      },
+      removeApplication: function (topic) {
+        axios.delete(`${contextPath}api/topics/${topic.id}/students/${this.student.id}`)
+          .then( function (response) {
+            this.getStudentAppliedTopics();
+          }.bind(this));
+      }
+    }
+  });
+  /*]]>*/
+</script>
+
+</body>
+</html>

@@ -1,13 +1,15 @@
 package temakereso.service;
 
 import temakereso.entity.Account;
+import temakereso.entity.Topic;
+import temakereso.helper.AccountDto;
 
 public interface AccountService {
 
 	/**
 	 * Saves a new account
 	 * 
-	 * @param Account account to be saved
+	 * @param account to be saved
 	 */
 	void createAccount(Account account);
 	
@@ -17,13 +19,14 @@ public interface AccountService {
 	 * @param username
 	 * @return Account
 	 */
-	Account getByUsername(String username);
+    AccountDto getByUsername(String username);
 
+	// no one uses?
 	/**
-	 * Modifies the given account's email address
-	 * 
-	 * @param Account account to be modified
+	 * TODO
 	 */
 	void modifyEmail(String username, String email);
 
+	// no one uses?
+    Account getOneById(Long id);
 }

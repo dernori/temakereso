@@ -12,7 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import temakereso.service.AccountDetailsService;
+import temakereso.service.implementation.AccountDetailsService;
 
 @EnableWebSecurity
 public class SecurityConfig {
@@ -50,7 +50,6 @@ public class SecurityConfig {
 						"/registration",
 						"/forms/{\\d+}", // TODO check if only numbers are good!
 						"/forms",
-						"/help",
 						"/topics/{\\d+}",
 						"/css/**",
 						"/img/**",

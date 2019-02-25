@@ -21,6 +21,6 @@ public interface FileService {
 	 * @param id of file
 	 * @return file
 	 */
-	File getById(Long id);
+	File getOneById(Long id);
 
 }

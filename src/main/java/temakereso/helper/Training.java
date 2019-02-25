@@ -3,16 +3,15 @@ package temakereso.helper;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum TopicType {
+public enum Training {
 
-    BSC_THESIS("Bsc. szakdolgozat"),
-    MSC_THESIS("Msc. diplomamunka"),
-    PHD_THESIS("PhD. disszertáció"),
-    RESEARCH_TOPIC("Kutatási téma, TDK");
+    CORRESPONDANCE("levelező tagozat"),
+    FULL_TIME("nappali tagozat"),
+    PART_TIME("esti tagozat");
 
     private String name;
 
-    TopicType(String name) {
+    Training(String name) {
         this.name = name;
     }
 
@@ -23,6 +22,4 @@ public enum TopicType {
     public String getName() {
         return name;
     }
-
-
 }

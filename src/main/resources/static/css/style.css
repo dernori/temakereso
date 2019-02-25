@@ -7,6 +7,7 @@
 body {
 	font-family: "Open Sans", "Roboto", sans-serif !important;
 	background-color: #fcfcfc;
+    background-image: url('../img/connected.png');
     color: #373737;
     padding: 0;
     margin: 0;
@@ -71,6 +72,11 @@ textarea, textarea:focus, input, input:focus, button, button:focus {
     box-shadow: none !important;
 }
 
+.form-control:focus {
+    border-color: rgba(135, 77, 99, 0.5) !important;
+    box-shadow: none !important;
+}
+
 h1 {
 	padding-top: 20px;
 }
@@ -87,7 +93,8 @@ h1, h2 {
 .bg-dark {
     background-color: #874d63 !important;
 }
-
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active,
 .btn-primary, .page-item.active .page-link {
     color: #fff;
     background-color: #c98573;
@@ -97,6 +104,10 @@ h1, h2 {
 .btn-primary:hover, .page-item.active .page-link:hover {
     background-color: #874d63;
     border-color: #874d63;
+}
+
+.page-item.disabled {
+    pointer-events: none;
 }
 
 .jumbotron {
@@ -114,7 +125,7 @@ textarea.form-control {
 
 .errors {
     height: 13px;
-    margin-top: 0px;
+    margin-top: 0;
 }
 
 .errors span {
@@ -193,7 +204,11 @@ textarea.form-control {
 	font-size: 0.9rem;
 }
 
-#topic-list {
+.clickable {
+    cursor: pointer;
+}
+
+#topic-list, .topic-list {
 	font-weight: 300;
 	margin-bottom: 25px;
 }

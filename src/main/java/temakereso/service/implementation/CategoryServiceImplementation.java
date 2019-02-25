@@ -1,37 +1,41 @@
 package temakereso.service.implementation;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import temakereso.entity.Category;
 import temakereso.repository.CategoryRepository;
 import temakereso.service.CategoryService;
 
+import java.util.List;
+
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImplementation implements CategoryService {
-	
-	@Autowired
-	private CategoryRepository categoryRepository;
-	
-	// TODO validation!
 
-	@Override
-	public List<Category> getAll() {
-		return categoryRepository.findAll();
-	}
+    private final CategoryRepository categoryRepository;
+
+    // TODO validation!
+
+    @Override
+    public List<Category> getAll() {
+        return categoryRepository.findAll();
+    }
 
 
-	@Override
-	public Category createCategory(Category category) {
-		return categoryRepository.save(category);
-	}
+    @Override
+    public Category createCategory(Category category) {
+        return categoryRepository.save(category);
+    }
 
-	@Override
-	public Category modifyCategory(Category category) {
-		return categoryRepository.save(category);
-	}
+    @Override
+    public Category modifyCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    @Override
+    public Category getOneById(Long id) {
+        return categoryRepository.findOne(id);
+    }
 
 
 }
