@@ -1,7 +1,7 @@
 var apiHeader = { 
-	headers: {
-		'Content-type': 'application/json',
-	}
+    headers: {
+        'Content-type': 'application/json',
+    }
 }
 
 /*----------- HELPER FUNCTIONS ----------- */
@@ -12,7 +12,7 @@ var apiHeader = {
  * @param display - change the value to
 */
 function setDisplay(selector, display) {
-	$(selector)[0].style.display = display;
+    $(selector)[0].style.display = display;
 }
 
 /**
@@ -20,7 +20,7 @@ function setDisplay(selector, display) {
  * @param path - to redirect to 
 */
 function redirect(path) {
-	window.location.href = path;
+    window.location.href = path;
 }
 
 /**
@@ -29,5 +29,5 @@ function redirect(path) {
  * @returns
  */
 function formatDate(longTime, formatText) {
-	return moment(longTime).format(formatText);
+    return moment(longTime).format(formatText);
 }

@@ -71,7 +71,7 @@
         <div class="form-group row">
             <label class="col-md-3 text-right col-form-label">leírás</label>
             <div class="col-md-7">
-					<textarea class="form-control"
+                    <textarea class="form-control"
                               v-model="topic.description"
                               :class="{error: $v.topic.description.$error}"></textarea>
             </div>
@@ -142,8 +142,8 @@
 
       files: [{}]
 
-      // 	messages: [],
-      // 	errors: []
+      //     messages: [],
+      //     errors: []
     },
     validations: {
       topic: {
@@ -192,7 +192,7 @@
         let topic = $('#topic')[0].innerHTML;
         return (topic == '' ? -1 : topic);
       },
-      getSupervisorId: function () {	// TODO
+      getSupervisorId: function () {    // TODO
         return this.supervisor.id;
       },
       getFileLink: function (attachment) {

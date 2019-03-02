@@ -2,11 +2,13 @@ package temakereso.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import temakereso.entity.Student;
-import temakereso.entity.Topic;
-import temakereso.helper.*;
+import temakereso.helper.AttachmentDto;
+import temakereso.helper.StudentDto;
+import temakereso.helper.TopicDto;
+import temakereso.helper.TopicFilters;
+import temakereso.helper.TopicInputDto;
+import temakereso.helper.TopicListerDto;
 
-import java.util.List;
 import java.util.Set;
 
 public interface TopicService {

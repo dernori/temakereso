@@ -26,56 +26,56 @@ import temakereso.service.AccountService;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class Application extends SpringBootServletInitializer {
 
-	// TODO refactor
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	
-	private static Class<Application> applicationClass = Application.class;
+    // TODO refactor
 
-	public static void main(String[] args) {
-		SpringApplication.run(applicationClass, args);
-	}
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(applicationClass);
-	}
+    private static Class<Application> applicationClass = Application.class;
 
-	/**
-	 * Password grants are switched on by injecting an AuthenticationManager.
-	 * Here, we setup the builder so that the userDetailsService is the one we coded.
-	 * @param builder
-	 * @param repository
-	 * @throws Exception
+    public static void main(String[] args) {
+        SpringApplication.run(applicationClass, args);
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(applicationClass);
+    }
+
+    /**
+     * Password grants are switched on by injecting an AuthenticationManager.
+     * Here, we setup the builder so that the userDetailsService is the one we coded.
+     * @param builder
+     * @param repository
+     * @throws Exception
      */
-	@Autowired
-	public void authenticationManager(AuthenticationManagerBuilder builder, AccountRepository repository, AccountService service) throws Exception {
-		//Setup db with admin
-		if (repository.count() == 0) {
-			service.createAccount(new Account("admin", "leah@inf.elte.hu", "admin", "admin", Arrays.asList(new Role("ADMIN"))));
-		}
-		builder.userDetailsService(userDetailsService(repository)).passwordEncoder(passwordEncoder);
-	}
-	
-	/**
-	 * We return an instance of our CustomUserDetails.
-	 * @param repository
-	 * @return
+    @Autowired
+    public void authenticationManager(AuthenticationManagerBuilder builder, AccountRepository repository, AccountService service) throws Exception {
+        //Setup db with admin
+        if (repository.count() == 0) {
+            service.createAccount(new Account("admin", "leah@inf.elte.hu", "admin", "admin", Arrays.asList(new Role("ADMIN"))));
+        }
+        builder.userDetailsService(userDetailsService(repository)).passwordEncoder(passwordEncoder);
+    }
+
+    /**
+     * We return an instance of our CustomUserDetails.
+     * @param repository
+     * @return
      */
-	private UserDetailsService userDetailsService(AccountRepository repository) {
-		return username -> new temakereso.helper.AccountDetails(repository.findByUsername(username));
-	}
-	
+    private UserDetailsService userDetailsService(AccountRepository repository) {
+        return username -> new temakereso.helper.AccountDetails(repository.findByUsername(username));
+    }
+
     @Bean
-    public static PasswordEncoder getPasswordEncoder(){
+    public static PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder(11);
     }
 
     @Bean
-	public static ModelMapper modelMapper() {
-		return  new ModelMapper();
-	}
+    public static ModelMapper modelMapper() {
+        return  new ModelMapper();
+    }
 
 
 }

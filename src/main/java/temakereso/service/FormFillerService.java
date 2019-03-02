@@ -6,8 +6,8 @@ import temakereso.helper.Form;
 
 public interface FormFillerService {
 
-	ByteArrayOutputStream fill(Form form);
+    ByteArrayOutputStream fill(Form form);
 
-	String generateFileName(Form form);
+    String generateFileName(Form form);
 
 }

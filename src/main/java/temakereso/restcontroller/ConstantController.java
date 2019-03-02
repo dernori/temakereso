@@ -1,9 +1,12 @@
 package temakereso.restcontroller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import temakereso.entity.Category;
-import temakereso.entity.Supervisor;
 import temakereso.helper.SupervisorDto;
 import temakereso.helper.TopicStatus;
 import temakereso.helper.TopicType;
@@ -55,10 +58,10 @@ public class ConstantController {
 
     // TODO put all as a list
 
-//	@PostMapping(path = "/categories")
-//	public Category modifiyCategories(@RequestBody Category category) {
-//		Category savedCategory = categoryService.createCategory(category);
-//		return savedCategory;
-//	}
+    //    @PostMapping(path = "/categories")
+    //    public Category modifiyCategories(@RequestBody Category category) {
+    //        Category savedCategory = categoryService.createCategory(category);
+    //        return savedCategory;
+    //    }
 
 }

@@ -3,28 +3,28 @@
 <head th:replace="fragments/head :: head('témakereső - ELTE IK')"></head>
 
 <body>
-	
-	<span hidden="" id="username" sec:authentication="principal.username"></span>
 
-	<header th:replace="fragments/header :: header"></header>
+    <span hidden="" id="username" sec:authentication="principal.username"></span>
 
-	<main id="me" class="container" role="main" style="display: none;">
-	
-		<section v-if="account">
-		
-			<div class="row" id="headline">
-				<div class="col-md-8">
-		           	<h1>{{account.name}}</h1>
-		        </div>
-<!-- 		        <div class="col-md-4 text-right"> -->
-<!--                 	<input type="button" class="btn btn-primary simple-button" v-on:click="editUser" value="szerkesztés"/> -->
-<!-- 		        </div> -->
-			</div>
-		
-			<div class="row">
-            	<div class="col-md-3"><h4>alapadatok</h4></div>
+    <header th:replace="fragments/header :: header"></header>
+
+    <main id="me" class="container" role="main" style="display: none;">
+
+        <section v-if="account">
+
+            <div class="row" id="headline">
+                <div class="col-md-8">
+                       <h1>{{account.name}}</h1>
+                </div>
+<!--                 <div class="col-md-4 text-right"> -->
+<!--                     <input type="button" class="btn btn-primary simple-button" v-on:click="editUser" value="szerkesztés"/> -->
+<!--                 </div> -->
             </div>
-			<div class="row">
+
+            <div class="row">
+                <div class="col-md-3"><h4>alapadatok</h4></div>
+            </div>
+            <div class="row">
                 <label class="control-label col-md-3 text-right">felhasználónév</label>
                 <div class="col-md-3">{{account.username}}</div>
             </div>
@@ -34,102 +34,102 @@
             </div>
             
             <div v-if="supervisor">
-	            <div class="row">
-	                <label class="control-label col-md-3 text-right">beosztás</label>
-	                <div class="col-md-9">{{supervisor.title}}</div>
-	            </div>
-	            
-	            <div class="row">
-	                <label class="control-label col-md-3 text-right">munkahely</label>
-	                <div class="col-md-9">{{supervisor.workplace}}</div>
-	            </div>
-	            
-	            <div class="row">
-	                <label class="control-label col-md-3 text-right">telefonszám</label>
-	                <div class="col-md-9">{{supervisor.phone}}</div>
-	            </div>  
-	            
-	            <div class="row">
-	                <label class="control-label col-md-3 text-right">honlap</label>
-	                <div class="col-md-9">{{supervisor.website}}</div>
-	            </div>
-	            
-	            <div class="row">
-	                <label class="control-label col-md-3 text-right">szoba</label>
-	                <div class="col-md-9">{{supervisor.room}}</div>
-	            </div>  
-	            
-	            <div class="row">
-	                <label class="control-label col-md-3 text-right">fogadóórák</label>
-	                <div class="col-md-9">{{supervisor.officeHours}}</div>
-	            </div>      
-	                  
-	            <div class="row">
-	                <label class="control-label col-md-3 text-right">külsős</label>
-	                <div class="col-md-9">{{formatBoolean(supervisor.external)}}</div>
-	            </div>
-	            
-	            <div class="row">
-	                <label class="control-label col-md-3 text-right">hitelesítve</label>
-	                <div class="col-md-9">{{formatBoolean(supervisor.confirmed)}}</div>
-	            </div>
+                <div class="row">
+                    <label class="control-label col-md-3 text-right">beosztás</label>
+                    <div class="col-md-9">{{supervisor.title}}</div>
+                </div>
+
+                <div class="row">
+                    <label class="control-label col-md-3 text-right">munkahely</label>
+                    <div class="col-md-9">{{supervisor.workplace}}</div>
+                </div>
+
+                <div class="row">
+                    <label class="control-label col-md-3 text-right">telefonszám</label>
+                    <div class="col-md-9">{{supervisor.phone}}</div>
+                </div>
+
+                <div class="row">
+                    <label class="control-label col-md-3 text-right">honlap</label>
+                    <div class="col-md-9">{{supervisor.website}}</div>
+                </div>
+
+                <div class="row">
+                    <label class="control-label col-md-3 text-right">szoba</label>
+                    <div class="col-md-9">{{supervisor.room}}</div>
+                </div>
+
+                <div class="row">
+                    <label class="control-label col-md-3 text-right">fogadóórák</label>
+                    <div class="col-md-9">{{supervisor.officeHours}}</div>
+                </div>
+
+                <div class="row">
+                    <label class="control-label col-md-3 text-right">külsős</label>
+                    <div class="col-md-9">{{formatBoolean(supervisor.external)}}</div>
+                </div>
+
+                <div class="row">
+                    <label class="control-label col-md-3 text-right">hitelesítve</label>
+                    <div class="col-md-9">{{formatBoolean(supervisor.confirmed)}}</div>
+                </div>
             </div>
-		</section>
+        </section>
 
-	</main>
+    </main>
 
-	<div th:replace="fragments/scripts :: scripts"></div>
+    <div th:replace="fragments/scripts :: scripts"></div>
 
-	<footer th:replace="fragments/footer :: footer"></footer>
+    <footer th:replace="fragments/footer :: footer"></footer>
 
-	<script>
+    <script>
 
-		/*<![CDATA[*/
-		var app = new Vue({
-			el : '#me',
-			data : {
-				account : null,
-				supervisor: null
-			},
-			created : function() {
-				var self = this;
+        /*<![CDATA[*/
+        var app = new Vue({
+            el : '#me',
+            data : {
+                account : null,
+                supervisor: null
+            },
+            created : function() {
+                var self = this;
 
-				// getting account
-				self.getAccount()
-					.then(function(response) {
-						self.account = response.data;
-				});
-				
-				// getting supervisor
-				self.getSupervisor()
-					.then(function(response) {
-						self.supervisor = response.data;
-				});
-				
-			},
-			mounted : function() {
-				setDisplay('#me', 'block'); // it doesn't show up by default
-			},
-			methods : {
-				getAccount: function() {
-					return axios.get(contextPath + 'api/accounts/' + this.getUsername());
-				},
-				getSupervisor: function() {
-					return axios.get(contextPath + 'api/supervisors/byusername/' + this.getUsername());
-				},
-				getUsername: function() {
-					return $('#username')[0].innerHTML;
-				},
-				formatBoolean: function(value) {
-					return value != null ? (value == true ? 'igen' : 'nem') : '';
-				},
-				editUser: function() {
-					redirect(contextPath + 'me/edit');
-				}
-			}
-		});
-		/*]]>*/
-	</script>
+                // getting account
+                self.getAccount()
+                    .then(function(response) {
+                        self.account = response.data;
+                });
+
+                // getting supervisor
+                self.getSupervisor()
+                    .then(function(response) {
+                        self.supervisor = response.data;
+                });
+
+            },
+            mounted : function() {
+                setDisplay('#me', 'block'); // it doesn't show up by default
+            },
+            methods : {
+                getAccount: function() {
+                    return axios.get(contextPath + 'api/accounts/' + this.getUsername());
+                },
+                getSupervisor: function() {
+                    return axios.get(contextPath + 'api/supervisors/byusername/' + this.getUsername());
+                },
+                getUsername: function() {
+                    return $('#username')[0].innerHTML;
+                },
+                formatBoolean: function(value) {
+                    return value != null ? (value == true ? 'igen' : 'nem') : '';
+                },
+                editUser: function() {
+                    redirect(contextPath + 'me/edit');
+                }
+            }
+        });
+        /*]]>*/
+    </script>
 
 </body>
 </html>

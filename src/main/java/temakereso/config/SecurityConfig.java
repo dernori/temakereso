@@ -17,71 +17,71 @@ import temakereso.service.implementation.AccountDetailsService;
 @EnableWebSecurity
 public class SecurityConfig {
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private AccountDetailsService accountDetailsService;
+    @Autowired
+    private AccountDetailsService accountDetailsService;
 
-	@Configuration
-	@Order(1)
-	public class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+    @Configuration
+    @Order(1)
+    public class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
-		protected void configure(HttpSecurity http) throws Exception {
-			http.csrf().disable()
-				.authenticationProvider(userAuthenticationProvider())
-				.antMatcher("/api/**")
-				.authorizeRequests()
-				.anyRequest().permitAll();
-		}
-	}
-	
-	@Configuration		
-	public class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+        protected void configure(HttpSecurity http) throws Exception {
+            http.csrf().disable()
+                .authenticationProvider(userAuthenticationProvider())
+                .antMatcher("/api/**")
+                .authorizeRequests()
+                .anyRequest().permitAll();
+        }
+    }
 
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			http.exceptionHandling().accessDeniedPage("/accessdenied")
-				.and()
-				.authenticationProvider(userAuthenticationProvider())
-				.authorizeRequests()
-				.antMatchers(
-						"/",
-						"/registration",
-						"/forms/{\\d+}", // TODO check if only numbers are good!
-						"/forms",
-						"/topics/{\\d+}",
-						"/css/**",
-						"/img/**",
-						"/js/**",
-						"/fonts/**",
-						"/perform-login").permitAll()
-				.anyRequest().fullyAuthenticated()
-				.and()
-				.formLogin()
-				.loginPage("/login")
-				.loginProcessingUrl("/perform-login")
-				.defaultSuccessUrl("/")
-				.failureUrl("/login?error=true")
-				.usernameParameter("username")
-				.passwordParameter("password")
-				.permitAll()
-				.and()
-				.logout()
-				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.logoutSuccessUrl("/")  
-				.and()
-				.csrf();
-		}
+    @Configuration
+    public class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-	}	
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.exceptionHandling().accessDeniedPage("/accessdenied")
+                .and()
+                .authenticationProvider(userAuthenticationProvider())
+                .authorizeRequests()
+                .antMatchers(
+                        "/",
+                        "/registration",
+                        "/forms/{\\d+}", // TODO check if only numbers are good!
+                        "/forms",
+                        "/topics/{\\d+}",
+                        "/css/**",
+                        "/img/**",
+                        "/js/**",
+                        "/fonts/**",
+                        "/perform-login").permitAll()
+                .anyRequest().fullyAuthenticated()
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .loginProcessingUrl("/perform-login")
+                .defaultSuccessUrl("/")
+                .failureUrl("/login?error=true")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .permitAll()
+                .and()
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/")
+                .and()
+                .csrf();
+        }
 
-	@Bean
-	public AuthenticationProvider userAuthenticationProvider() {
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(accountDetailsService);
-		authProvider.setPasswordEncoder(passwordEncoder);
-		return authProvider;
-	}
+    }
+
+    @Bean
+    public AuthenticationProvider userAuthenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(accountDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder);
+        return authProvider;
+    }
 
 }

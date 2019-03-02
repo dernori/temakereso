@@ -12,9 +12,9 @@ import temakereso.entity.Supervisor;
 @Repository
 public interface SupervisorRepository extends JpaRepository<Supervisor, Long> {
 
-	@Query("select s from Supervisor s where s.account.username = :username")
-	Supervisor getByUsername(@Param("username") String username);
+    @Query("select s from Supervisor s where s.account.username = :username")
+    Supervisor getByUsername(@Param("username") String username);
 
-	List<Supervisor> findByConfirmedFalse();
+    List<Supervisor> findByConfirmedFalse();
 
 }

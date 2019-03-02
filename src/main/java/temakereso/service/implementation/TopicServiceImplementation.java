@@ -10,7 +10,13 @@ import temakereso.entity.Attachment;
 import temakereso.entity.Student;
 import temakereso.entity.Supervisor;
 import temakereso.entity.Topic;
-import temakereso.helper.*;
+import temakereso.helper.AttachmentDto;
+import temakereso.helper.StudentDto;
+import temakereso.helper.TopicDto;
+import temakereso.helper.TopicFilters;
+import temakereso.helper.TopicInputDto;
+import temakereso.helper.TopicListerDto;
+import temakereso.helper.TopicStatus;
 import temakereso.repository.TopicRepository;
 import temakereso.service.CategoryService;
 import temakereso.service.StudentService;
@@ -185,7 +191,7 @@ public class TopicServiceImplementation implements TopicService {
     @Override
     public void setTopicDone(Long topicId) {
         Topic topic = topicRepository.findOne(topicId);
-        if(topic.getStatus() != TopicStatus.RESERVED || topic.getStudent() == null) return;
+        if (topic.getStatus() != TopicStatus.RESERVED || topic.getStudent() == null) return;
         topic.setStatus(TopicStatus.DONE);
         topicRepository.save(topic);
     }

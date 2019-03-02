@@ -51,7 +51,7 @@ public class SupervisorServiceImplementation implements SupervisorService {
 
     @Override
     public SupervisorDto getByUsername(String username) {
-        return modelMapper.map( supervisorRepository.getByUsername(username), SupervisorDto.class);
+        return modelMapper.map(supervisorRepository.getByUsername(username), SupervisorDto.class);
     }
 
     @Override

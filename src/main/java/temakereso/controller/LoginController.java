@@ -23,9 +23,9 @@ public class LoginController {
         model.setViewName("login");
         return model;
     }
-    
+
     // TODO registration
-    @GetMapping(value={"/registration"})
+    //    @GetMapping(value = {"/registration"})
     public String registration() {
         return "registration";
     }

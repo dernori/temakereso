@@ -8,6 +8,6 @@ import temakereso.entity.Parameter;
 @Repository
 public interface ParameterRepository extends JpaRepository<Parameter, Long> {
 
-	Parameter findByIdentifier(String identifier);
+    Parameter findByIdentifier(String identifier);
 
 }

@@ -5,8 +5,8 @@
 /* TODO format and order! */
 
 body {
-	font-family: "Open Sans", "Roboto", sans-serif !important;
-	background-color: #fcfcfc;
+    font-family: "Open Sans", "Roboto", sans-serif !important;
+    background-color: #fcfcfc;
     background-image: url('../img/connected.png');
     color: #373737;
     padding: 0;
@@ -23,7 +23,7 @@ body > .container {
 }
 
 footer {
-	text-align: center;
+    text-align: center;
     background: #874d63;
     color: rgba(255,255,255,.5);
     padding: 5px;
@@ -31,7 +31,7 @@ footer {
 }
 
 h2, h3 {
-	margin: 25px 10px 10px 10px;
+    margin: 25px 10px 10px 10px;
 }
 
 h4 {
@@ -44,13 +44,13 @@ h4 {
 }
 
 p {
-	margin: 10px;
+    margin: 10px;
 }
 
 a, a:hover, a:visited, a:link, a:active {
-	text-decoration: none;
-	color: inherit;
-	cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
 }
 
 form label {
@@ -78,16 +78,16 @@ textarea, textarea:focus, input, input:focus, button, button:focus {
 }
 
 h1 {
-	padding-top: 20px;
+    padding-top: 20px;
 }
 
 h1, h2 {
-	color: #874d63;
+    color: #874d63;
 }
 
 .jumbotron {
-	margin-bottom: 0;
-	padding-bottom: 10px;
+    margin-bottom: 0;
+    padding-bottom: 10px;
 }
 
 .bg-dark {
@@ -119,7 +119,7 @@ textarea.form-control {
 }
 
 .messages {
-	margin-top: -15px;
+    margin-top: -15px;
     margin-bottom: 0;
 }
 
@@ -131,8 +131,8 @@ textarea.form-control {
 .errors span {
     color: #f57f6c;
     font-size: .75em;
-	line-height: 1;
-	display: block;
+    line-height: 1;
+    display: block;
 }
 
 .error {
@@ -154,12 +154,12 @@ textarea.form-control {
 }
 
 .button {
-	max-width: 300px;
+    max-width: 300px;
     width: 100%;
 }
 
 .table .thead-light th {
-	background-color: #874d63;
+    background-color: #874d63;
     border-color: #874d63;
     color: white;
     font-weight: normal;
@@ -173,7 +173,7 @@ textarea.form-control {
 }
 
 .form-check-inline .form-check-input {
-	margin-top: 12px;
+    margin-top: 12px;
 }
 
 .table tbody tr:hover td, .table tbody tr:hover th {
@@ -190,18 +190,18 @@ textarea.form-control {
 }
 
 .simple-button {
-	font-weight: 300;
+    font-weight: 300;
     min-width: 150px;
     font-size: 1em;
     color: white !important;
 }
 
 .form-control {
-	font-size: 0.95em;
+    font-size: 0.95em;
 }
 
 .input-group-text {
-	font-size: 0.9rem;
+    font-size: 0.9rem;
 }
 
 .clickable {
@@ -209,39 +209,39 @@ textarea.form-control {
 }
 
 #topic-list, .topic-list {
-	font-weight: 300;
-	margin-bottom: 25px;
+    font-weight: 300;
+    margin-bottom: 25px;
 }
 
 #headline .col-md-4 {
-	line-height: 65px;
+    line-height: 65px;
     padding-top: 10px;
 }
 
 #login {
-	background: #f0e6ea;
+    background: #f0e6ea;
     border-radius: 5px;
     padding: 20px;
 }
 
 #input-addon-left {
-	background-color: white;
+    background-color: white;
     padding-right: 0;
 }
 
 #input-addon-right {
-	margin-top: 0;
+    margin-top: 0;
     border-left: none;
     padding-left: 0;
 }
 
 @media (max-width: 767px) {
-	label.text-right, h4 {
-		font-weight: bold;
-		text-align: left !important; 
-	}
-	
-	h4, .row {
-		margin-top: 20px;
-	}
+    label.text-right, h4 {
+        font-weight: bold;
+        text-align: left !important;
+    }
+
+    h4, .row {
+        margin-top: 20px;
+    }
 }
