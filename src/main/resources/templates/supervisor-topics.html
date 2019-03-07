@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head th:replace="fragments/head :: head('témakereső - ELTE IK')"></head>
+
+<body>
+
+<p hidden="" id="supervisor" th:text="${supervisor}"></p>
+
+<header th:replace="fragments/header :: header"></header>
+
+<main id="supervisor-topics" class="container" role="main" style="display: none;">
+
+    <h2 class="text-center topic-list">témáim</h2>
+
+    <div class="table-responsive" v-if="topics &amp;&amp; topics.length > 0">
+        <table class="table table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th>#</th>
+                <th>cím</th>
+                <th>kategória</th>
+                <th>típus</th>
+                <th>állapot</th>
+                <!--<th>műveletek</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="topic in topics">
+                <td>{{topic.id}}</td>
+                <td><a v-bind:href="getTopicLink(topic)">{{topic.name}}</a></td>
+                <td>{{topic.category.name}}</td>
+                <td>{{topic.type.name}}</td>
+                <td>{{topic.status.name}}</td>
+                <!--<td class="text-right"><span class="clickable" v-on:click="removeApplication(topic)"><i class="fas fa-trash"></i></span></td>-->
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p v-else="">Jelenleg nincs egy kiírt témád sem.</p>
+
+</main>
+
+<div th:replace="fragments/scripts :: scripts"></div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<script>
+
+  /*<![CDATA[*/
+  var app = new Vue({
+    el: '#supervisor-topics',
+    data: {
+      topics: null,
+
+      // messages: [],
+      // errors: []
+    },
+    created: function () {
+      this.getSupervisorTopics()
+        .then(function (response) {
+          this.topics = response.data;
+        }.bind(this));
+    },
+    mounted: function () {
+      setDisplay('#supervisor-topics', 'block'); // it doesn't show up by default
+    },
+    methods: {
+      getSupervisorId: function () {
+        return parseInt($('#supervisor')[0].innerHTML);
+      },
+      getSupervisorTopics: function () {
+        return axios.get(`${contextPath}api/supervisors/${this.getSupervisorId()}/topics`)
+      },
+      getTopicLink: function (topic) {
+        return `${contextPath}topics/${topic.id}`;
+      } // ,
+      // removeApplication: function (topic) {
+      //   axios.delete(`${contextPath}api/topics/${topic.id}/students/${this.student.id}`)
+      //     .then( function (response) {
+      //       this.getStudentAppliedTopics();
+      //     }.bind(this));
+      // }
+    }
+  });
+  /*]]>*/
+</script>
+
+</body>
+</html>

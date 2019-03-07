@@ -11,4 +11,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     Set<Topic> findByStudentId(Long studentId);
 
+    Set<Topic> findBySupervisorId(Long sudentId);
+
 }

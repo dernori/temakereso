@@ -65,6 +65,11 @@ public class TopicController {
         return topicService.getTopicsAssignedToStudent(id);
     }
 
+    @GetMapping(path = "/supervisors/{id}/topics")
+    public Set<TopicDto> getSupervisorTopics(@PathVariable(name = "id") Long supervisorId) {
+        return topicService.getSupervisorTopics(supervisorId);
+    }
+
     // ------------------------ POST ------------------------- //
 
     /**

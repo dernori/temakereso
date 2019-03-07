@@ -179,6 +179,14 @@ public class TopicServiceImplementation implements TopicService {
     }
 
     @Override
+    public Set<TopicDto> getSupervisorTopics(Long supervisorId) {
+        return topicRepository.findBySupervisorId(supervisorId)
+                .stream()
+                .map(topic -> modelMapper.map(topic, TopicDto.class))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
     public void acceptApplication(Long topicId, Long studentId) {
         Topic topic = topicRepository.findOne(topicId);
         Student student = studentService.findOneById(studentId);

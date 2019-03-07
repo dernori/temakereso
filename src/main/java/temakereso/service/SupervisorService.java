@@ -61,4 +61,6 @@ public interface SupervisorService {
     void confirm(Long id);
 
     Supervisor findOneById(Long supervisorId);
+
+    SupervisorDto findByAccountId(Long accountId);
 }

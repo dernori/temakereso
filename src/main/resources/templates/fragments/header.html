@@ -11,6 +11,7 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item"><a class="nav-link" th:href="@{/}">kereső</a></li>
                 <li class="nav-item" sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_SUPERVISOR')"><a class="nav-link" th:href="@{/topics/add}">új téma</a></li>
+                <li class="nav-item" sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_SUPERVISOR')"><a class="nav-link" th:href="@{/topics}">témáim</a></li>
                 <li class="nav-item" sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_ADMIN')"><a class="nav-link" th:href="@{/settings}">beállítások</a></li>
                 <li class="nav-item" sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_ADMIN')"><a class="nav-link" th:href="@{/reports}">riportok</a></li>
                 <li class="nav-item" sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_STUDENT')"><a class="nav-link" th:href="@{/applications}">jelentkezéseim</a></li>

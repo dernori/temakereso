@@ -75,5 +75,10 @@ public class SupervisorServiceImplementation implements SupervisorService {
         return supervisorRepository.findOne(supervisorId);
     }
 
+    @Override
+    public SupervisorDto findByAccountId(Long accountId) {
+        Supervisor supervisor = supervisorRepository.findByAccountId(accountId);
+        return supervisor != null ? modelMapper.map(supervisor, SupervisorDto.class) : null;
+    }
 
 }

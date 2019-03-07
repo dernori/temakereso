@@ -67,6 +67,8 @@ public interface TopicService {
 
     Set<TopicDto> getTopicsAssignedToStudent(Long id);
 
+    Set<TopicDto> getSupervisorTopics(Long supervisorId);
+
     void acceptApplication(Long topicId, Long studentId);
 
     void setTopicDone(Long topicId);
