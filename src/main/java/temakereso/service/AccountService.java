@@ -27,6 +27,5 @@ public interface AccountService {
      */
     void modifyEmail(String username, String email);
 
-    // no one uses?
-    Account getOneById(Long id);
+    AccountDto findById(Long id);
 }

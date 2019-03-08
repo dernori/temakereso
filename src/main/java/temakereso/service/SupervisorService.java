@@ -39,14 +39,6 @@ public interface SupervisorService {
     SupervisorDto modifySupervisor(Supervisor supervisor);
 
     /**
-     * Returns a supervisor specified by its username
-     *
-     * @param username
-     * @return the selected supervisor
-     */
-    SupervisorDto getByUsername(String username);
-
-    /**
      * Returns a list of unconfirmed supervisors
      *
      * @return unconfirmed supervisors

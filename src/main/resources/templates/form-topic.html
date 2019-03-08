@@ -5,7 +5,6 @@
 <body>
 
 <p hidden="" id="topic" th:text="${id}"></p>
-<span hidden="" id="username" sec:authentication="principal.username"></span>
 
 <header th:replace="fragments/header :: header"></header>
 
@@ -199,10 +198,7 @@
         return `${contextPath}api/files/${attachment.fileId}`;
       },
       getSupervisor: function () {
-        return axios.get(`${contextPath}api/supervisors/byusername/${this.getUsername()}`);
-      },
-      getUsername: function () {
-        return $('#username')[0].innerHTML;
+        return axios.get(`${contextPath}api/me/supervisor/`);
       },
       getTopic: function () {
         axios.get(`${contextPath}api/topics/${this.getTopicId()}`)

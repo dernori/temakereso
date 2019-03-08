@@ -55,18 +55,6 @@ public class SupervisorController {
         return supervisorService.getUnconfirmed();
     }
 
-    /**
-     * Returns an account selected by its username
-     * TODO: change to accound ID!!
-     *
-     * @param username
-     * @return a supervisor
-     */
-    @GetMapping(path = "/supervisors/byusername/{username}")
-    public SupervisorDto getSupervisorByUsername(@PathVariable(name = "username") String username) {
-        return supervisorService.getByUsername(username);
-    }
-
     // ------------------------ POST ------------------------- //
 
     /**

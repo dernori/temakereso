@@ -6,7 +6,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import temakereso.helper.AccountDto;
+import temakereso.helper.StudentDto;
+import temakereso.helper.SupervisorDto;
 import temakereso.service.AccountService;
+import temakereso.service.LoggedInUserService;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,6 +17,8 @@ import temakereso.service.AccountService;
 public class AccountController {
 
     private final AccountService accountService;
+
+    private final LoggedInUserService loggedInUserService;
 
     // ------------------------ GET -------------------------- //
 
@@ -26,6 +31,21 @@ public class AccountController {
     @GetMapping(path = "/accounts/{username}")
     public AccountDto getAccount(@PathVariable(name = "username") String username) {
         return accountService.getByUsername(username);
+    }
+
+    @GetMapping(path = "/me")
+    public AccountDto getLoggedInAccount() {
+        return loggedInUserService.getLoggedInUser();
+    }
+
+    @GetMapping(path = "/me/student")
+    public StudentDto getLoggedInStudent() {
+        return loggedInUserService.getLoggedInStudent();
+    }
+
+    @GetMapping(path = "/me/supervisor")
+    public SupervisorDto getLoggedInSupervisor() {
+        return loggedInUserService.getLoggedInSupervisor();
     }
 
     // TODO: DTO!!!

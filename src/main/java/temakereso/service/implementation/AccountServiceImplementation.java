@@ -38,8 +38,9 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public Account getOneById(Long id) {
-        return accountRepository.findOne(id);
+    public AccountDto findById(Long id) {
+        Account account = accountRepository.findOne(id);
+        return account != null ? modelMapper.map(account, AccountDto.class) : null;
     }
 
 }
