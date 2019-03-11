@@ -72,7 +72,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(value = {"/settings"})
     public String settings() {
-        return "settings";
+        return "admin-settings";
     }
 
     // TODO reports page

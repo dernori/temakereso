@@ -24,8 +24,7 @@ public class LoginController {
         return model;
     }
 
-    // TODO registration
-    //    @GetMapping(value = {"/registration"})
+    @GetMapping(value = {"/registration"})
     public String registration() {
         return "registration";
     }

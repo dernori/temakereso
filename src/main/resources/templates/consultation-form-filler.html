@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head th:replace="fragments/head :: head('témakereső - ELTE IK')"></head>
+
+<body>
+
+<p hidden="" id="topic" th:text="${id}"></p>
+
+<header th:replace="fragments/header :: header"></header>
+
+<main id="consultation-form-filler" class="container" role="main" style="display: none;">
+
+    <div class="row">
+        <div class="col-md-8">
+            <h1>konzultációs lap kitöltése</h1>
+        </div>
+    </div>
+    <form>
+        <div class="form-group row">
+            <label class="col-md-3 text-right col-form-label">típus</label>
+            <div class="col-md-4">
+                <select class="form-control" v-model="form.level">
+                    <option selected='true'></option>
+                    <option value="BSC_FORM">Bsc. szakdolgozat</option>
+                    <option value="MSC_FORM">Msc. diplomamunka</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 text-right col-form-label">név</label>
+            <div class="col-md-7">
+                <input type="text" class="form-control" v-model="form.name"/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 text-right col-form-label">Neptun kód</label>
+            <div class="col-md-7">
+                <input type="text" class="form-control" v-model="form.code" placeholder="AAA111"/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 text-right col-form-label">tagozat</label>
+            <div class="col-md-4">
+                <select class="form-control" v-model="form.training">
+                    <option selected='true'></option>
+                    <option value="nappali">nappali</option>
+                    <option value="esti">esti</option>
+                    <option value="levelező">levelező</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 text-right col-form-label">témavezető neve</label>
+            <div class="col-md-7">
+                <input type="text" class="form-control" v-model="form.supervisorName"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 text-right col-form-label">dolgozat címe</label>
+            <div class="col-md-7">
+                <input type="text" class="form-control" v-model="form.title"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label"></label>
+            <div class="col-md-7">
+                <a class="btn btn-primary simple-button" v-bind:href="fillForm()">kitöltés</a>
+            </div>
+        </div>
+    </form>
+</main>
+
+<div th:replace="fragments/scripts :: scripts"></div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<script>
+
+  /*<![CDATA[*/
+
+  Vue.use(window.vuelidate.default)
+  let required = window.validators.required
+
+  let app = new Vue({
+    el: '#consultation-form-filler',
+    data: {
+      form: {
+        level: null,
+        name: null,
+        code: null,
+        training: null,
+        supervisorName: null,
+        title: null
+      }
+
+      //     messages: [],
+      //     errors: []
+    },
+    created: function () {
+      if (this.getTopicId() !== -1) { // if we are filling a form form an existing topic
+        this.getTopic()
+      }
+
+      this.getStudent()
+    },
+    mounted: function () {
+      setDisplay('#consultation-form-filler', 'block') // it doesn't show up by default
+    },
+    methods: {
+      getTopic: function () {
+        axios.get(contextPath + 'api/topics/' + this.getTopicId())
+          .then(function (response) {
+            let topic = response.data
+            console.log(topic)
+            this.form.level = (topic.type.id === 'BSC_THESIS' ? 'BSC_FORM' : 'MSC_FORM')
+            this.form.title = topic.name
+            this.form.supervisorName = topic.supervisor.name
+          }.bind(this))
+      },
+      getStudent: function () {
+        axios.get(contextPath + 'api/me/student/')
+          .then(function (response) {
+            let student = response.data
+            this.form.name = student.name
+            this.form.code = student.code
+            this.form.training = student.training ? student.training.name.replace(' tagozat', '') : ''
+          }.bind(this))
+      },
+      getTopicId: function () {
+        let topic = $('#topic')[0].innerHTML
+        return (topic === '' ? -1 : topic)
+      },
+      fillForm: function () {
+        let params = {}
+        for (let key in this.form) {
+          if (this.form.hasOwnProperty(key) && this.form[key] != null) {
+            params[key] = this.form[key]
+          }
+        }
+        return contextPath + 'api/forms/consultation?' + $.param(params)
+      }
+    }
+  })
+  /*]]>*/
+</script>
+
+</body>
+</html>

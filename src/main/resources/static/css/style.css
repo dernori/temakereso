@@ -208,6 +208,12 @@ textarea.form-control {
     cursor: pointer;
 }
 
+.file-uploader-label {
+    text-align: right;
+    align-self: center;
+    margin-bottom: 0;
+}
+
 #topic-list, .topic-list {
     font-weight: 300;
     margin-bottom: 25px;

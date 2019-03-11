@@ -1,6 +1,7 @@
 package temakereso.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import temakereso.helper.AccountDetails;
@@ -41,6 +42,11 @@ public class LoggedInUserServiceImplementation implements LoggedInUserService {
     }
 
     private Long getLoggedInUserId() {
-        return ((AccountDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        if (SecurityContextHolder.getContext().getAuthentication() != null
+                && SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+                && !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+            return ((AccountDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        }
+        return null;
     }
 }

@@ -13,15 +13,26 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping(value = {"/forms"})
-    public String generalForm() {
-        return "form-filler";
+    @GetMapping(value = {"/forms/topics"})
+    public String topicForm() {
+        return "topic-form-filler";
     }
 
-    @GetMapping(value = {"/forms/{id}"})
-    public String formFromTopic(@PathVariable("id") Long id, Model model) {
+    @GetMapping(value = {"/forms/topics/{id}"})
+    public String topicFormFiller(@PathVariable("id") Long id, Model model) {
         model.addAttribute("id", id);
-        return "form-filler";
+        return "topic-form-filler";
+    }
+
+    @GetMapping(value = {"/forms/consultation"})
+    public String consultationForm() {
+        return "consultation-form-filler";
+    }
+
+    @GetMapping(value = {"/forms/consultation/{id}"})
+    public String consultationFormFiller(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("id", id);
+        return "consultation-form-filler";
     }
 
     @GetMapping(value = {"/topics/{id}"})

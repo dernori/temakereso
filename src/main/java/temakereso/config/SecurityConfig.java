@@ -48,8 +48,10 @@ public class SecurityConfig {
                 .antMatchers(
                         "/",
                         "/registration",
-                        "/forms/{\\d+}", // TODO check if only numbers are good!
-                        "/forms",
+                        "/forms/consultation/{\\d+}",
+                        "/forms/topics/{\\d+}",
+                        "/forms/consultation",
+                        "/forms/topics",
                         "/topics/{\\d+}",
                         "/css/**",
                         "/img/**",

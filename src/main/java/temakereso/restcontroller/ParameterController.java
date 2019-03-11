@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import temakereso.entity.Parameter;
-import temakereso.helper.FormType;
 import temakereso.service.ParameterService;
 
 import java.io.IOException;
@@ -41,10 +40,10 @@ public class ParameterController {
     /**
      * // TODO
      */
-    @PutMapping(value = "/parameters/{type}", headers = ("content-type=multipart/*"))
-    public ResponseEntity<Void> modifyForm(@PathVariable("type") FormType type, @RequestParam("file") MultipartFile file) {
+    @PutMapping(value = "/parameters/{identifier}", headers = ("content-type=multipart/*"))
+    public ResponseEntity<Void> modifyForm(@PathVariable("identifier") String identifier, @RequestParam("file") MultipartFile file) {
         try {
-            parameterService.modifyForm(type, file);
+            parameterService.modifyForm(identifier, file);
         } catch (IOException e) {
             log.error("Error while saving file!");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

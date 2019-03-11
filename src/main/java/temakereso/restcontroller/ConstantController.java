@@ -3,6 +3,7 @@ package temakereso.restcontroller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,18 +51,15 @@ public class ConstantController {
     // ------------------------ POST -------------------------- //
 
     @PostMapping(path = "/categories")
-    public Category createCategory(@RequestBody Category category) {
-        return categoryService.createCategory(category);
+    public void createCategory(@RequestBody Category category) {
+        categoryService.createCategory(category);
     }
 
     // ------------------------ PUT -------------------------- //
 
-    // TODO put all as a list
-
-    //    @PostMapping(path = "/categories")
-    //    public Category modifiyCategories(@RequestBody Category category) {
-    //        Category savedCategory = categoryService.createCategory(category);
-    //        return savedCategory;
-    //    }
+    @PutMapping(path = "/categories")
+    public void modifyCategory(@RequestBody Category category) {
+        categoryService.modifyCategory(category);
+    }
 
 }

@@ -9,6 +9,7 @@ import temakereso.entity.Student;
 import temakereso.helper.StudentDto;
 import temakereso.helper.TopicDto;
 import temakereso.repository.StudentRepository;
+import temakereso.service.RoleService;
 import temakereso.service.StudentService;
 
 import java.util.Arrays;
@@ -26,6 +27,8 @@ public class StudentServiceImplementation implements StudentService {
 
     private final ModelMapper modelMapper;
 
+    private final RoleService roleService;
+
     @Override
     public List<StudentDto> getAll() {
         return studentRepository.findAll()
@@ -36,7 +39,8 @@ public class StudentServiceImplementation implements StudentService {
 
     @Override
     public StudentDto createStudent(Student student) {
-        student.getAccount().setRoles(Arrays.asList(new Role("STUDENT")));
+        Role studentRole = roleService.findByName("STUDENT");
+        student.getAccount().setRoles(Arrays.asList(studentRole != null ? studentRole : new Role("STUDENT")));
         student.getAccount().setPassword(passwordEncoder.encode(student.getAccount().getPassword()));
         return modelMapper.map(studentRepository.save(student), StudentDto.class);
     }

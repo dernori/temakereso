@@ -22,7 +22,10 @@
                        v-if="topic.supervisor.account.id == getAccountId()" value="szerkesztés"/>
                 <input type="button" class="btn btn-primary simple-button"
                        v-if="topic.type.id == 'BSC_THESIS' || topic.type.id == 'MSC_THESIS'"
-                       v-on:click="fillFormFromTopic" value="témabejelentő generálása"/>
+                       v-on:click="fillTopicForm" value="témabejelentő generálása"/>
+                <input type="button" class="btn btn-primary simple-button"
+                       v-if="topic.type.id == 'BSC_THESIS' || topic.type.id == 'MSC_THESIS'"
+                       v-on:click="fillConsultationForm" value="konzultációs lap generálása"/>
                 <input type="button" class="btn btn-primary simple-button"
                        sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_SUPERVISOR')"
                        v-if="isTopicReserved"
@@ -229,8 +232,11 @@
       editTopic: function () {
         redirect(`${contextPath}topics/${this.getTopicId()}/edit`);
       },
-      fillFormFromTopic: function () {
-        redirect(`${contextPath}forms/${this.getTopicId()}`);
+      fillTopicForm: function () {
+        redirect(`${contextPath}forms/topics/${this.getTopicId()}`);
+      },
+      fillConsultationForm: function () {
+        redirect(`${contextPath}forms/consultation/${this.getTopicId()}`);
       },
       setStatusDone: function () {
         axios.put(`${contextPath}api/topics/${this.getTopicId()}/done`)

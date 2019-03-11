@@ -8,6 +8,7 @@ import temakereso.entity.Role;
 import temakereso.entity.Supervisor;
 import temakereso.helper.SupervisorDto;
 import temakereso.repository.SupervisorRepository;
+import temakereso.service.RoleService;
 import temakereso.service.SupervisorService;
 
 import java.util.Arrays;
@@ -24,6 +25,8 @@ public class SupervisorServiceImplementation implements SupervisorService {
 
     private final ModelMapper modelMapper;
 
+    private final RoleService roleService;
+
     @Override
     public List<SupervisorDto> getAll() {
         return supervisorRepository.findAll()
@@ -34,7 +37,8 @@ public class SupervisorServiceImplementation implements SupervisorService {
 
     @Override
     public SupervisorDto createSupervisor(Supervisor supervisor) {
-        supervisor.getAccount().setRoles(Arrays.asList(new Role("SUPERVISOR")));
+        Role supervisorRole = roleService.findByName("SUPERVISOR");
+        supervisor.getAccount().setRoles(Arrays.asList(supervisorRole != null ? supervisorRole : new Role("SUPERVISOR")));
         supervisor.getAccount().setPassword(passwordEncoder.encode(supervisor.getAccount().getPassword()));
         return modelMapper.map(supervisorRepository.save(supervisor), SupervisorDto.class);
     }

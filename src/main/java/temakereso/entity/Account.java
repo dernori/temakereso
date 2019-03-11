@@ -11,8 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -36,7 +34,7 @@ public class Account {
     @Column(length = 250, nullable = false)
     private String password;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.MERGE)
     private List<Role> roles;
 
     public Account(String name, String email, String username, String password, List<Role> roles) {
@@ -45,11 +43,6 @@ public class Account {
         this.username = username;
         this.password = password;
         this.roles = roles;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        if (this.roles == null) this.roles = Arrays.asList(new Role("STUDENT"));
     }
 
 }

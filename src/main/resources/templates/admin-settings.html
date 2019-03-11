@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head th:replace="fragments/head :: head('témakereső - ELTE IK')"></head>
+
+<body>
+
+<header th:replace="fragments/header :: header"></header>
+
+<main id="admin-settings" class="container" role="main" style="display: none;">
+
+    <div class="row">
+        <div class="col-md-8">
+            <h1>sablonok</h1>
+        </div>
+    </div>
+
+    <div class="row mt-4" v-if="parameters.bscTopicForm">
+        <label class="control-label col-md-3 text-right">BSc. témabejelentő</label>
+        <div class="col-md-9"><a v-bind:href="getFileLink(parameters.bscTopicForm)">jelenlegi dokumentum</a></div>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-3 file-uploader-label">új BSc. témabejelentő feltöltése</label>
+        <div class="controls col-md-4">
+            <input type="file" class="form-control" id="bsc_topic_form"/>
+        </div>
+        <div class="col-md-3">
+            <input type="button" class="btn btn-primary simple-button" v-on:click="saveForm('bsc_topic')" value="feltöltés"/>
+        </div>
+    </div>
+
+    <div class="row mt-4" v-if="parameters.mscTopicForm">
+        <label class="control-label col-md-3 text-right">MSc. témabejelentő</label>
+        <div class="col-md-9"><a v-bind:href="getFileLink(parameters.mscTopicForm)">jelenlegi dokumentum</a></div>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-3 file-uploader-label">új MSc. témabejelentő feltöltése</label>
+        <div class="controls col-md-4">
+            <input type="file" class="form-control" id="msc_topic_form"/>
+        </div>
+        <div class="col-md-3">
+            <input type="button" class="btn btn-primary simple-button" v-on:click="saveForm('msc_topic')" value="feltöltés"/>
+        </div>
+    </div>
+
+    <div class="row mt-4" v-if="parameters.bscConsultationForm">
+        <label class="control-label col-md-3 text-right">BSc. konzultációs lap</label>
+        <div class="col-md-9"><a v-bind:href="getFileLink(parameters.bscTopicForm)">jelenlegi dokumentum</a></div>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-3 file-uploader-label">új BSc. konzultációs lap feltöltése</label>
+        <div class="controls col-md-4">
+            <input type="file" class="form-control" id="bsc_consultation_form"/>
+        </div>
+        <div class="col-md-3">
+            <input type="button" class="btn btn-primary simple-button" v-on:click="saveForm('bsc_consultation')" value="feltöltés"/>
+        </div>
+    </div>
+
+    <div class="row mt-4" v-if="parameters.mscConsultationForm">
+        <label class="control-label col-md-3 text-right">MSc. konzultációs lap</label>
+        <div class="col-md-9"><a v-bind:href="getFileLink(parameters.mscConsultationForm)">jelenlegi dokumentum</a></div>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-3 file-uploader-label">új MSc. konzultációs lap feltöltése</label>
+        <div class="controls col-md-4">
+            <input type="file" class="form-control" id="msc_consultation_form"/>
+        </div>
+        <div class="col-md-3">
+            <input type="button" class="btn btn-primary simple-button" v-on:click="saveForm('msc_consultation')" value="feltöltés"/>
+        </div>
+    </div>
+
+    <form v-if="supervisors.length > 0">
+        <div class="row mt-5">
+            <div class="col-md-8">
+                <h1>hitelesítés</h1>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>név</th>
+                    <th>title</th>
+                    <th>munkahely</th>
+                    <th>szoba</th>
+                    <th>fogadóórák</th>
+                    <th>e-mail</th>
+                    <th>telefon</th>
+                    <th>honlap</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="supervisor in supervisors">
+                    <td>{{supervisor.id}}</td>
+                    <td>{{supervisor.name}}</td>
+                    <td>{{supervisor.title}}</td>
+                    <td>{{supervisor.workplace}}</td>
+                    <td>{{supervisor.room}}</td>
+                    <td>{{supervisor.officeHours}}</td>
+                    <td>{{supervisor.email}}</td>
+                    <td>{{supervisor.phone}}</td>
+                    <td>{{supervisor.website}}</td>
+                    <td>
+                        <button class="btn btn-primary simple-button" v-on:click="confirm(supervisor)">hitelesít</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+    <form>
+        <div class="row mt-5">
+            <div class="col-md-8">
+                <h1>kategóriák</h1>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>megnevezés</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(category, index) in categories" :key="index">
+                    <td>{{category.id}}</td>
+                    <td><input type="text" class="form-control" v-model:value="category.name"/></td>
+                    <td>
+                        <button class="btn btn-primary simple-button" v-on:click="saveCategory(category)">mentés</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="text" class="form-control" v-model:value="newCategory.name"/></td>
+                    <td>
+                        <button class="btn btn-primary simple-button" v-on:click="saveCategory(newCategory)">mentés</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</main>
+
+<div th:replace="fragments/scripts :: scripts"></div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<script>
+
+  /*<![CDATA[*/
+
+  Vue.use(window.vuelidate.default)
+  let required = window.validators.required
+
+  let app = new Vue({
+    el: '#admin-settings',
+    data: {
+      parameters: {
+        bscTopicForm: null,
+        mscTopicForm: null,
+        bscConsultationForm: null,
+        mscConsultationForm: null
+      },
+
+      supervisors: [],
+      categories: [],
+      newCategory: {
+        name: null
+      }
+
+      //     messages: [],
+      //     errors: []
+    },
+    created: function () {
+      // collecting params
+      let values = ["bscTopicForm", "mscTopicForm", "bscConsultationForm", "mscConsultationForm"]
+      let promises = [] // collecting all promises
+      for (let i = 0; i < values.length; i++) {
+        promises.push(this.getParameterValue(values[i].replace(/([A-Z])/g, '_$1').toUpperCase()))
+      }
+
+      // after everything arrived, loop through the responses and bind to the data
+      axios.all(promises).then(function (response) {
+        for (let i = 0; i < response.length; i++) {
+          this.parameters[values[i]] = response[i].data
+        }
+      }.bind(this))
+
+      this.getUnconfirmedSupervisors()
+      this.getCategories()
+
+    },
+    mounted: function () {
+      setDisplay('#admin-settings', 'block') // it doesn't show up by default
+    },
+    methods: {
+      getUnconfirmedSupervisors: function () {
+        axios.get(contextPath + 'api/supervisors/unconfirmed')
+          .then(function (response) {
+            this.supervisors = response.data
+          }.bind(this))
+      },
+      getCategories: function () {
+        axios.get(contextPath + 'api/constants/categories')
+          .then(function (response) {
+            this.categories = response.data
+          }.bind(this))
+      },
+      getParameterValue: function (identifier) {
+        return axios.get(contextPath + 'api/parameters/' + identifier)
+      },
+      getFileLink: function (id) {
+        return contextPath + 'api/files/' + id
+      },
+      confirm: function (supervisor) {
+        axios.put(contextPath + 'api/supervisors/' + supervisor.id + '/confirm')
+          .then(function () {
+            redirect(contextPath + 'settings')
+          })
+      },
+      saveCategory: function (category) {
+        // TODO validation
+        console.log(category)
+        let promise = null
+        if (category.id) {
+          promise = axios.put(contextPath + 'api/constants/categories', category)
+        } else {
+          promise = axios.post(contextPath + 'api/constants/categories', category)
+        }
+        promise
+          .then(function (response) {
+            console.log(response)
+            redirect(contextPath + 'settings')
+          })
+      },
+      saveForm: function (type) {
+        // TODO validation
+        console.log(type)
+        let data = new FormData()
+        let currentFile = $('#' + type + '_form')[0]
+        console.log(currentFile)
+        if (currentFile && currentFile.files[0] != null) {
+          data.append('file', currentFile.files[0])
+          axios.put(contextPath + 'api/parameters/' + type.toUpperCase() + '_FORM', data)
+            .then(function (response) {
+              console.log(response.data)
+              redirect(contextPath + 'settings')
+            })
+        }
+      }
+    }
+  })
+  /*]]>*/
+</script>
+
+</body>
+</html>

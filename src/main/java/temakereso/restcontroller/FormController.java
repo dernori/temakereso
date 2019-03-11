@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import temakereso.helper.ConsultationForm;
 import temakereso.helper.Form;
+import temakereso.helper.TopicForm;
 import temakereso.service.FormFillerService;
 
 import java.io.ByteArrayOutputStream;
@@ -25,9 +27,20 @@ public class FormController {
     /**
      * TODO
      */
-    @GetMapping(value = "/fillform", produces = "application/octet-stream")
-    public ResponseEntity<ByteArrayResource> fillForm(Form form) {
+    @GetMapping(value = "/forms/topic", produces = "application/octet-stream")
+    public ResponseEntity<ByteArrayResource> fillTopicForm(TopicForm form) {
+        return fillForm(form);
+    }
 
+    /**
+     * TODO
+     */
+    @GetMapping(value = "/forms/consultation", produces = "application/octet-stream")
+    public ResponseEntity<ByteArrayResource> fillConsultationForm(ConsultationForm form) {
+        return fillForm(form);
+    }
+
+    private ResponseEntity<ByteArrayResource> fillForm(Form form) {
         ByteArrayOutputStream stream = formFillerService.fill(form);
         byte[] file = stream.toByteArray();
         ByteArrayResource resource = new ByteArrayResource(file);

@@ -31,19 +31,29 @@ public class ParameterServiceImplementation implements ParameterService {
     }
 
     @Override
-    public Long getBscFormId() {
-        return Long.parseLong(parameterRepository.findByIdentifier("BSC_FORM").getValue());
+    public Long getBscTopicFormId() {
+        return Long.parseLong(findByIdentifier("BSC_TOPIC_FORM").getValue());
     }
 
     @Override
-    public Long getMscFormId() {
-        return Long.parseLong(parameterRepository.findByIdentifier("MSC_FORM").getValue());
+    public Long getMscTopicFormId() {
+        return Long.parseLong(findByIdentifier("MSC_TOPIC_FORM").getValue());
     }
 
     @Override
-    public void modifyForm(FormType type, MultipartFile file) throws IOException {
+    public Long getBscConsultationFormId() {
+        return Long.parseLong(findByIdentifier("BSC_CONSULTATION_FORM").getValue());
+    }
+
+    @Override
+    public Long getMscConsultationFormId() {
+        return Long.parseLong(findByIdentifier("MSC_CONSULTATION_FORM").getValue());
+    }
+
+    @Override
+    public void modifyForm(String identifier, MultipartFile file) throws IOException {
         Long id = fileService.saveFile(file);
-        Parameter parameter = parameterRepository.findByIdentifier(type.name());
+        Parameter parameter = parameterRepository.findByIdentifier(identifier);
         parameter.setValue(id.toString());
         parameterRepository.save(parameter);
     }

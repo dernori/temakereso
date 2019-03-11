@@ -39,7 +39,7 @@
         <div class="form-group row">
             <label class="col-md-3 text-right col-form-label">felhasználónév</label>
             <div class="col-md-4">
-                <input type="text" class="form-control"
+                <input type="text" class="form-control" autocomplete="username"
                        v-model="account.username"
                        v-bind:class="{error: $v.account.username.$error, valid: !$v.account.username.$invalid}"/>
             </div>
@@ -75,7 +75,7 @@
         <div class="form-group row">
             <label class="col-md-3 text-right col-form-label">jelszó</label>
             <div class="col-md-4">
-                <input type="password" class="form-control"
+                <input type="password" class="form-control" autocomplete="new-password"
                        v-model="account.password"
                        v-bind:class="{error: $v.account.password.$error || !$v.account.passwordsAreSame.passwordsAreSame, valid: !$v.account.password.$invalid &amp;&amp; $v.account.passwordsAreSame.passwordsAreSame}"/>
             </div>
@@ -97,7 +97,7 @@
         <div class="form-group row">
             <label class="col-md-3 text-right col-form-label">jelszó még egyszer</label>
             <div class="col-md-4">
-                <input type="password" class="form-control"
+                <input type="password" class="form-control" autocomplete="new-password"
                        v-model="account.password2"
                        v-bind:class="{error: $v.account.password2.$error || !$v.account.passwordsAreSame.passwordsAreSame, valid: !$v.account.password2.$invalid &amp;&amp; $v.account.passwordsAreSame.passwordsAreSame}"/>
             </div>

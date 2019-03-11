@@ -2,7 +2,6 @@ package temakereso.service;
 
 import org.springframework.web.multipart.MultipartFile;
 import temakereso.entity.Parameter;
-import temakereso.helper.FormType;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,13 +16,19 @@ public interface ParameterService {
     List<Parameter> getAll();
 
     // TODO
-    Long getBscFormId();
+    Long getBscTopicFormId();
 
     // TODO
-    Long getMscFormId();
+    Long getMscTopicFormId();
 
     // TODO
-    void modifyForm(FormType type, MultipartFile file) throws IOException;
+    Long getBscConsultationFormId();
+
+    // TODO
+    Long getMscConsultationFormId();
+
+    // TODO
+    void modifyForm(String identifier, MultipartFile file) throws IOException;
 
     // TODO
     Parameter findByIdentifier(String identifier);

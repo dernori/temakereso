@@ -8,8 +8,10 @@ import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.hwpf.usermodel.Section;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.stereotype.Service;
+import temakereso.helper.ConsultationForm;
 import temakereso.helper.Form;
-import temakereso.helper.FormType;
+import temakereso.helper.FormLevel;
+import temakereso.helper.TopicForm;
 import temakereso.service.FileService;
 import temakereso.service.FormFillerService;
 import temakereso.service.ParameterService;
@@ -32,11 +34,12 @@ public class FormFillerServiceImplementation implements FormFillerService {
     @Override
     public ByteArrayOutputStream fill(Form form) {
 
-        Long id = (form.getType() == FormType.BSC_FORM ? parameterService.getBscFormId() : parameterService.getMscFormId());
-
+        byte[] file = null;
         POIFSFileSystem fs = null;
+
         try {
-            fs = new POIFSFileSystem(new ByteArrayInputStream(fileService.getOneById(id).getFile()));
+            file = getFileToFill(form);
+            fs = new POIFSFileSystem(new ByteArrayInputStream(file));
             doc = new HWPFDocument(fs);
             Map<String, String> values = form.convertToMap();
             for (String key : values.keySet()) {
@@ -48,6 +51,18 @@ public class FormFillerServiceImplementation implements FormFillerService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private byte[] getFileToFill(Form form) {
+        Long id = null;
+        if (form instanceof TopicForm) {
+            id = (form.getLevel() == FormLevel.BSC_FORM ? parameterService.getBscTopicFormId() : parameterService.getMscTopicFormId());
+        } else if (form instanceof ConsultationForm) {
+            id = (form.getLevel() == FormLevel.BSC_FORM ? parameterService.getBscConsultationFormId() : parameterService.getMscConsultationFormId());
+        } else {
+            return null;
+        }
+        return fileService.getOneById(id).getFile();
     }
 
     private void replaceText(String findText, String replaceText) {
@@ -82,6 +97,6 @@ public class FormFillerServiceImplementation implements FormFillerService {
 
     @Override
     public String generateFileName(Form form) {
-        return form.getName() + " - " + (form.getType() == FormType.BSC_FORM ? "Bsc" : "Msc") + " témabejelentő.doc";
+        return form.getFileName();
     }
 }
