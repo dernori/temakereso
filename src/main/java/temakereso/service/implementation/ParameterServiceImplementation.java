@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import temakereso.entity.Parameter;
-import temakereso.helper.FormType;
 import temakereso.repository.ParameterRepository;
 import temakereso.service.FileService;
 import temakereso.service.ParameterService;
