@@ -63,11 +63,17 @@ public class ExcelGeneratorService {
                 Cell cell = row.createCell(i);
 
                 Object value = rowData.get(i);
-                if (value instanceof Integer) cell.setCellValue((Integer) value);
-                else if (value instanceof Long) cell.setCellValue((Long) value);
-                else if (value instanceof Float) cell.setCellValue((Float) value);
-                else if (value instanceof Double) cell.setCellValue((Double) value);
-                else cell.setCellValue((String) value);
+                if (value instanceof Integer) {
+                    cell.setCellValue((Integer) value);
+                } else if (value instanceof Long) {
+                    cell.setCellValue((Long) value);
+                } else if (value instanceof Float) {
+                    cell.setCellValue((Float) value);
+                } else if (value instanceof Double) {
+                    cell.setCellValue((Double) value);
+                } else {
+                    cell.setCellValue((String) value);
+                }
             }
 
         }

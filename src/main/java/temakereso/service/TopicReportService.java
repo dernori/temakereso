@@ -4,7 +4,6 @@ import temakereso.entity.Category;
 import temakereso.entity.Department;
 import temakereso.helper.ReportFilters;
 import temakereso.helper.TopicDto;
-import temakereso.helper.TopicFilters;
 import temakereso.helper.TopicType;
 
 import java.util.List;

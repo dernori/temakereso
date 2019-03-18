@@ -36,8 +36,7 @@ public class ReportServiceImplementation implements ReportService {
 
     @Override
     public ReportData findTopics(TopicFilters filters) {
-        List<String> columnNames = Arrays.asList("Azonosító", "Cím", "Típus", "Állapot", "Kategória", "Témavezező neve", "Témavezető tanszéke", "Témavezető munkahelye", "Hallgató neve", "Hallgató Neptun kódja", "Létrehozás dátuma", "Módosítás dátuma");
-        HeaderData headerData = new HeaderData("Adatok", columnNames);
+        HeaderData headerData = createTopicSheetHeaderData();
 
         List<List<Object>> data = new ArrayList<>();
         List<Topic> topics = topicService.getFilteredOnes(filters);
@@ -65,8 +64,7 @@ public class ReportServiceImplementation implements ReportService {
         List<String> summaryColumnNames = Arrays.asList("Tanszék", "Darabszám");
         HeaderData summaryHeaderData = new HeaderData("Összesítő", summaryColumnNames);
 
-        List<String> columnNames = Arrays.asList("Azonosító", "Cím", "Típus", "Állapot", "Kategória", "Témavezező neve", "Témavezető tanszéke", "Témavezető munkahelye", "Hallgató neve", "Hallgató Neptun kódja", "Létrehozás dátuma", "Módosítás dátuma");
-        HeaderData headerData = new HeaderData("Adatok", columnNames);
+        HeaderData headerData = createTopicSheetHeaderData();
 
         Map<Department, List<TopicDto>> topics = topicReportService.findTopicsByDepartment(filters);
 
@@ -95,8 +93,7 @@ public class ReportServiceImplementation implements ReportService {
         List<String> summaryColumnNames = Arrays.asList("Kategória", "Darabszám");
         HeaderData summaryHeaderData = new HeaderData("Összesítő", summaryColumnNames);
 
-        List<String> columnNames = Arrays.asList("Azonosító", "Cím", "Típus", "Állapot", "Kategória", "Témavezező neve", "Témavezető tanszéke", "Témavezető munkahelye", "Hallgató neve", "Hallgató Neptun kódja", "Létrehozás dátuma", "Módosítás dátuma");
-        HeaderData headerData = new HeaderData("Adatok", columnNames);
+        HeaderData headerData = createTopicSheetHeaderData();
 
         Map<Category, List<TopicDto>> topics = topicReportService.findTopicsByCategory(filters);
 
@@ -125,8 +122,7 @@ public class ReportServiceImplementation implements ReportService {
         List<String> summaryColumnNames = Arrays.asList("Típus", "Darabszám");
         HeaderData summaryHeaderData = new HeaderData("Összesítő", summaryColumnNames);
 
-        List<String> columnNames = Arrays.asList("Azonosító", "Cím", "Típus", "Állapot", "Kategória", "Témavezező neve", "Témavezető tanszéke", "Témavezető munkahelye", "Hallgató neve", "Hallgató Neptun kódja", "Létrehozás dátuma", "Módosítás dátuma");
-        HeaderData headerData = new HeaderData("Adatok", columnNames);
+        HeaderData headerData = createTopicSheetHeaderData();
 
         Map<TopicType, List<TopicDto>> topics = topicReportService.findTopicsByTopicType(filters);
 
@@ -170,6 +166,23 @@ public class ReportServiceImplementation implements ReportService {
                 formatDate(topic.getCreationDate()),
                 formatDate(topic.getLastModificationDate())
         ));
+    }
+
+    private HeaderData createTopicSheetHeaderData() {
+        List<String> columnNames = Arrays.asList(
+                "Azonosító",
+                "Cím",
+                "Típus",
+                "Állapot",
+                "Kategória",
+                "Témavezező neve",
+                "Témavezető tanszéke",
+                "Témavezető munkahelye",
+                "Hallgató neve",
+                "Hallgató Neptun kódja",
+                "Létrehozás dátuma",
+                "Módosítás dátuma");
+        return new HeaderData("Adatok", columnNames);
     }
 
 }
