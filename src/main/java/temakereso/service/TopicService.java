@@ -2,13 +2,20 @@ package temakereso.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import temakereso.entity.Category;
+import temakereso.entity.Department;
+import temakereso.entity.Topic;
 import temakereso.helper.AttachmentDto;
+import temakereso.helper.ReportFilters;
 import temakereso.helper.StudentDto;
 import temakereso.helper.TopicDto;
 import temakereso.helper.TopicFilters;
 import temakereso.helper.TopicInputDto;
 import temakereso.helper.TopicListerDto;
+import temakereso.helper.TopicType;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface TopicService {
@@ -72,4 +79,7 @@ public interface TopicService {
     void acceptApplication(Long topicId, Long studentId);
 
     void setTopicDone(Long topicId);
+
+    List<Topic> getFilteredOnes(TopicFilters filters);
+
 }

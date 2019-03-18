@@ -22,6 +22,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
@@ -60,6 +61,10 @@ public class Topic {
     @Column(nullable = false)
     private Date creationDate;
 
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
+    private Date lastModificationDate;
+
     @ManyToOne
     @JoinColumn(name = "supervisor", nullable = false)
     private Supervisor supervisor;
@@ -88,7 +93,13 @@ public class Topic {
         this.status = TopicStatus.OPEN;
         this.archive = Boolean.FALSE;
         this.creationDate = new Date();
+        this.creationDate = new Date();
         this.appliedStudents = new HashSet<>();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.lastModificationDate = new Date();
     }
 
 }

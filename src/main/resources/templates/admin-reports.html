@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head th:replace="fragments/head :: head('témakereső - ELTE IK')"></head>
+
+<body>
+
+<header th:replace="fragments/header :: header"></header>
+
+<main id="admin-reports" class="container" role="main" style="display: none;">
+
+    <div class="row">
+        <div class="col-md-8">
+            <h1>riportok</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <h4>általános riport</h4>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-3 text-right col-form-label">cím</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" v-model="generalFilters.name"/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-3 text-right col-form-label">leírás</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" v-model="generalFilters.description"/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-3 text-right col-form-label">típus</label>
+        <div class="col-md-4">
+            <select class="form-control" v-model="generalFilters.type">
+                <option :value="null"></option>
+                <option v-for="type in values.types" v-bind:value="type.id">{{ type.name }}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-3 text-right col-form-label">kategória</label>
+        <div class="col-md-4">
+            <select class="form-control" v-model="generalFilters.category">
+                <option :value="null"></option>
+                <option v-for="category in values.categories" v-bind:value="category.id">{{ category.name }}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-3 text-right col-form-label">témavezető</label>
+        <div class="col-md-4">
+            <select class="form-control" v-model="generalFilters.supervisor">
+                <option :value="null"></option>
+                <option v-for="supervisor in values.supervisors" v-bind:value="supervisor.id">{{ supervisor.name }}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-3 text-right col-form-label">állapot</label>
+        <div class="col-md-4">
+            <select class="form-control" v-model="generalFilters.status">
+                <option :value="null"></option>
+                <option v-for="status in values.statuses" v-bind:value="status.id">{{ status.name }}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label"></label>
+        <div class="col-md-4">
+            <a class="btn btn-primary simple-button" :href="getGeneralReport">letöltés</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <h4>specifikus riportok</h4>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-3 text-right col-form-label">kezdő dátum</label>
+        <div class="col-md-7">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text input-addon-left">20</span>
+                </div>
+                <input type="text" class="form-control input-addon-right" v-model="specificReportFilters.startDate" placeholder="19.01.01"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-3 text-right col-form-label">záró dátum</label>
+        <div class="col-md-7">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text input-addon-left">20</span>
+                </div>
+                <input type="text" class="form-control input-addon-right" v-model="specificReportFilters.endDate" placeholder="19.01.01"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label"></label>
+        <div class="col-md-9">
+            <a class="btn btn-primary simple-button mr-2 mb-2" :href="getDepartmentReport">tanszék szerint</a>
+            <a class="btn btn-primary simple-button mr-2 mb-2" :href="getCategoryReport">kategória szerint</a>
+            <a class="btn btn-primary simple-button mr-2 mb-2" :href="getTypeReport">típus szerint</a>
+        </div>
+    </div>
+
+</main>
+
+<div th:replace="fragments/scripts :: scripts"></div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<script>
+
+  /*<![CDATA[*/
+
+  Vue.use(window.vuelidate.default)
+  let required = window.validators.required
+
+  let app = new Vue({
+    el: '#admin-reports',
+    data: {
+
+      generalFilters: {
+        name: null,
+        description: null,
+        type: null,
+        category: null,
+        supervisor: null,
+        status: null
+      },
+
+      specificReportFilters: {
+        startDate: null,
+        endDate: null
+      },
+
+      values: {
+        categories: [],
+        types: [],
+        supervisors: [],
+        statuses: []
+      }
+
+      //     messages: [],
+      //     errors: []
+    },
+    validations: {
+      specificReportFilters: {
+        startDate: required,
+        endDate: required
+      }
+    },
+    created: function () {
+      // collecting params
+      let values = ["categories", "types", "supervisors", "statuses"]
+      let promises = []; // collecting all promises
+      for (let i = 0; i < values.length; i++) {
+        promises.push(this.getValues(values[i].toLowerCase()))
+      }
+      // after everything arrived, loop through the responses and bind to the data
+      axios.all(promises).then(function (response) {
+        for (let i = 0; i < response.length; i++) {
+          this.values[values[i]] = response[i].data;
+        }
+      }.bind(this));
+
+      // setting today
+      let d = new Date();
+      this.specificReportFilters.endDate = ('' + d.getFullYear()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + ("0" + d.getDate()).slice(-2);
+    },
+    mounted: function () {
+      setDisplay('#admin-reports', 'block') // it doesn't show up by default
+    },
+    computed: {
+      getGeneralReport: function () {
+        let params = {}
+        for (let key in this.generalFilters) {
+          if (this.generalFilters.hasOwnProperty(key) && this.generalFilters[key] != null) {
+            params[key] = this.generalFilters[key]
+          }
+        }
+        return `${contextPath}api/reports/general?${$.param(params)}`
+      },
+      getDepartmentReport: function () {
+        return this.getSpecificReport(this.specificReportFilters, 'departments')
+      },
+      getCategoryReport: function () {
+        return this.getSpecificReport(this.specificReportFilters, 'categories')
+      },
+      getTypeReport: function () {
+        return this.getSpecificReport(this.specificReportFilters, 'types')
+      }
+    },
+    methods: {
+      getValues: function (name) {
+        return axios.get(`${contextPath}api/constants/${name}`)
+      },
+      getSpecificReport: function (params, type) {
+        return `${contextPath}api/reports/${type}?${$.param(params)}`
+      }
+    }
+  })
+  /*]]>*/
+</script>
+
+</body>
+</html>

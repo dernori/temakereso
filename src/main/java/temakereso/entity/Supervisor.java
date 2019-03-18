@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.util.Set;
@@ -31,6 +32,10 @@ public class Supervisor {
 
     @Column(length = 250)
     private String title;
+
+    @ManyToOne
+    @JoinColumn(name = "department")
+    private Department department;
 
     @Column(length = 250)
     private String workplace;

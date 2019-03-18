@@ -28,6 +28,8 @@ public class TopicDto {
 
     private Date creationDate;
 
+    private Date lastModificationDate;
+
     private SupervisorDto supervisor;
 
     private Category category;

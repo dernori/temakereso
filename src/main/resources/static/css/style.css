@@ -230,12 +230,12 @@ textarea.form-control {
     padding: 20px;
 }
 
-#input-addon-left {
+.input-addon-left {
     background-color: white;
     padding-right: 0;
 }
 
-#input-addon-right {
+.input-addon-right {
     margin-top: 0;
     border-left: none;
     padding-left: 0;

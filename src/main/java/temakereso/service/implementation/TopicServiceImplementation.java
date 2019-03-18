@@ -19,6 +19,7 @@ import temakereso.helper.TopicListerDto;
 import temakereso.helper.TopicStatus;
 import temakereso.repository.TopicRepository;
 import temakereso.service.CategoryService;
+import temakereso.service.DepartmentService;
 import temakereso.service.StudentService;
 import temakereso.service.SupervisorService;
 import temakereso.service.TopicService;
@@ -39,6 +40,8 @@ public class TopicServiceImplementation implements TopicService {
 
     private final CategoryService categoryService;
 
+    private final DepartmentService departmentService;
+
     private final TopicRepository topicRepository;
 
     private final EntityManager entityManager;
@@ -54,35 +57,9 @@ public class TopicServiceImplementation implements TopicService {
     public Page<TopicListerDto> getFilteredOnesByPage(TopicFilters filters, Pageable pageable) {
         String sql = "select new temakereso.helper.TopicListerDto(t.id, t.name, t.supervisor.name, t.category.name, t.type, t.status) from Topic t where 1=1 ";
 
-        if (filters.getName() != null) sql += "AND t.name like :name ";
-        if (filters.getDescription() != null) sql += "AND t.description like :description ";
-        if (filters.getSupervisor() != null) sql += "AND t.supervisor.id = :supervisor ";
-        if (filters.getCategory() != null) sql += "AND t.category.id = :category ";
-        if (filters.getStatus() != null) sql += "AND t.status = :status ";
-        if (filters.getType() != null) sql += "AND t.type = :type ";
-
-        if (pageable.getSort() != null) {
-            if (pageable.getSort().getOrderFor("name") != null) {
-                sql += " order by t.name " + pageable.getSort().getOrderFor("name").getDirection().name();
-            } else if (pageable.getSort().getOrderFor("supervisor") != null) {
-                sql += " order by t.supervisor.name " + pageable.getSort().getOrderFor("supervisor").getDirection().name();
-            } else if (pageable.getSort().getOrderFor("category") != null) {
-                sql += " order by t.category.name " + pageable.getSort().getOrderFor("category").getDirection().name();
-            } else if (pageable.getSort().getOrderFor("status") != null) {
-                sql += " order by t.status.name " + pageable.getSort().getOrderFor("status").getDirection().name();
-            } else if (pageable.getSort().getOrderFor("type") != null) {
-                sql += " order by t.type.name " + pageable.getSort().getOrderFor("type").getDirection().name();
-            }
-        }
-
+        sql = buildQuery(filters, pageable, sql);
         Query query = entityManager.createQuery(sql, TopicListerDto.class);
-
-        if (filters.getName() != null) query.setParameter("name", "%" + filters.getName() + "%");
-        if (filters.getDescription() != null) query.setParameter("description", "%" + filters.getDescription() + "%");
-        if (filters.getSupervisor() != null) query.setParameter("supervisor", filters.getSupervisor());
-        if (filters.getCategory() != null) query.setParameter("category", filters.getCategory());
-        if (filters.getStatus() != null) query.setParameter("status", filters.getStatus());
-        if (filters.getType() != null) query.setParameter("type", filters.getType());
+        addParameters(query, filters);
 
         int totalRows = query.getResultList().size();
 
@@ -96,9 +73,20 @@ public class TopicServiceImplementation implements TopicService {
     }
 
     @Override
-    public Long createTopic(Long supervisorId, TopicInputDto topicDto) {
+    public List<Topic> getFilteredOnes(TopicFilters filters) {
+        String sql = "from Topic t where 1=1 ";
 
+        sql = buildQuery(filters, null, sql);
+        Query query = entityManager.createQuery(sql, Topic.class);
+        addParameters(query, filters);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public Long createTopic(Long supervisorId, TopicInputDto topicDto) {
         Topic topic = new Topic();
+
         topic.setId(topicDto.getId());
         topic.setName(topicDto.getName());
         topic.setType(topicDto.getType());
@@ -202,6 +190,39 @@ public class TopicServiceImplementation implements TopicService {
         if (topic.getStatus() != TopicStatus.RESERVED || topic.getStudent() == null) return;
         topic.setStatus(TopicStatus.DONE);
         topicRepository.save(topic);
+    }
+
+    private String buildQuery(TopicFilters filters, Pageable pageable, String sql) {
+        if (filters.getName() != null) sql += "AND t.name like :name ";
+        if (filters.getDescription() != null) sql += "AND t.description like :description ";
+        if (filters.getSupervisor() != null) sql += "AND t.supervisor.id = :supervisor ";
+        if (filters.getCategory() != null) sql += "AND t.category.id = :category ";
+        if (filters.getStatus() != null) sql += "AND t.status = :status ";
+        if (filters.getType() != null) sql += "AND t.type = :type ";
+
+        if (pageable != null && pageable.getSort() != null) {
+            if (pageable.getSort().getOrderFor("name") != null) {
+                sql += " order by t.name " + pageable.getSort().getOrderFor("name").getDirection().name();
+            } else if (pageable.getSort().getOrderFor("supervisor") != null) {
+                sql += " order by t.supervisor.name " + pageable.getSort().getOrderFor("supervisor").getDirection().name();
+            } else if (pageable.getSort().getOrderFor("category") != null) {
+                sql += " order by t.category.name " + pageable.getSort().getOrderFor("category").getDirection().name();
+            } else if (pageable.getSort().getOrderFor("status") != null) {
+                sql += " order by t.status.name " + pageable.getSort().getOrderFor("status").getDirection().name();
+            } else if (pageable.getSort().getOrderFor("type") != null) {
+                sql += " order by t.type.name " + pageable.getSort().getOrderFor("type").getDirection().name();
+            }
+        }
+        return sql;
+    }
+
+    private void addParameters(Query query, TopicFilters filters) {
+        if (filters.getName() != null) query.setParameter("name", "%" + filters.getName() + "%");
+        if (filters.getDescription() != null) query.setParameter("description", "%" + filters.getDescription() + "%");
+        if (filters.getSupervisor() != null) query.setParameter("supervisor", filters.getSupervisor());
+        if (filters.getCategory() != null) query.setParameter("category", filters.getCategory());
+        if (filters.getStatus() != null) query.setParameter("status", filters.getStatus());
+        if (filters.getType() != null) query.setParameter("type", filters.getType());
     }
 
 }

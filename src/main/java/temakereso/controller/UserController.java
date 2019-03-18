@@ -68,18 +68,16 @@ public class UserController {
         return "messages";
     }
 
-    // TODO settings page
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(value = {"/settings"})
     public String settings() {
         return "admin-settings";
     }
 
-    // TODO reports page
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(value = {"/reports"})
     public String reports() {
-        return "reports";
+        return "admin-reports";
     }
 
 }

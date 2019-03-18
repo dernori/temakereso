@@ -3,6 +3,7 @@ package temakereso.helper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import temakereso.entity.Department;
 
 @Data
 @AllArgsConstructor
@@ -14,6 +15,8 @@ public class SupervisorDto {
     private String name;
 
     private String title;
+
+    private Department department;
 
     private String workplace;
 

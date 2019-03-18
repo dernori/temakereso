@@ -49,19 +49,6 @@ public class AccountController {
     }
 
     // TODO: DTO!!!
-    //    // ------------------------ POST ------------------------- //
-    //
-    //    /**
-    //     * Saves the given account
-    //     *
-    //     * @param account      to be saved
-    //     * @return saved account
-    //     */
-    //    @PostMapping(path = "/accounts")
-    //    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
-    //        accountService.createAccount(account);
-    //        return new ResponseEntity<>(account, HttpStatus.OK);
-    //    }
     //
     //    // ------------------------ PUT -------------------------- //
     //

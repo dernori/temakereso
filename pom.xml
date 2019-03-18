@@ -15,7 +15,7 @@
     <properties>
         <sendgrid-version>3.0.9</sendgrid-version>
         <modelmapper-version>2.3.0</modelmapper-version>
-        <apache-poi-version>3.17</apache-poi-version>
+        <apache-poi-version>4.0.1</apache-poi-version>
         <swagger-version>2.6.1</swagger-version>
         <junit-version>4.11</junit-version>
         <servlet-api-version>3.1.0</servlet-api-version>
@@ -104,6 +104,12 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-scratchpad</artifactId>
+            <version>${apache-poi-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
             <version>${apache-poi-version}</version>
         </dependency>
 

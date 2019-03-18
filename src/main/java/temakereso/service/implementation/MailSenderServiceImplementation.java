@@ -7,11 +7,11 @@ import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
-import temakereso.service.MainSenderService;
+import temakereso.service.MailSenderService;
 
 import java.io.IOException;
 
-public class MailSenderServiceImplementation implements MainSenderService {
+public class MailSenderServiceImplementation implements MailSenderService {
 
     // TODO logging
 

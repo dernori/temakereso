@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,7 +34,7 @@ public class Account {
     @Column(length = 250, nullable = false)
     private String password;
 
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Role> roles;
 
     public Account(String name, String email, String username, String password, List<Role> roles) {

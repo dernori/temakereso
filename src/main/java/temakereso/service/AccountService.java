@@ -20,8 +20,6 @@ public interface AccountService {
      */
     AccountDto getByUsername(String username);
 
-    // no one uses?
-
     /**
      * TODO
      */
