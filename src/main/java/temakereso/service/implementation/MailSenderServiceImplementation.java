@@ -1,40 +1,65 @@
 package temakereso.service.implementation;
 
-import com.sendgrid.Content;
-import com.sendgrid.Email;
-import com.sendgrid.Mail;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import temakereso.entity.Account;
 import temakereso.service.MailSenderService;
 
 import java.io.IOException;
 
+@Slf4j
+@Service
 public class MailSenderServiceImplementation implements MailSenderService {
 
-    // TODO logging
+    @Value("${spring.sendgrid.api-key}")
+    private String apiKey;
+
+    @Value("${system.email}")
+    private String systemEmail;
 
     @Override
-    public void sendMail(String fromStr, String toStr, String subjectStr, String bodyStr) {
+    public void sendMail(Account fromAccount, Account toAccount, String subjectStr, String bodyStr) {
+        if (toAccount.getEmail() == null) {
+            log.error("Message could not be sent to {} as no email address was provided", fromAccount.getUsername(), toAccount.getUsername());
+            return;
+        }
+        sendMail(fromAccount.getEmail() != null ? fromAccount.getEmail() : systemEmail, toAccount.getEmail(), subjectStr, bodyStr);
+    }
+
+    @Override
+    public void sendMail(Account toAccount, String subjectStr, String bodyStr) {
+        sendMail(systemEmail, toAccount.getEmail(), subjectStr, bodyStr);
+    }
+
+    private void sendMail(String fromStr, String toStr, String subjectStr, String bodyStr) {
         Email from = new Email(fromStr);
         String subject = subjectStr;
         Email to = new Email(toStr);
-        Content content = new Content("text/plain", bodyStr);
+        Content content = new Content("text/html", bodyStr);
         Mail mail = new Mail(from, subject, to, content);
 
-        SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
+        SendGrid sg = new SendGrid(apiKey);
         Request request = new Request();
         try {
-            request.method = Method.POST;
-            request.endpoint = "mail/send";
-            request.body = mail.build();
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
             Response response = sg.api(request);
-            System.out.println("Status code sending email:" + response.statusCode);
-            System.out.println(response.body);
-            System.out.println(response.headers);
+            System.out.println(response.getStatusCode());
+            System.out.println(response.getBody());
+            System.out.println(response.getHeaders());
         } catch (IOException ex) {
-            System.out.println("Email was not sent." + ex.getLocalizedMessage());
+            log.error("Mail could not be sent.");
+            ExceptionUtils.printRootCauseStackTrace(ex);
         }
     }
 

@@ -99,11 +99,8 @@
       setDisplay('#applications', 'block'); // it doesn't show up by default
     },
     methods: {
-      getAccountId: function () {
-        return parseInt($('#account')[0].innerHTML);
-      },
       getStudent: function () {
-        return axios.get(`${contextPath}api/students`, {params: {accountId: this.getAccountId()}})
+        return axios.get(`${contextPath}api/me/student`)
       },
       getStudentAppliedTopics: function () {
         axios.get(`${contextPath}api/students/${this.student.id}/topics/applied`)

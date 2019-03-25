@@ -25,6 +25,6 @@ public class Parameter {
     private String value;
 
     @Column(length = 250, nullable = false)
-    private String descpription;
+    private String description;
 
 }

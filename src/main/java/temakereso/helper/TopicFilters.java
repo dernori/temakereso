@@ -19,6 +19,8 @@ public class TopicFilters {
 
     private TopicStatus status;
 
+    private Boolean archive;
+
     private TopicType type;
 
     public boolean isEmpty() {

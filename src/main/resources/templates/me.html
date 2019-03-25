@@ -10,11 +10,7 @@
 
     <section v-if="account">
 
-        <div class="row" id="headline">
-            <div class="col-md-8">
-                <h1>{{account.name}}</h1>
-            </div>
-        </div>
+        <h2 class="text-center topic-list">{{account.name}}</h2>
 
         <div class="row">
             <label class="control-label col-md-3 text-right">felhasználónév</label>
@@ -34,6 +30,11 @@
             <div class="row">
                 <label class="control-label col-md-3 text-right">beosztás</label>
                 <div class="col-md-9">{{supervisor.title}}</div>
+            </div>
+
+            <div class="row">
+                <label class="control-label col-md-3 text-right">tanszék</label>
+                <div class="col-md-9">{{supervisor.department ? supervisor.department.name : ''}}</div>
             </div>
 
             <div class="row">

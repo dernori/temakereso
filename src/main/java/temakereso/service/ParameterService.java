@@ -28,10 +28,11 @@ public interface ParameterService {
     Long getMscConsultationFormId();
 
     // TODO
+    Integer getArchiveTimeout();
+
+    // TODO
     void modifyForm(String identifier, MultipartFile file) throws IOException;
 
     // TODO
     Parameter findByIdentifier(String identifier);
-
-
 }

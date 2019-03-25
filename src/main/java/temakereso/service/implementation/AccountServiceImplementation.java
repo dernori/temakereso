@@ -26,15 +26,15 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public AccountDto getByUsername(String username) {
-        return modelMapper.map(accountRepository.findByUsername(username), AccountDto.class);
+    public void modifyEmail(String username, String email) {
+        Account savedAccount = null; // TODO accountRepository.findByUsername(username);
+        savedAccount.setEmail(email);
+        accountRepository.save(savedAccount);
     }
 
     @Override
-    public void modifyEmail(String username, String email) {
-        Account savedAccount = accountRepository.findByUsername(username);
-        savedAccount.setEmail(email);
-        accountRepository.save(savedAccount);
+    public Account getById(Long id) {
+        return accountRepository.findOne(id);
     }
 
     @Override

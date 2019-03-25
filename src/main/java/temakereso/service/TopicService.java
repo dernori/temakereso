@@ -77,4 +77,6 @@ public interface TopicService {
 
     List<Topic> getFilteredOnes(TopicFilters filters);
 
+    List<Topic> findTopicsToArchive();
+
 }

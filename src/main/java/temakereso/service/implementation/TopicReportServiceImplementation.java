@@ -14,6 +14,7 @@ import temakereso.service.CategoryService;
 import temakereso.service.DepartmentService;
 import temakereso.service.TopicReportService;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +40,7 @@ public class TopicReportServiceImplementation implements TopicReportService {
 
         for (Department department : departments) {
             List<Topic> departmentTopics = topicRepository.findBySupervisorDepartmentAndLastModificationDateBetween(department, filters.getStartDate(), filters.getEndDate());
-            List<TopicDto> mappedTopics = departmentTopics
-                    .stream()
-                    .map(topic -> modelMapper.map(topic, TopicDto.class))
-                    .collect(Collectors.toList());
+            List<TopicDto> mappedTopics = mapTopics(departmentTopics);
             topics.put(department, mappedTopics);
         }
         return topics;
@@ -55,10 +53,7 @@ public class TopicReportServiceImplementation implements TopicReportService {
 
         for (Category category : categories) {
             List<Topic> categoryTopics = topicRepository.findByCategoryAndLastModificationDateBetween(category, filters.getStartDate(), filters.getEndDate());
-            List<TopicDto> mappedTopics = categoryTopics
-                    .stream()
-                    .map(topic -> modelMapper.map(topic, TopicDto.class))
-                    .collect(Collectors.toList());
+            List<TopicDto> mappedTopics = mapTopics(categoryTopics);
             topics.put(category, mappedTopics);
         }
         return topics;
@@ -70,13 +65,18 @@ public class TopicReportServiceImplementation implements TopicReportService {
 
         for (TopicType topicType : TopicType.values()) {
             List<Topic> topicTypeTopics = topicRepository.findByTypeAndLastModificationDateBetween(topicType, filters.getStartDate(), filters.getEndDate());
-            List<TopicDto> mappedTopics = topicTypeTopics
-                    .stream()
-                    .map(topic -> modelMapper.map(topic, TopicDto.class))
-                    .collect(Collectors.toList());
+            List<TopicDto> mappedTopics = mapTopics(topicTypeTopics);
             topics.put(topicType, mappedTopics);
         }
         return topics;
+    }
+
+    private List<TopicDto> mapTopics(List<Topic> categoryTopics) {
+        return categoryTopics
+                .stream()
+                .map(topic -> modelMapper.map(topic, TopicDto.class))
+                .sorted(Comparator.comparing((TopicDto t) -> t.getSupervisor().getName()))
+                .collect(Collectors.toList());
     }
 
 }

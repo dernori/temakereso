@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import temakereso.entity.Student;
 import temakereso.helper.StudentDto;
 import temakereso.helper.TopicDto;
 import temakereso.service.StudentService;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -41,8 +41,8 @@ public class StudentController {
     }
 
     @GetMapping(path = "/students")
-    public StudentDto getStudentByAccountId(@RequestParam(name = "accountId") Long accountId) {
-        return studentService.findByAccountId(accountId);
+    public List<StudentDto> getStudentByAccountId() {
+        return studentService.getAll();
     }
 
     // ------------------------ POST ------------------------- //

@@ -13,17 +13,11 @@ public interface AccountService {
     void createAccount(Account account);
 
     /**
-     * Returns the account by its username
-     *
-     * @param username
-     * @return Account
-     */
-    AccountDto getByUsername(String username);
-
-    /**
      * TODO
      */
     void modifyEmail(String username, String email);
+
+    Account getById(Long id);
 
     AccountDto findById(Long id);
 }

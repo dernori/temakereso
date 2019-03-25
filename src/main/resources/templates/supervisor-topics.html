@@ -21,6 +21,7 @@
                 <th>kategória</th>
                 <th>típus</th>
                 <th>állapot</th>
+                <th>archív</th>
                 <!--<th>műveletek</th>-->
             </tr>
             </thead>
@@ -31,7 +32,8 @@
                 <td>{{topic.category.name}}</td>
                 <td>{{topic.type.name}}</td>
                 <td>{{topic.status.name}}</td>
-                <!--<td class="text-right"><span class="clickable" v-on:click="removeApplication(topic)"><i class="fas fa-trash"></i></span></td>-->
+                <td>{{formatBoolean(topic.archive)}}</td>
+                <!--<td class="text-right"><span class="clickable" v-on:click="delete(topic)"><i class="fas fa-trash"></i></span></td>-->
             </tr>
             </tbody>
         </table>
@@ -73,13 +75,10 @@
       },
       getTopicLink: function (topic) {
         return `${contextPath}topics/${topic.id}`;
-      } // ,
-      // removeApplication: function (topic) {
-      //   axios.delete(`${contextPath}api/topics/${topic.id}/students/${this.student.id}`)
-      //     .then( function (response) {
-      //       this.getStudentAppliedTopics();
-      //     }.bind(this));
-      // }
+      },
+      formatBoolean: function (value) {
+        return value != null ? (value == true ? 'igen' : 'nem') : '';
+      }
     }
   });
   /*]]>*/

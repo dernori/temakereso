@@ -1,7 +1,5 @@
 package temakereso;
 
-import java.util.Arrays;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -10,17 +8,20 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import temakereso.entity.Account;
 import temakereso.entity.Role;
 import temakereso.repository.AccountRepository;
 import temakereso.service.AccountService;
 
+import java.util.Arrays;
+
+@EnableScheduling
 @SpringBootApplication
 @ComponentScan({"temakereso"})
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -45,6 +46,7 @@ public class Application extends SpringBootServletInitializer {
     /**
      * Password grants are switched on by injecting an AuthenticationManager.
      * Here, we setup the builder so that the userDetailsService is the one we coded.
+     *
      * @param builder
      * @param repository
      * @throws Exception
@@ -60,6 +62,7 @@ public class Application extends SpringBootServletInitializer {
 
     /**
      * We return an instance of our CustomUserDetails.
+     *
      * @param repository
      * @return
      */
@@ -74,7 +77,7 @@ public class Application extends SpringBootServletInitializer {
 
     @Bean
     public static ModelMapper modelMapper() {
-        return  new ModelMapper();
+        return new ModelMapper();
     }
 
 

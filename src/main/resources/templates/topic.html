@@ -19,7 +19,7 @@
             <div class="col-md-4 text-right">
                 <input type="button" class="btn btn-primary simple-button" v-on:click="editTopic"
                        sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_SUPERVISOR')"
-                       v-if="topic.supervisor.account.id == getAccountId()" value="szerkesztés"/>
+                       v-if="supervisor &amp;&amp; topic.supervisor.id === supervisor.id " value="szerkesztés"/>
                 <input type="button" class="btn btn-primary simple-button"
                        v-if="topic.type.id == 'BSC_THESIS' || topic.type.id == 'MSC_THESIS'"
                        v-on:click="fillTopicForm" value="témabejelentő generálása"/>
@@ -30,6 +30,10 @@
                        sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_SUPERVISOR')"
                        v-if="isTopicReserved"
                        v-on:click="setStatusDone" value="elkészült"/>
+                <input type="button" class="btn btn-primary simple-button"
+                       sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_SUPERVISOR')"
+                       v-if="!topic.archive &amp;&amp; supervisor &amp;&amp; topic.supervisor.id === supervisor.id"
+                       v-on:click="archiveTopic" value="törlés"/>
                 <input type="button" class="btn btn-primary simple-button"
                        sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_STUDENT')"
                        v-if="isTopicFree &amp;&amp; !studentApplied"
@@ -168,7 +172,8 @@
     data: {
       topic: null,
       appliedStudents: null,
-      student: null
+      student: null,
+      supervisor: null
     },
     computed: {
       isTopicFree: function () {
@@ -179,7 +184,7 @@
       },
       studentApplied: function () {
         return this.appliedStudents.some(function (student) {
-          return student.account.id === this.getAccountId();
+          return student.account.id === this.student.id;
         }.bind(this));
       }
     },
@@ -187,6 +192,7 @@
       this.getTopic();
       this.getAppliedStudents();
       this.getStudent();
+      this.getSupervisor();
     },
     mounted: function () {
       setDisplay('#view-topic', 'block'); // it doesn't show up by default
@@ -203,10 +209,15 @@
         return (topic ? topic.innerHTML : -1);
       },
       getStudent: function () {
-        if (this.getAccountId() === -1 ) return;
-        axios.get(`${contextPath}api/students`, {params: {accountId: this.getAccountId()}})
+        axios.get(`${contextPath}api/me/student`)
           .then(function (response) {
             this.student = response.data;
+          }.bind(this));
+      },
+      getSupervisor: function () {
+        axios.get(`${contextPath}api/me/supervisor`)
+          .then(function (response) {
+            this.supervisor = response.data;
           }.bind(this));
       },
       getAppliedStudents: function () {
@@ -215,10 +226,6 @@
             console.log(response.data)
             this.appliedStudents = response.data;
           }.bind(this));
-      },
-      getAccountId: function () {
-        let account = $('#account')[0];
-        return (account ? parseInt(account.innerHTML) : -1);
       },
       getFileLink: function (attachment) {
         return `${contextPath}api/files/${attachment.fileId}`;
@@ -256,6 +263,14 @@
           .then(function (response) {
             this.getTopic();
           }.bind(this));
+      },
+      archiveTopic: function () {
+        console.log(this.topic.id)
+        axios.delete(`${contextPath}api/topics/${this.topic.id}`)
+          .then(function (response) {
+            console.log(response)
+            redirect(`${contextPath}topics/${this.topic.id}`);
+          }.bind(this))
       }
     }
   });

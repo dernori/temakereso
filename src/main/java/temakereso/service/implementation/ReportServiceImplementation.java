@@ -36,6 +36,7 @@ public class ReportServiceImplementation implements ReportService {
 
     @Override
     public ReportData findTopics(TopicFilters filters) {
+        // TODO filters.setArchive(true);
         HeaderData headerData = createTopicSheetHeaderData();
 
         List<List<Object>> data = new ArrayList<>();

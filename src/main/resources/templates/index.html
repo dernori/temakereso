@@ -165,6 +165,7 @@
             },
             methods: {
                 getTopics: function(page, size, sort) {
+                    overlayOn()
                     var self = this;
                     // TODO sort
 
@@ -186,6 +187,7 @@
                     axios.get(contextPath + 'api/topics', { params: params })
                         .then(function(response) {
                             self.topics = response.data;
+                            overlayOff()
                             Vue.nextTick()
                             .then(function () {
                                 $('html').animate({

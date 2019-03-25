@@ -13,7 +13,7 @@
     </parent>
 
     <properties>
-        <sendgrid-version>3.0.9</sendgrid-version>
+        <sendgrid-version>4.3.0</sendgrid-version>
         <modelmapper-version>2.3.0</modelmapper-version>
         <apache-poi-version>4.0.1</apache-poi-version>
         <swagger-version>2.6.1</swagger-version>
@@ -122,7 +122,7 @@
         <dependency>
             <groupId>com.sendgrid</groupId>
             <artifactId>sendgrid-java</artifactId>
-            <version>${sendgrid-version}</version><!--$NO-MVN-MAN-VER$-->
+            <version>${sendgrid-version}</version>
         </dependency>
 
         <dependency>

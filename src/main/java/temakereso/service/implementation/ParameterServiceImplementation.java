@@ -50,6 +50,11 @@ public class ParameterServiceImplementation implements ParameterService {
     }
 
     @Override
+    public Integer getArchiveTimeout() {
+        return Integer.parseInt(findByIdentifier("ARCHIVE_TIMEOUT_IN_MONTHS").getValue());
+    }
+
+    @Override
     public void modifyForm(String identifier, MultipartFile file) throws IOException {
         Long id = fileService.saveFile(file);
         Parameter parameter = parameterRepository.findByIdentifier(identifier);

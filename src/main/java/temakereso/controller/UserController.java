@@ -14,19 +14,23 @@ public class UserController {
 
     private final LoggedInUserService loggedInUserService;
 
-    // TODO me page
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_STUDENT')")
     @GetMapping(value = {"/me"})
     public String me() {
         return "me";
     }
 
-    // TODO edit-me page
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_STUDENT')")
-    @GetMapping(value = {"/me/edit"})
-    public String editMe() {
-        return "form-me";
+    @PreAuthorize("hasAnyRole('ROLE_SUPERVISOR', 'ROLE_STUDENT')")
+    @GetMapping(value = {"/mail"})
+    public String mail() {
+        return "mail";
     }
+
+    //    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_STUDENT')")
+    //    @GetMapping(value = {"/me/edit"})
+    //    public String editMe() {
+    //        return "form-me";
+    //    }
 
     @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
     @GetMapping(value = {"/topics/add"})
@@ -59,13 +63,6 @@ public class UserController {
     @GetMapping(value = {"/applications"})
     public String applications() {
         return "student-applications";
-    }
-
-    // TODO messages
-    @PreAuthorize("hasAnyRole('ROLE_STUDENT', 'ROLE_SUPERVISOR')")
-    @GetMapping(value = {"/messages"})
-    public String messages() {
-        return "messages";
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

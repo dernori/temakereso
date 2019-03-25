@@ -23,4 +23,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     List<Topic> findByCategoryAndLastModificationDateBetween(Category category, Date startDate, Date endDate);
 
     List<Topic> findByTypeAndLastModificationDateBetween(TopicType topicType, Date startDate, Date endDate);
+
+    List<Topic> findByLastModificationDateBeforeAndArchiveIsFalse(Date date);
 }

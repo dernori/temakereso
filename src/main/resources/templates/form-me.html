@@ -4,8 +4,6 @@
 
 <body>
 
-    <span hidden="" id="username" sec:authentication="principal.username"></span>
-
     <header th:replace="fragments/header :: header"></header>
 
     <main id="form-topic" class="container" role="main" style="display: none;">
@@ -258,7 +256,7 @@
                             axios.post(contextPath + 'api/supervisors/' + self.getSupervisorId() + '/topics', self.topic, apiHeader )
                                 .then(function(response) {
                                     console.log(response);
-                                    redirect(contextPath + 'topics/' + response.data.id);
+                                    redirect(`${contextPath}topics/${response.data.id}`);
                                 });
 
                         });

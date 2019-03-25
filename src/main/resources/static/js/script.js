@@ -1,26 +1,26 @@
-var apiHeader = { 
-    headers: {
-        'Content-type': 'application/json',
-    }
+var apiHeader = {
+  headers: {
+    'Content-type': 'application/json',
+  }
 }
 
 /*----------- HELPER FUNCTIONS ----------- */
 
 /**
  * Sets the display attribute of the selected object
- * @param selector 
+ * @param selector
  * @param display - change the value to
-*/
+ */
 function setDisplay(selector, display) {
-    $(selector)[0].style.display = display;
+  $(selector)[0].style.display = display;
 }
 
 /**
  * Redirects
- * @param path - to redirect to 
-*/
+ * @param path - to redirect to
+ */
 function redirect(path) {
-    window.location.href = path;
+  window.location.href = path;
 }
 
 /**
@@ -29,5 +29,13 @@ function redirect(path) {
  * @returns
  */
 function formatDate(longTime, formatText) {
-    return moment(longTime).format(formatText);
+  return moment(longTime).format(formatText);
+}
+
+function overlayOn() {
+  document.getElementById('overlay').style.display = 'flex'
+}
+
+function overlayOff() {
+  document.getElementById('overlay').style.display = 'none'
 }

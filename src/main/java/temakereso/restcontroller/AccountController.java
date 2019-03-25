@@ -2,7 +2,6 @@ package temakereso.restcontroller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import temakereso.helper.AccountDto;
@@ -21,17 +20,6 @@ public class AccountController {
     private final LoggedInUserService loggedInUserService;
 
     // ------------------------ GET -------------------------- //
-
-    /**
-     * Returns an account selected by its username
-     *
-     * @param username
-     * @return an account
-     */
-    @GetMapping(path = "/accounts/{username}")
-    public AccountDto getAccount(@PathVariable(name = "username") String username) {
-        return accountService.getByUsername(username);
-    }
 
     @GetMapping(path = "/me")
     public AccountDto getLoggedInAccount() {

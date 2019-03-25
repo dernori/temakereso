@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head th:replace="fragments/head :: head('témakereső - ELTE IK')"></head>
+
+<body>
+
+<header th:replace="fragments/header :: header"></header>
+
+<main id="mail" class="container" role="main" style="display: none;">
+
+    <h2 class="text-center topic-list">üzenetküldés</h2>
+    <form>
+        <div class="form-group row">
+            <label class="col-md-3 text-right col-form-label">címzett</label>
+            <div class="col-md-4">
+                <select class="form-control" v-model="mail.to">
+                    <option selected='true'></option>
+                    <option v-for="student in students" v-bind:value="student.account.id">{{ student.name }} {{student.code ?  ('- ' + student.code) : ''}}</option>
+                    <option v-for="supervisor in supervisors" v-bind:value="supervisor.account.id">{{ supervisor.name }} {{supervisor.department ? ('- ' + supervisor.department.name) : (supervisor.workplace ? ('- ' + supervisor.workplace) : '' )}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 text-right col-form-label">tárgy</label>
+            <div class="col-md-7">
+                <input type="text" class="form-control" v-model="mail.subject"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 text-right col-form-label">tartalom</label>
+            <div class="col-md-7">
+                <textarea class="form-control" v-model="mail.body"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label"></label>
+            <div class="col-md-7">
+                <input type="button" class="btn btn-primary simple-button" v-on:click="sendMail" value="küldés"/>
+            </div>
+        </div>
+    </form>
+
+</main>
+
+<div th:replace="fragments/scripts :: scripts"></div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<script>
+
+  /*<![CDATA[*/
+  var app = new Vue({
+    el: '#mail',
+    data: {
+      student: null,
+      supervisor: null,
+
+      students: null,
+      supervisors: null,
+
+      mail: {
+        to: null,
+        subject: null,
+        body: null
+      }
+
+      // messages: [],
+      // errors: []
+    },
+    created: function () {
+      this.getSupervisor()
+        .then(function (response) {
+          this.supervisor = response.data;
+          if (this.supervisor.id) this.getStudents()
+        }.bind(this));
+
+      this.getStudent()
+        .then(function (response) {
+          this.student = response.data;
+          if (this.student.id) this.getSupervisors()
+        }.bind(this));
+
+    },
+    mounted: function () {
+      setDisplay('#mail', 'block'); // it doesn't show up by default
+    },
+    methods: {
+      getSupervisor: function () {
+        return axios.get(`${contextPath}api/me/supervisor/`)
+      },
+      getStudent: function () {
+        return axios.get(`${contextPath}api/me/student/`)
+      },
+      getSupervisors: function () {
+        axios.get(`${contextPath}api/supervisors`)
+          .then(function (response) {
+            this.supervisors = response.data
+          }.bind(this))
+      },
+      getStudents: function () {
+        axios.get(`${contextPath}api/students`)
+          .then(function (response) {
+            this.students = response.data
+          }.bind(this))
+      },
+      sendMail: function () {
+        axios.post(`${contextPath}api/mail`, this.mail)
+          .then(function (response) {
+            console.log(response)
+          })
+      }
+    }
+  });
+  /*]]>*/
+</script>
+
+</body>
+</html>

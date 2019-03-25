@@ -1,6 +1,7 @@
 package temakereso.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,17 +20,21 @@ import temakereso.helper.TopicListerDto;
 import temakereso.helper.TopicStatus;
 import temakereso.repository.TopicRepository;
 import temakereso.service.CategoryService;
-import temakereso.service.DepartmentService;
+import temakereso.service.MailService;
+import temakereso.service.ParameterService;
 import temakereso.service.StudentService;
 import temakereso.service.SupervisorService;
 import temakereso.service.TopicService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TopicServiceImplementation implements TopicService {
@@ -40,13 +45,15 @@ public class TopicServiceImplementation implements TopicService {
 
     private final CategoryService categoryService;
 
-    private final DepartmentService departmentService;
+    private final ParameterService parameterService;
 
     private final TopicRepository topicRepository;
 
     private final EntityManager entityManager;
 
     private final ModelMapper modelMapper;
+
+    private final MailService mailService;
 
     @Override
     public TopicDto getOneById(Long id) {
@@ -55,6 +62,7 @@ public class TopicServiceImplementation implements TopicService {
 
     @Override
     public Page<TopicListerDto> getFilteredOnesByPage(TopicFilters filters, Pageable pageable) {
+        // TODO filters.setArchive(false);
         String sql = "select new temakereso.helper.TopicListerDto(t.id, t.name, t.supervisor.name, t.category.name, t.type, t.status) from Topic t where 1=1 ";
 
         sql = buildQuery(filters, pageable, sql);
@@ -81,6 +89,18 @@ public class TopicServiceImplementation implements TopicService {
         addParameters(query, filters);
 
         return query.getResultList();
+    }
+
+    @Override
+    public List<Topic> findTopicsToArchive() {
+        int months = parameterService.getArchiveTimeout();
+
+        Date referenceDate = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(referenceDate);
+        c.add(Calendar.MONTH, -1 * months);
+
+        return topicRepository.findByLastModificationDateBeforeAndArchiveIsFalse(c.getTime());
     }
 
     @Override
@@ -139,6 +159,7 @@ public class TopicServiceImplementation implements TopicService {
         Student student = studentService.findOneById(studentId);
         topic.getAppliedStudents().add(student);
         topicRepository.save(topic);
+        mailService.studentApplied(student, topic);
     }
 
     @Override
@@ -146,6 +167,7 @@ public class TopicServiceImplementation implements TopicService {
         Topic topic = topicRepository.findOne(topicId);
         Student student = studentService.findOneById(studentId);
         topic.getAppliedStudents().remove(student);
+        mailService.applicationCleared(student, topic);
         topicRepository.save(topic);
     }
 
@@ -180,6 +202,10 @@ public class TopicServiceImplementation implements TopicService {
         Student student = studentService.findOneById(studentId);
         topic.setStudent(student);
         topic.setStatus(TopicStatus.RESERVED);
+        mailService.studentAccepted(student, topic);
+        Set<Student> applications = topic.getAppliedStudents();
+        applications.remove(student);
+        mailService.applicationCleared(applications, topic);
         topic.getAppliedStudents().clear();
         topicRepository.save(topic);
     }
@@ -199,6 +225,7 @@ public class TopicServiceImplementation implements TopicService {
         if (filters.getCategory() != null) sql += "AND t.category.id = :category ";
         if (filters.getStatus() != null) sql += "AND t.status = :status ";
         if (filters.getType() != null) sql += "AND t.type = :type ";
+        if (filters.getArchive() != null) sql += "AND t.archive = :archive ";
 
         if (pageable != null && pageable.getSort() != null) {
             if (pageable.getSort().getOrderFor("name") != null) {
@@ -213,6 +240,10 @@ public class TopicServiceImplementation implements TopicService {
                 sql += " order by t.type.name " + pageable.getSort().getOrderFor("type").getDirection().name();
             }
         }
+
+        if (pageable == null) {
+            sql += " order by t.supervisor.name ASC";
+        }
         return sql;
     }
 
@@ -223,6 +254,7 @@ public class TopicServiceImplementation implements TopicService {
         if (filters.getCategory() != null) query.setParameter("category", filters.getCategory());
         if (filters.getStatus() != null) query.setParameter("status", filters.getStatus());
         if (filters.getType() != null) query.setParameter("type", filters.getType());
+        if (filters.getArchive() != null) query.setParameter("archive", filters.getArchive());
     }
 
 }
