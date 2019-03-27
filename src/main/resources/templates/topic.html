@@ -184,7 +184,7 @@
       },
       studentApplied: function () {
         return this.appliedStudents.some(function (student) {
-          return student.account.id === this.student.id;
+          return student.id === this.student.id;
         }.bind(this));
       }
     },
