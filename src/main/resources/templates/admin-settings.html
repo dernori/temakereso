@@ -82,14 +82,14 @@
                 <tr>
                     <th>#</th>
                     <th>név</th>
-                    <th>title</th>
+                    <th>beosztás</th>
                     <th>munkahely</th>
                     <th>szoba</th>
                     <th>fogadóórák</th>
                     <th>e-mail</th>
                     <th>telefon</th>
                     <th>honlap</th>
-                    <th></th>
+                    <th>műveletek</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -124,7 +124,7 @@
                 <tr>
                     <th>#</th>
                     <th>megnevezés</th>
-                    <th></th>
+                    <th>műveletek</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -159,7 +159,7 @@
                 <tr>
                     <th>#</th>
                     <th>megnevezés</th>
-                    <th></th>
+                    <th>műveletek</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -270,8 +270,8 @@
       confirm: function (supervisor) {
         axios.put(contextPath + 'api/supervisors/' + supervisor.id + '/confirm')
           .then(function () {
-            redirect(contextPath + 'settings')
-          })
+            this.getUnconfirmedSupervisors()
+          }.bind(this))
       },
       saveCategory: function (category) {
         // TODO validation

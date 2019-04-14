@@ -232,7 +232,7 @@
           data.append('file', this.$refs.file.files[0]);
           axios.post(`${contextPath}api/files`, data)
             .then(function (response) {
-              this.$refs.file.files = []
+              this.$refs.file.value = '';
               console.log(response)
               let attachment = { name: response.data.name, fileId: response.data.fileId }
               axios.post(contextPath + 'api/topics/' + this.topic.id + '/attachments', attachment)

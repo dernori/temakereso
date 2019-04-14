@@ -109,7 +109,10 @@
         axios.post(`${contextPath}api/mail`, this.mail)
           .then(function (response) {
             console.log(response)
-          })
+            this.mail.to = null
+            this.mail.subject = null
+            this.mail.body = null
+          }.bind(this))
       }
     }
   });
