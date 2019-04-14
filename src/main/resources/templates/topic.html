@@ -61,7 +61,7 @@
             <label class="control-label col-md-3 text-right">hallgató</label>
             <div class="col-md-9">{{topic.student.name}}</div>
         </div>
-        <div class="row" v-elseif="supervisor &amp;&amp; supervisor.id === topic.supervisor.id">
+        <div class="row" v-else-if="supervisor &amp;&amp; supervisor.id === topic.supervisor.id">
             <label class="control-label col-md-3 text-right">jelentkezett hallgatók</label>
             <div class="col-md-9">
                 <div class="table-responsive" v-if="appliedStudents &amp;&amp; appliedStudents.length > 0">
