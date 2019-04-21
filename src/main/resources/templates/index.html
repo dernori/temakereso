@@ -6,8 +6,9 @@
 
     <header th:replace="fragments/header :: header"></header>
 
-    <main id="start" class="container" role="main" style="display: none;">
+    <main id="search" class="container" role="main" style="display: none;">
         <div class="jumbotron jumbotron-fluid">
+            <img th:src="@{/img/elte-ik.png}"/>
             <h1 class="display-4 text-center"><i class="fas fa-search"></i> témakereső</h1>
             <p class="lead text-center">Az oktatók, konzulensek által megadott
                 témák között szakdolgozatodhoz, dimplomamunkádhoz illetve
@@ -27,26 +28,26 @@
                 <div class="col-md-4">
                     <select class="form-control" v-model="filters.type">
                       <option :value="null">típus</option>
-                      <option v-for="type in values.types" v-bind:value="type.id">{{ type.name }}</option>
+                      <option v-for="type in values.types" :value="type.id">{{ type.name }}</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <select class="form-control" v-model="filters.category">
                       <option :value="null">kategória</option>
-                      <option v-for="category in values.categories" v-bind:value="category.id">{{ category.name }}</option>
+                      <option v-for="category in values.categories" :value="category.id">{{ category.name }}</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <select class="form-control" v-model="filters.supervisor">
                       <option :value="null">témavezető</option>
-                      <option v-for="supervisor in values.supervisors" v-bind:value="supervisor.id">{{ supervisor.name }}</option>
+                      <option v-for="supervisor in values.supervisors" :value="supervisor.id">{{ supervisor.name }}</option>
                     </select>
                 </div>
             </div>
             <div class="form-row justify-content-center">
                 <div v-for="status in values.statuses" class="form-check form-check-inline">
-                    <input class="form-check-input"  name="status" type="radio" v-model="filters.status" v-bind:value="status.id"/>
-                    <label class="form-check-label" for="one">{{status.name}}</label>
+                    <input class="form-check-input"  :id="'radio' + status.id" name="status" type="radio" v-model="filters.status" :value="status.id"/>
+                    <label class="form-check-label" :for="'radio' + status.id">{{status.name}}</label>
                 </div>
             </div>
             <div class="form-row justify-content-center">
@@ -55,9 +56,9 @@
 
         </form>
 
-        <h2 class="text-center" v-if="topics" id="topic-list">témák</h2>
+        <h2 class="text-center" v-if="topics" id="topic-list-title">témák</h2>
 
-        <div class="table-responsive" v-if="topics">
+        <div class="table-responsive" v-if="topics &amp;&amp; topics.content &amp;&amp; topics.content.length > 0">
             <table class="table table-hover" >
                 <thead class="thead-light">
                     <tr>
@@ -87,7 +88,7 @@
                 <tbody>
                     <tr v-for="topic in topics.content">
                         <td>{{topic.id}}</td>
-                        <td><a v-bind:href="getTopicLink(topic)">{{topic.name}}</a></td>
+                        <td><a :href="getTopicLink(topic)">{{topic.name}}</a></td>
                         <td>{{topic.supervisor}}</td>
                         <td>{{topic.category}}</td>
                         <td>{{topic.type.name}}</td>
@@ -96,17 +97,19 @@
                 </tbody>
             </table>
         </div>
-        <nav v-if="topics">
+        <p v-else-if="topics">A keresés nem eredményezett egy találatot sem, próbálkozzon más szűrőfeltételek megadásával.</p>
+
+        <nav v-if="topics &amp;&amp; topics.content &amp;&amp; topics.content.length > 0">
             <ul class="pagination justify-content-center" style="margin: 10px 0;">
-                <li class="page-item" v-on:click="getTopics(0, topics.size, topics.sort)" v-bind:class="{ disabled: topics.first }"><a class="page-link" href="#topic-list">első</a></li>
-                <li class="page-item" v-on:click="getTopics(topics.number - 1, topics.size, topics.sort)" v-bind:class="{ disabled: topics.first }"><a class="page-link" href="#topic-list">előző</a></li>
-                <li class="page-item" v-if="topics.number - 1 &#62; 0" v-on:click="getTopics(topics.number - 2, topics.size, topics.sort)"><a class="page-link" href="#topic-list">{{topics.number - 1}}</a></li>
-                <li class="page-item" v-if="topics.number &#62; 0" v-on:click="getTopics(topics.number - 1, topics.size, topics.sort)"><a class="page-link" href="#topic-list">{{topics.number}}</a></li>
-                <li class="page-item active"><a class="page-link" href="#topic-list">{{topics.number + 1}}</a></li>
-                <li class="page-item" v-if="topics.number + 1 &#60; topics.totalPages" v-on:click="getTopics(topics.number + 1, topics.size, topics.sort)"><a class="page-link" href="#topic-list">{{topics.number + 2}}</a></li>
-                <li class="page-item" v-if="topics.number + 2 &#60; topics.totalPages" v-on:click="getTopics(topics.number + 2, topics.size, topics.sort)"><a class="page-link" href="#topic-list">{{topics.number + 3}}</a></li>
-                <li class="page-item" v-on:click="getTopics(topics.number + 1, topics.size, topics.sort)" v-bind:class="{ disabled: topics.last }"><a class="page-link" href="#topic-list">következő</a></li>
-                <li class="page-item" v-on:click="getTopics(topics.totalPages - 1, topics.size, topics.sort)" v-bind:class="{ disabled: topics.last }"><a class="page-link" href="#topic-list">utolsó</a></li>
+                <li class="page-item" v-on:click="getTopics(0, topics.size, topics.sort)" :class="{ disabled: topics.first }"><a class="page-link" href="#topic-list-title">első</a></li>
+                <li class="page-item" v-on:click="getTopics(topics.number - 1, topics.size, topics.sort)" :class="{ disabled: topics.first }"><a class="page-link" href="#topic-list-title">előző</a></li>
+                <li class="page-item" v-if="topics.number - 1 &#62; 0" v-on:click="getTopics(topics.number - 2, topics.size, topics.sort)"><a class="page-link" href="#topic-list-title">{{topics.number - 1}}</a></li>
+                <li class="page-item" v-if="topics.number &#62; 0" v-on:click="getTopics(topics.number - 1, topics.size, topics.sort)"><a class="page-link" href="#topic-list-title">{{topics.number}}</a></li>
+                <li class="page-item active disabled"><a class="page-link" href="#topic-list-title">{{topics.number + 1}}</a></li>
+                <li class="page-item" v-if="topics.number + 1 &#60; topics.totalPages" v-on:click="getTopics(topics.number + 1, topics.size, topics.sort)"><a class="page-link" href="#topic-list-title">{{topics.number + 2}}</a></li>
+                <li class="page-item" v-if="topics.number + 2 &#60; topics.totalPages" v-on:click="getTopics(topics.number + 2, topics.size, topics.sort)"><a class="page-link" href="#topic-list-title">{{topics.number + 3}}</a></li>
+                <li class="page-item" v-on:click="getTopics(topics.number + 1, topics.size, topics.sort)" :class="{ disabled: topics.last }"><a class="page-link" href="#topic-list-title">következő</a></li>
+                <li class="page-item" v-on:click="getTopics(topics.totalPages - 1, topics.size, topics.sort)" :class="{ disabled: topics.last }"><a class="page-link" href="#topic-list-title">utolsó</a></li>
             </ul>
         </nav>
     </main>
@@ -117,106 +120,97 @@
 
     <script>
 
-        /*<![CDATA[*/
-        var app = new Vue({
-            el: '#start',
-            data: {
-                topics: null,
+      /*<![CDATA[*/
+      let app = new Vue({
+        el: '#search',
+        data: {
+          topics: null,
 
-                filters: {
-                    name: null,
-                    description: null,
-                    type: null,
-                    category: null,
-                    supervisor: null,
-                    status: null
-                },
+          filters: {
+            name: null,
+            description: null,
+            type: null,
+            category: null,
+            supervisor: null,
+            status: null
+          },
 
-                values: {
-                    categories: [],
-                    types: [],
-                    supervisors: [],
-                    statuses: []
-                }
-            // partner: null,
+          values: {
+            categories: [],
+            types: [],
+            supervisors: [],
+            statuses: []
+          }
 
-            // messages: [],
-            // errors: []
-            },
-            created: function() {
-                var self = this;
-
-                // collecting params
-                var values = ["categories", "types", "supervisors", "statuses"];
-                var promises = []; // collecting all promises
-                for (var i = 0; i < values.length; i++) {
-                    promises.push(this.getValues(values[i].toLowerCase()));
-                };
-                // after everything arrived, loop through the responses and bind to the data
-                axios.all(promises).then(function (response) {
-                    for (var i = 0; i < response.length; i++) {
-                        self.values[values[i]] = response[i].data;
-                    }
-                });
-
-            },
-            mounted: function() {
-                setDisplay('#start', 'block'); // it doesn't show up by default
-            },
-            methods: {
-                getTopics: function(page, size, sort) {
-                    overlayOn()
-                    var self = this;
-                    // TODO sort
-
-                    var params = {
-                        size: size,
-                        page: page
-                    }
-                    if (sort != null)                 params.sort = sort[0].property + ',' + sort[0].direction;
-                    if(self.filters.name)            params.name = self.filters.name;
-                    if(self.filters.description)     params.description = self.filters.description;
-                    if(self.filters.type)             params.type = self.filters.type;
-                    if(self.filters.category)         params.category = self.filters.category;
-                    if(self.filters.supervisor)     params.supervisor = self.filters.supervisor;
-                    if(self.filters.status)         params.status = self.filters.status;
-
-                    console.log(params);
-                    //console.log($.param(params));
-
-                    axios.get(contextPath + 'api/topics', { params: params })
-                        .then(function(response) {
-                            self.topics = response.data;
-                            overlayOff()
-                            Vue.nextTick()
-                            .then(function () {
-                                $('html').animate({
-                                    scrollTop: $("#topic-list").offset().top
-                                }, 500);
-                            })
-                        });
-                },
-                getTopicsWithSort: function(prop) {
-                    var self = this;
-                    self.getTopics(0, self.topics.size, [{property: prop, direction: (self.topics.sort && self.topics.sort[0].descending ? 'ASC' : 'DESC') }])
-                },
-                isAscending: function (prop) {
-                    var self = this;
-                    return self.topics.sort && self.topics.sort[0].property == prop && self.topics.sort[0].ascending;
-                },
-                isDescending: function (prop) {
-                    var self = this;
-                    return self.topics.sort && self.topics.sort[0].property == prop && self.topics.sort[0].descending;
-                },
-                getTopicLink: function(topic) {
-                    return contextPath + 'topics/' + topic.id;
-                },
-                getValues: function(name) {
-                    return axios.get(contextPath + 'api/constants/' + name);
-                }
+          // messages: [],
+          // errors: []
+        },
+        created: function () {
+          // collecting params
+          let values = ["categories", "types", "supervisors", "statuses"]
+          let promises = [] // collecting all promises
+          for (let i = 0; i < values.length; i++) {
+            promises.push(this.getValues(values[i].toLowerCase()))
+          }
+          // after everything arrived, loop through the responses and bind to the data
+          axios.all(promises).then(function (response) {
+            for (let i = 0; i < response.length; i++) {
+              this.values[values[i]] = response[i].data
             }
-        });
-        /*]]>*/
+          }.bind(this))
+        },
+        mounted: function () {
+          setDisplay('#search', 'block') // it doesn't show up by default
+        },
+        methods: {
+          getTopics: function (page, size, sort) {
+            overlayOn()
+
+            let params = {
+              size: size,
+              page: page
+            }
+            if (sort != null) params.sort = sort[0].property + ',' + sort[0].direction
+            if (this.filters.name) params.name = this.filters.name
+            if (this.filters.description) params.description = this.filters.description
+            if (this.filters.type) params.type = this.filters.type
+            if (this.filters.category) params.category = this.filters.category
+            if (this.filters.supervisor) params.supervisor = this.filters.supervisor
+            if (this.filters.status) params.status = this.filters.status
+
+            axios.get(contextPath + 'api/topics', {params: params})
+              .then(function (response) {
+                this.topics = response.data
+                overlayOff()
+                Vue.nextTick()
+                  .then(function () {
+                    $('html').animate({
+                      scrollTop: $("#topic-list").offset().top
+                    }, 500)
+                  })
+              }.bind(this))
+          },
+          getTopicsWithSort: function (prop) {
+            this.getTopics(0, this.topics.size, [{
+              property: prop,
+              direction: (this.topics.sort && this.topics.sort[0].descending ? 'ASC' : 'DESC')
+            }])
+          },
+          isAscending: function (prop) {
+            return this.topics.sort && this.topics.sort[0].property == prop && this.topics.sort[0].ascending
+          },
+          isDescending: function (prop) {
+            return this.topics.sort && this.topics.sort[0].property == prop && this.topics.sort[0].descending
+          },
+          getTopicLink: function (topic) {
+            return contextPath + 'topics/' + topic.id
+          },
+          getValues: function (name) {
+            return axios.get(`${contextPath}api/constants/${name}`)
+          }
+        }
+      })
+      /*]]>*/
     </script>
 
 </body>

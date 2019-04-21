@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,9 +27,7 @@ public class ParameterController {
 
     /*----------- GET ------------*/
 
-    /**
-     * // TODO
-     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(value = "/parameters/{identifier}")
     public String getParameterValueByIdentifier(@PathVariable("identifier") String identifier) {
         Parameter parameter = parameterService.findByIdentifier(identifier);
@@ -37,9 +36,7 @@ public class ParameterController {
 
     /*----------- PUT ------------*/
 
-    /**
-     * // TODO
-     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping(value = "/parameters/{identifier}", headers = ("content-type=multipart/*"))
     public ResponseEntity<Void> modifyForm(@PathVariable("identifier") String identifier, @RequestParam("file") MultipartFile file) {
         try {

@@ -33,24 +33,26 @@ public interface StudentService {
     StudentDto createStudent(Student student);
 
     /**
-     * Modifies a student
+     * Returns a collection of topics the student applied to.
      *
-     * @param student
-     * @return the modified student
+     * @param id id of student
+     * @return collection of topics the student applied to
      */
-    StudentDto modifyStudent(Student student);
-
-    /**
-     * Returns a student specified by its username
-     *
-     * @param username
-     * @return the selected student
-     */
-    StudentDto getByUsername(String username);
-
     Set<TopicDto> getAppliedTopicsByStudentId(Long id);
 
+    /**
+     * Finds a student with the given account identifier.
+     *
+     * @param accountId identifier of account
+     * @return student data
+     */
     StudentDto findByAccountId(Long accountId);
 
+    /**
+     * Finds a student with the given identifier.
+     *
+     * @param studentId identifier of account
+     * @return student data
+     */
     Student findOneById(Long studentId);
 }

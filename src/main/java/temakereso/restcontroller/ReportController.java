@@ -6,6 +6,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,7 @@ public class ReportController {
 
     // ------------------------ GET -------------------------- //
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(path = "/reports/general", produces = "application/octet-stream")
     public ResponseEntity<ByteArrayResource> getGeneralReport(TopicFilters filters) throws IOException {
         ReportData reportData = reportService.findTopics(filters);
@@ -37,6 +39,7 @@ public class ReportController {
         return generateExcel(file, "Általános riport.xlsx");
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(path = "/reports/departments", produces = "application/octet-stream")
     public ResponseEntity<ByteArrayResource> getDepartmentReport(ReportFilters filters) throws IOException {
         ReportData reportData = reportService.findTopicsByDepartment(filters);
@@ -47,6 +50,7 @@ public class ReportController {
         return generateExcel(file, "Riport tanszék szerinti bontásban.xlsx");
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(path = "/reports/categories", produces = "application/octet-stream")
     public ResponseEntity<ByteArrayResource> getCategoryReport(ReportFilters filters) throws IOException {
         ReportData reportData = reportService.findTopicsByCategory(filters);
@@ -57,7 +61,7 @@ public class ReportController {
         return generateExcel(file, "Riport kategória szerinti bontásban.xlsx");
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(path = "/reports/types", produces = "application/octet-stream")
     public ResponseEntity<ByteArrayResource> getTypeReport(ReportFilters filters) throws IOException {
         ReportData reportData = reportService.findTopicsByType(filters);
@@ -76,7 +80,6 @@ public class ReportController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentLength(file.length)
-                // .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(resource);
     }

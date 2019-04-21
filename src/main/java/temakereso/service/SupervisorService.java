@@ -15,7 +15,7 @@ public interface SupervisorService {
     List<SupervisorDto> getAll();
 
     /**
-     * Returns a supervisor specified by its id
+     * Returns a supervisor specified by its identifier
      *
      * @param id
      * @return the selected supervisor
@@ -31,14 +31,6 @@ public interface SupervisorService {
     SupervisorDto createSupervisor(Supervisor supervisor);
 
     /**
-     * Modifies a supervisor
-     *
-     * @param supervisor
-     * @return the modified supervisor
-     */
-    SupervisorDto modifySupervisor(Supervisor supervisor);
-
-    /**
      * Returns a list of unconfirmed supervisors
      *
      * @return unconfirmed supervisors
@@ -52,7 +44,19 @@ public interface SupervisorService {
      */
     void confirm(Long id);
 
+    /**
+     * Finds a supervisor with its identifier.
+     *
+     * @param supervisorId identifier of supervisor
+     * @return supervisor
+     */
     Supervisor findOneById(Long supervisorId);
 
+    /**
+     * Finds a supervisor with the given account identifier.
+     *
+     * @param accountId identifier of account
+     * @return supervisor data
+     */
     SupervisorDto findByAccountId(Long accountId);
 }

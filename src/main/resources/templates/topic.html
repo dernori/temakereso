@@ -5,42 +5,29 @@
 <body>
 
 <p hidden="" id="topic" th:text="${id}"></p>
-<span hidden="" id="account" sec:authorize="isAuthenticated()" sec:authentication="principal.id"></span>
 
 <header th:replace="fragments/header :: header"></header>
 
 <main id="view-topic" class="container" role="main" style="display: none;">
 
     <section v-if="topic &amp;&amp; appliedStudents">
-        <div class="row" id="headline">
-            <div class="col-md-8">
-                <h1>{{topic.name}}</h1>
-            </div>
-            <div class="col-md-4 text-right">
-                <input type="button" class="btn btn-primary simple-button" v-on:click="editTopic"
-                       sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_SUPERVISOR')"
-                       v-if="supervisor &amp;&amp; topic.supervisor.id === supervisor.id " value="szerkesztés"/>
-                <input type="button" class="btn btn-primary simple-button"
-                       v-if="topic.type.id == 'BSC_THESIS' || topic.type.id == 'MSC_THESIS'"
-                       v-on:click="fillTopicForm" value="témabejelentő generálása"/>
-                <input type="button" class="btn btn-primary simple-button"
-                       v-if="topic.type.id == 'BSC_THESIS' || topic.type.id == 'MSC_THESIS'"
-                       v-on:click="fillConsultationForm" value="konzultációs lap generálása"/>
-                <input type="button" class="btn btn-primary simple-button"
-                       sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_SUPERVISOR')"
-                       v-if="supervisor &amp;&amp; topic.supervisor.id === supervisor.id &amp;&amp; isTopicReserved"
-                       v-on:click="setStatusDone" value="elkészült"/>
-                <input type="button" class="btn btn-primary simple-button"
-                       sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_SUPERVISOR')"
-                       v-if="!topic.archive &amp;&amp; supervisor &amp;&amp; topic.supervisor.id === supervisor.id"
-                       v-on:click="archiveTopic" value="törlés"/>
-                <input type="button" class="btn btn-primary simple-button"
-                       sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_STUDENT')"
-                       v-if="isTopicFree &amp;&amp; !studentApplied"
-                       v-on:click="applyStudent" value="jelentkezés"/>
-                <p v-if="studentApplied">jelentkezett</p>
-            </div>
+
+        <h2 class="text-center">{{topic.name}}</h2>
+
+        <div class="row justify-content-center button-row">
+            <input type="button" class="btn btn-primary simple-button"
+                   v-if="topic.type.id == 'BSC_THESIS' || topic.type.id == 'MSC_THESIS'"
+                   v-on:click="fillTopicForm" value="témabejelentő generálása"/>
+            <input type="button" class="btn btn-primary simple-button"
+                   v-if="topic.type.id == 'BSC_THESIS' || topic.type.id == 'MSC_THESIS'"
+                   v-on:click="fillConsultationForm" value="konzultációs lap generálása"/>
+            <input type="button" class="btn btn-primary simple-button"
+                   sec:authorize="isAuthenticated() &amp;&amp; hasRole('ROLE_STUDENT')"
+                   v-if="isTopicFree &amp;&amp; !studentApplied"
+                   v-on:click="applyStudent" value="jelentkezés"/>
         </div>
+
+        <p v-show="studentApplied" class="text-center">erre a témára már jelentkezett</p>
 
         <div class="row">
             <div class="col-md-3"><h4>alapadatok</h4></div>
@@ -81,12 +68,12 @@
                             <td>{{student.name}}</td>
                             <td>{{student.code}}</td>
                             <td>{{student.training.name}}</td>
-                            <td class="text-right"><span class="clickable" v-on:click="acceptApplication(student)"><i class="fas fa-check"></i></span></td>
+                            <td class="text-right"><span class="clickable" title="hallgató kiválasztása" v-on:click="acceptApplication(student)"><i class="fas fa-check"></i></span></td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-                <span v-else="">Még egy hallgató sem jelenkezett erre a témára.</span>
+                <span v-else-if="appliedStudents">Még egy hallgató sem jelenkezett erre a témára.</span>
             </div>
         </div>
         <div class="row">
@@ -142,7 +129,8 @@
             <div class="col-md-3"><h4>részletes leírás</h4></div>
         </div>
         <div class="row">
-            <div class="col-md-12">{{topic.description}}</div>
+            <label class="control-label col-md-3"></label>
+            <div class="col-md-9">{{topic.description}}</div>
         </div>
 
         <div v-if="topic.attachments.length > 0">
@@ -151,7 +139,7 @@
             </div>
             <div class="row" v-for="(attachment, index) in topic.attachments">
                 <label class="col-md-3 control-label"></label>
-                <div class="controls col-md-9">
+                <div class="col-md-9">
                     <a :href="getFileLink(attachment)">{{attachment.name}}</a>
                 </div>
             </div>
@@ -178,9 +166,6 @@
     computed: {
       isTopicFree: function () {
         return this.topic.status.id === 'OPEN' && this.topic.student === null;
-      },
-      isTopicReserved: function () {
-        return this.topic.status.id === 'RESERVED' && this.topic.student !== null;
       },
       studentApplied: function () {
         return this.appliedStudents.some(function (student) {
@@ -236,20 +221,11 @@
       formatBoolean: function (value) {
         return value != null ? (value == true ? 'igen' : 'nem') : '';
       },
-      editTopic: function () {
-        redirect(`${contextPath}topics/${this.getTopicId()}/edit`);
-      },
       fillTopicForm: function () {
         redirect(`${contextPath}forms/topics/${this.getTopicId()}`);
       },
       fillConsultationForm: function () {
         redirect(`${contextPath}forms/consultation/${this.getTopicId()}`);
-      },
-      setStatusDone: function () {
-        axios.put(`${contextPath}api/topics/${this.getTopicId()}/done`)
-          .then(function (response) {
-            this.getTopic();
-          }.bind(this));
       },
       applyStudent: function () {
         if (!this.student.id) return; // error message
@@ -263,14 +239,6 @@
           .then(function (response) {
             this.getTopic();
           }.bind(this));
-      },
-      archiveTopic: function () {
-        console.log(this.topic.id)
-        axios.delete(`${contextPath}api/topics/${this.topic.id}`)
-          .then(function (response) {
-            console.log(response)
-            redirect(`${contextPath}topics/${this.topic.id}`);
-          }.bind(this))
       }
     }
   });

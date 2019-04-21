@@ -1,6 +1,7 @@
 package temakereso.restcontroller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ public class MailController {
 
     // ------------------------ POST -------------------------- //
 
+    @PreAuthorize("hasAnyRole('ROLE_SUPERVISOR', 'ROLE_STUDENT')")
     @PostMapping(path = "/mail")
     public void sendMail(@RequestBody MailDto mailDto) {
         mailService.sendSimpleMail(mailDto);

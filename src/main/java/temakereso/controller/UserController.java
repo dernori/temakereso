@@ -52,13 +52,6 @@ public class UserController {
         return "form-topic";
     }
 
-    @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
-    @GetMapping(value = {"/topics/{id}/status"})
-    public String manageStatus(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("id", id);
-        return "form-topic-status";
-    }
-
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping(value = {"/applications"})
     public String applications() {

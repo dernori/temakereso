@@ -11,7 +11,6 @@ import temakereso.service.LoggedInUserService;
 import temakereso.service.MailSenderService;
 import temakereso.service.MailService;
 
-import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -70,21 +69,6 @@ public class MailServiceImplementation implements MailService {
     public void applicationCleared(Set<Student> students, Topic topic) {
         for (Student student : students) {
             applicationCleared(student, topic);
-        }
-    }
-
-    @Override
-    public void topicsArchived(List<Topic> topics) {
-        String subject = "Téma archiválásra került";
-        for (Topic topic : topics) {
-            String body = new StringBuilder()
-                    .append("<p>Az alábbi téma archiválásra került.</p>")
-                    .append("<br/>")
-                    .append("<p><strong>Téma:</strong> " + topic.getName() + "</p>")
-                    .append("<br/>")
-                    .append("<p><small>küldve a témakereső rendszerből</small></p>")
-                    .toString();
-            mailSenderService.sendMail(topic.getSupervisor().getAccount(), subject, body);
         }
     }
 

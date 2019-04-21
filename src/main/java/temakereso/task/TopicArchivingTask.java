@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import temakereso.entity.Topic;
-import temakereso.service.MailService;
 import temakereso.service.TopicService;
 
 import java.util.Date;
@@ -18,9 +17,6 @@ public class TopicArchivingTask {
 
     private final TopicService topicService;
 
-    private final MailService mailService;
-
-    // @Scheduled(cron = "0 * * * * *") // every minute
     @Scheduled(cron = "0 0 0 * * *") // every day at midnight
     public void archiveTopics() {
         List<Topic> topics = topicService.findTopicsToArchive();
@@ -32,7 +28,6 @@ public class TopicArchivingTask {
             topicService.archiveTopic(topic.getId());
         }
 
-        mailService.topicsArchived(topics);
     }
 
 }

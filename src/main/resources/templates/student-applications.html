@@ -4,13 +4,11 @@
 
 <body>
 
-<span hidden="" id="account" sec:authorize="isAuthenticated()" sec:authentication="principal.id"></span>
-
 <header th:replace="fragments/header :: header"></header>
 
 <main id="applications" class="container" role="main" style="display: none;">
 
-    <h2 class="text-center topic-list">jelentkezéseim</h2>
+    <h2 class="title">jelentkezéseim</h2>
 
     <div class="table-responsive" v-if="appliedTopics &amp;&amp; appliedTopics.length > 0">
         <table class="table table-hover">
@@ -28,20 +26,20 @@
             <tbody>
             <tr v-for="topic in appliedTopics">
                 <td>{{topic.id}}</td>
-                <td><a v-bind:href="getTopicLink(topic)">{{topic.name}}</a></td>
+                <td><a :href="getTopicLink(topic)">{{topic.name}}</a></td>
                 <td>{{topic.supervisor.name}}</td>
                 <td>{{topic.category.name}}</td>
                 <td>{{topic.type.name}}</td>
                 <td>{{topic.status.name}}</td>
-                <td class="text-right"><span class="clickable" v-on:click="removeApplication(topic)"><i class="fas fa-trash"></i></span></td>
+                <td class="text-right"><span class="clickable" title="jelentkezés törlése" v-on:click="removeApplication(topic)"><i class="fas fa-trash"></i></span></td>
             </tr>
             </tbody>
         </table>
     </div>
-    <p v-else="">Jelenleg nincs aktív jelentkezésed egy témára sem.</p>
+    <p v-else-if="appliedTopics">Jelenleg nincs aktív jelentkezésed egy témára sem.</p>
 
 
-    <h2 class="text-center topic-list mt-5">témáim</h2>
+    <h2 class="text-center mt-5">témáim</h2>
 
     <div class="table-responsive" v-if="assignedTopics &amp;&amp; assignedTopics.length > 0">
         <table class="table table-hover">
@@ -58,7 +56,7 @@
             <tbody>
             <tr v-for="topic in assignedTopics">
                 <td>{{topic.id}}</td>
-                <td><a v-bind:href="getTopicLink(topic)">{{topic.name}}</a></td>
+                <td><a :href="getTopicLink(topic)">{{topic.name}}</a></td>
                 <td>{{topic.supervisor.name}}</td>
                 <td>{{topic.category.name}}</td>
                 <td>{{topic.type.name}}</td>
@@ -67,7 +65,7 @@
             </tbody>
         </table>
     </div>
-    <p v-else="">Jelenleg nem vagy hozzárendelve egy témához sem.</p>
+    <p v-else-if="assignedTopics">Jelenleg nem vagy hozzárendelve egy témához sem.</p>
 </main>
 
 <div th:replace="fragments/scripts :: scripts"></div>

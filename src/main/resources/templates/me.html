@@ -10,7 +10,7 @@
 
     <section v-if="account">
 
-        <h2 class="text-center topic-list">{{account.name}}</h2>
+        <h2 class="text-center">{{account.name}}</h2>
 
         <div class="row">
             <label class="control-label col-md-3 text-right">felhasználónév</label>
@@ -103,42 +103,41 @@
 
       supervisor: null,
       student: null
-
     },
     created: function () {
       this.getAccount()
         .then(function (response) {
-          this.account = response.data;
-        }.bind(this));
+          this.account = response.data
+        }.bind(this))
 
       this.getSupervisor()
         .then(function (response) {
-          this.supervisor = response.data;
-        }.bind(this));
+          this.supervisor = response.data
+        }.bind(this))
 
       this.getStudent()
         .then(function (response) {
-          this.student = response.data;
-        }.bind(this));
+          this.student = response.data
+        }.bind(this))
     },
     mounted: function () {
-      setDisplay('#me', 'block'); // it doesn't show up by default
+      setDisplay('#me', 'block') // it doesn't show up by default
     },
     methods: {
       getAccount: function () {
-        return axios.get(contextPath + 'api/me');
+        return axios.get(`${contextPath}api/me`)
       },
       getSupervisor: function () {
-        return axios.get(contextPath + 'api/me/supervisor/');
+        return axios.get(`${contextPath}api/me/supervisor/`)
       },
       getStudent: function () {
-        return axios.get(contextPath + 'api/me/student/');
+        return axios.get(`${contextPath}api/me/student/`)
       },
       formatBoolean: function (value) {
-        return value != null ? (value == true ? 'igen' : 'nem') : '';
+        return value != null ? (value == true ? 'igen' : 'nem') : ''
       }
     }
-  });
+  })
   /*]]>*/
 </script>
 

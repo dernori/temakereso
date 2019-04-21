@@ -1,11 +1,13 @@
 package temakereso.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import temakereso.entity.Role;
 import temakereso.entity.Supervisor;
+import temakereso.helper.Constants;
 import temakereso.helper.SupervisorDto;
 import temakereso.repository.SupervisorRepository;
 import temakereso.service.RoleService;
@@ -15,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SupervisorServiceImplementation implements SupervisorService {
@@ -37,14 +40,13 @@ public class SupervisorServiceImplementation implements SupervisorService {
 
     @Override
     public SupervisorDto createSupervisor(Supervisor supervisor) {
+        if (supervisor.getId() != null) {
+            log.error("Supervisor has id: {}", supervisor.getId());
+            throw new IllegalArgumentException(Constants.SUPERVISOR_ALREADY_EXISTS);
+        }
         Role supervisorRole = roleService.findByName("SUPERVISOR");
         supervisor.getAccount().setRoles(Arrays.asList(supervisorRole != null ? supervisorRole : new Role("SUPERVISOR")));
         supervisor.getAccount().setPassword(passwordEncoder.encode(supervisor.getAccount().getPassword()));
-        return modelMapper.map(supervisorRepository.save(supervisor), SupervisorDto.class);
-    }
-
-    @Override
-    public SupervisorDto modifySupervisor(Supervisor supervisor) {
         return modelMapper.map(supervisorRepository.save(supervisor), SupervisorDto.class);
     }
 
@@ -63,12 +65,15 @@ public class SupervisorServiceImplementation implements SupervisorService {
 
     @Override
     public void confirm(Long id) {
+        if (!supervisorRepository.exists(id)) {
+            log.error("No supervisor exists with id: {}", id);
+            throw new IllegalArgumentException(Constants.SUPERVISOR_NOT_EXISTS);
+        }
         Supervisor supervisor = supervisorRepository.findOne(id);
         supervisor.setConfirmed(Boolean.TRUE);
         supervisorRepository.save(supervisor);
     }
 
-    // DO NOT FORGET csak belső használatra, mapper nélkül!!
     @Override
     public Supervisor findOneById(Long supervisorId) {
         return supervisorRepository.findOne(supervisorId);

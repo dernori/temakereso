@@ -4,13 +4,11 @@
 
 <body>
 
-<p hidden="" id="supervisor" th:text="${supervisor}"></p>
-
 <header th:replace="fragments/header :: header"></header>
 
 <main id="supervisor-topics" class="container" role="main" style="display: none;">
 
-    <h2 class="text-center topic-list">témáim</h2>
+    <h2 class="text-center">témáim</h2>
 
     <div class="table-responsive" v-if="topics &amp;&amp; topics.length > 0">
         <table class="table table-hover">
@@ -22,21 +20,28 @@
                 <th>típus</th>
                 <th>állapot</th>
                 <th>archív</th>
+                <th>műveletek</th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="topic in topics">
                 <td>{{topic.id}}</td>
-                <td><a v-bind:href="getTopicLink(topic)">{{topic.name}}</a></td>
+                <td><a :href="getTopicLink(topic)">{{topic.name}}</a></td>
                 <td>{{topic.category.name}}</td>
                 <td>{{topic.type.name}}</td>
                 <td>{{topic.status.name}}</td>
                 <td>{{formatBoolean(topic.archive)}}</td>
+                <td class="text-right">
+                    <span class="clickable" v-if="isTopicInProgress(topic)" v-on:click="setStatusDone(topic.id)" title="elkészült"><i class="fas fa-check-circle"></i></span>
+                    <span class="clickable" v-on:click="editTopic(topic.id)" title="szerkesztés"><i class="fas fa-edit"></i></span>
+                    <span class="clickable" v-show="!topic.archive" v-on:click="archiveTopic(topic.id)" title="archiválás"><i class="fas fa-trash-alt"></i></span>
+                    <span class="clickable" v-show="topic.archive" v-on:click="unarchiveTopic(topic.id)" title="archiválás visszavonása"><i class="fas fa-trash-restore-alt"></i></span>
+                </td>
             </tr>
             </tbody>
         </table>
     </div>
-    <p v-else="">Jelenleg nincs egy kiírt témád sem.</p>
+    <p v-else-if="topics">Jelenleg nincs egy kiírt témád sem.</p>
 
 </main>
 
@@ -51,34 +56,63 @@
     el: '#supervisor-topics',
     data: {
       topics: null,
+      supervisor: null
 
       // messages: [],
       // errors: []
     },
     created: function () {
-      this.getSupervisorTopics()
+      this.getSupervisor()
         .then(function (response) {
-          this.topics = response.data;
-        }.bind(this));
+          this.supervisor = response.data
+          this.getSupervisorTopics()
+        }.bind(this))
     },
     mounted: function () {
       setDisplay('#supervisor-topics', 'block'); // it doesn't show up by default
     },
     methods: {
-      getSupervisorId: function () {
-        return parseInt($('#supervisor')[0].innerHTML);
+      getSupervisor: function () {
+        return axios.get(`${contextPath}api/me/supervisor/`)
       },
       getSupervisorTopics: function () {
-        return axios.get(`${contextPath}api/supervisors/${this.getSupervisorId()}/topics`)
+        axios.get(`${contextPath}api/supervisors/${this.supervisor.id}/topics`)
+          .then(function (response) {
+            this.topics = response.data;
+          }.bind(this));
       },
       getTopicLink: function (topic) {
         return `${contextPath}topics/${topic.id}`;
       },
       formatBoolean: function (value) {
         return value != null ? (value == true ? 'igen' : 'nem') : '';
+      },
+      isTopicInProgress: function(topic) {
+        return topic.status.id === 'RESERVED' && topic.student !== null
+      },
+      editTopic: function (id) {
+        redirect(`${contextPath}topics/${id}/edit`);
+      },
+      setStatusDone: function (id) {
+        axios.put(`${contextPath}api/topics/${id}/done`)
+          .then(function (response) {
+            this.getSupervisorTopics()
+          }.bind(this));
+      },
+      archiveTopic: function (id) {
+        axios.delete(`${contextPath}api/topics/${id}`)
+          .then(function (response) {
+            this.getSupervisorTopics()
+          }.bind(this))
+      },
+      unarchiveTopic: function (id) {
+        axios.put(`${contextPath}api/topics/${id}/unarchive`)
+          .then(function (response) {
+            this.getSupervisorTopics()
+          }.bind(this))
       }
     }
-  });
+  })
   /*]]>*/
 </script>
 

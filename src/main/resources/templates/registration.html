@@ -8,17 +8,14 @@
 
 <main id="registration" class="container" role="main" style="display: none;">
 
-    <div class="row">
-        <div class="col-md-8">
-            <h1>regisztráció</h1>
-        </div>
-    </div>
+    <h2 class="text-center">regisztráció</h2>
 
     <form>
         <div class="form-group row">
             <label class="col-md-3 text-right col-form-label">témavezetőként?</label>
             <div class="col-md-4">
                 <input type="checkbox" value="true" v-model="isSupervisor" id="is-supervisor"/>
+                <label for="is-supervisor"></label>
             </div>
         </div>
 
@@ -27,7 +24,7 @@
             <div class="col-md-4">
                 <input type="text" class="form-control"
                        v-model="account.name"
-                       v-bind:class="{error: $v.account.name.$error}"/>
+                       :class="{error: $v.account.name.$error}"/>
             </div>
         </div>
         <div class="form-group row messages" v-if="$v.account.name.$dirty &amp;&amp; !$v.account.name.required">
@@ -42,7 +39,7 @@
             <div class="col-md-4">
                 <input type="text" class="form-control" autocomplete="username"
                        v-model="account.username"
-                       v-bind:class="{error: $v.account.username.$error}"/>
+                       :class="{error: $v.account.username.$error}"/>
             </div>
         </div>
         <div class="form-group row messages" v-if="$v.account.username.$dirty &amp;&amp; !$v.account.username.required">
@@ -57,7 +54,7 @@
             <div class="col-md-4">
                 <input type="email" class="form-control"
                        v-model="account.email"
-                       v-bind:class="{error: $v.account.email.$error}"/>
+                       :class="{error: $v.account.email.$error}"/>
             </div>
         </div>
         <div class="form-group row messages" v-if="$v.account.email.$dirty &amp;&amp; !$v.account.email.required">
@@ -78,7 +75,7 @@
             <div class="col-md-4">
                 <input type="password" class="form-control" autocomplete="new-password"
                        v-model="account.password"
-                       v-bind:class="{error: $v.account.password.$error || !$v.account.passwordsAreSame.passwordsAreSame, valid: !$v.account.password.$invalid &amp;&amp; $v.account.passwordsAreSame.passwordsAreSame}"/>
+                       :class="{error: $v.account.password.$error || !$v.account.passwordsAreSame.passwordsAreSame, valid: !$v.account.password.$invalid &amp;&amp; $v.account.passwordsAreSame.passwordsAreSame}"/>
             </div>
         </div>
         <div class="form-group row messages" v-if="$v.account.password.$dirty &amp;&amp; !$v.account.password.required">
@@ -100,7 +97,7 @@
             <div class="col-md-4">
                 <input type="password" class="form-control" autocomplete="new-password"
                        v-model="account.password2"
-                       v-bind:class="{error: $v.account.password2.$error || !$v.account.passwordsAreSame.passwordsAreSame, valid: !$v.account.password2.$invalid &amp;&amp; $v.account.passwordsAreSame.passwordsAreSame}"/>
+                       :class="{error: $v.account.password2.$error || !$v.account.passwordsAreSame.passwordsAreSame, valid: !$v.account.password2.$invalid &amp;&amp; $v.account.passwordsAreSame.passwordsAreSame}"/>
             </div>
         </div>
         <div class="form-group row messages"
@@ -138,7 +135,7 @@
                 <div class="col-md-4">
                     <select class="form-control" v-model="supervisor.department">
                         <option :value="null"></option>
-                        <option v-for="department in departments" v-bind:value="department">{{ department.name }}</option>
+                        <option v-for="department in departments" :value="department">{{ department.name }}</option>
                     </select>
                 </div>
             </div>
@@ -315,20 +312,20 @@
         let promise = null
         if (this.isSupervisor) {
           this.supervisor.account = this.account;
-          promise = axios.post(contextPath + 'api/supervisors', this.supervisor)
+          promise = axios.post(`${contextPath}api/supervisors`, this.supervisor)
         } else {
           this.student.account = this.account;
-          promise = axios.post(contextPath + 'api/students', this.student)
+          promise = axios.post(`${contextPath}api/students`, this.student)
         }
 
         promise
           .then(function (response) {
             console.log(response);
-            redirect(contextPath + 'login');
+            redirect(`${contextPath}login`);
           });
       },
       getDepartments: function () {
-        axios.get(contextPath + 'api/constants/departments')
+        axios.get(`${contextPath}api/constants/departments`)
           .then(function (response) {
             this.departments = response.data
           }.bind(this))

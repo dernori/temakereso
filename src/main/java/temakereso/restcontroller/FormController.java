@@ -24,17 +24,11 @@ public class FormController {
 
     /*----------- GET ------------*/
 
-    /**
-     * TODO
-     */
     @GetMapping(value = "/forms/topic", produces = "application/octet-stream")
     public ResponseEntity<ByteArrayResource> fillTopicForm(TopicForm form) {
         return fillForm(form);
     }
 
-    /**
-     * TODO
-     */
     @GetMapping(value = "/forms/consultation", produces = "application/octet-stream")
     public ResponseEntity<ByteArrayResource> fillConsultationForm(ConsultationForm form) {
         return fillForm(form);

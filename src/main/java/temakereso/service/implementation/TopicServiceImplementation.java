@@ -12,6 +12,7 @@ import temakereso.entity.Student;
 import temakereso.entity.Supervisor;
 import temakereso.entity.Topic;
 import temakereso.helper.AttachmentDto;
+import temakereso.helper.Constants;
 import temakereso.helper.StudentDto;
 import temakereso.helper.TopicDto;
 import temakereso.helper.TopicFilters;
@@ -20,6 +21,7 @@ import temakereso.helper.TopicListerDto;
 import temakereso.helper.TopicStatus;
 import temakereso.repository.TopicRepository;
 import temakereso.service.CategoryService;
+import temakereso.service.LoggedInUserService;
 import temakereso.service.MailService;
 import temakereso.service.ParameterService;
 import temakereso.service.StudentService;
@@ -29,6 +31,7 @@ import temakereso.service.TopicService;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +45,8 @@ public class TopicServiceImplementation implements TopicService {
     private final StudentService studentService;
 
     private final SupervisorService supervisorService;
+
+    private final LoggedInUserService loggedInUserService;
 
     private final CategoryService categoryService;
 
@@ -62,7 +67,7 @@ public class TopicServiceImplementation implements TopicService {
 
     @Override
     public Page<TopicListerDto> getFilteredOnesByPage(TopicFilters filters, Pageable pageable) {
-        // TODO filters.setArchive(false);
+        filters.setArchive(false);
         String sql = "select new temakereso.helper.TopicListerDto(t.id, t.name, t.supervisor.name, t.category.name, t.type, t.status) from Topic t where 1=1 ";
 
         sql = buildQuery(filters, pageable, sql);
@@ -120,8 +125,12 @@ public class TopicServiceImplementation implements TopicService {
 
     @Override
     public Long modifyTopic(Long id, TopicInputDto topicDto) {
-        Topic topic = topicRepository.findOne(id);
+        Topic topic = findOne(id);
 
+        if (loggedInUserService.getLoggedInSupervisor().getId() != topic.getSupervisor().getId()) {
+            log.error("Topic can be modified only by its creator: {}, but attempted by {}", id, loggedInUserService.getLoggedInSupervisor().getId());
+            throw new IllegalArgumentException(Constants.TOPIC_MODIFICATION_BY_CREATOR_ONLY);
+        }
         topic.setName(topicDto.getName());
         topic.setType(topicDto.getType());
         topic.setDescription(topicDto.getDescription());
@@ -133,29 +142,44 @@ public class TopicServiceImplementation implements TopicService {
 
     @Override
     public void archiveTopic(Long id) {
-        Topic topic = topicRepository.findOne(id);
+        Topic topic = findOne(id);
         topic.setArchive(true);
+        topicRepository.save(topic);
+    }
+
+    @Override
+    public void unarchiveTopic(Long id) {
+        Topic topic = findOne(id);
+        topic.setArchive(false);
         topicRepository.save(topic);
     }
 
     @Override
     public void addAttachment(Long topicId, AttachmentDto attachmentDto) {
         Attachment attachment = new Attachment(attachmentDto.getFileId(), attachmentDto.getName());
-        Topic topic = topicRepository.findOne(topicId);
+        Topic topic = findOne(topicId);
+        if (loggedInUserService.getLoggedInSupervisor().getId() != topic.getSupervisor().getId()) {
+            log.error("Topic can be modified only by its creator: {}, but attempted by {}", topicId, loggedInUserService.getLoggedInSupervisor().getId());
+            throw new IllegalArgumentException(Constants.TOPIC_MODIFICATION_BY_CREATOR_ONLY);
+        }
         topic.getAttachments().add(attachment);
         topicRepository.save(topic);
     }
 
     @Override
     public void removeAttachment(Long topicId, Long attachmentId) {
-        Topic topic = topicRepository.findOne(topicId);
+        Topic topic = findOne(topicId);
+        if (loggedInUserService.getLoggedInSupervisor().getId() != topic.getSupervisor().getId()) {
+            log.error("Topic can be modified only by its creator: {}, but attempted by {}", topicId, loggedInUserService.getLoggedInSupervisor().getId());
+            throw new IllegalArgumentException(Constants.TOPIC_MODIFICATION_BY_CREATOR_ONLY);
+        }
         topic.getAttachments().removeIf(a -> a.getId() == attachmentId);
         topicRepository.save(topic);
     }
 
     @Override
     public void applyStudent(Long topicId, Long studentId) {
-        Topic topic = topicRepository.findOne(topicId);
+        Topic topic = findOne(topicId);
         Student student = studentService.findOneById(studentId);
         topic.getAppliedStudents().add(student);
         topicRepository.save(topic);
@@ -164,7 +188,7 @@ public class TopicServiceImplementation implements TopicService {
 
     @Override
     public void removeApplication(Long topicId, Long studentId) {
-        Topic topic = topicRepository.findOne(topicId);
+        Topic topic = findOne(topicId);
         Student student = studentService.findOneById(studentId);
         topic.getAppliedStudents().remove(student);
         mailService.applicationCleared(student, topic);
@@ -173,7 +197,7 @@ public class TopicServiceImplementation implements TopicService {
 
     @Override
     public Set<StudentDto> getAppliedStudents(Long topicId) {
-        Topic topic = topicRepository.findOne(topicId);
+        Topic topic = findOne(topicId);
         return topic.getAppliedStudents()
                 .stream()
                 .map(student -> modelMapper.map(student, StudentDto.class))
@@ -189,16 +213,21 @@ public class TopicServiceImplementation implements TopicService {
     }
 
     @Override
-    public Set<TopicDto> getSupervisorTopics(Long supervisorId) {
+    public List<TopicDto> getSupervisorTopics(Long supervisorId) {
         return topicRepository.findBySupervisorId(supervisorId)
                 .stream()
                 .map(topic -> modelMapper.map(topic, TopicDto.class))
-                .collect(Collectors.toSet());
+                .sorted(Comparator.comparing(TopicDto::getId))
+                .collect(Collectors.toList());
     }
 
     @Override
     public void acceptApplication(Long topicId, Long studentId) {
-        Topic topic = topicRepository.findOne(topicId);
+        Topic topic = findOne(topicId);
+        if (loggedInUserService.getLoggedInSupervisor().getId() != topic.getSupervisor().getId()) {
+            log.error("Topic can be modified only by its creator: {}, but attempted by {}", topicId, loggedInUserService.getLoggedInSupervisor().getId());
+            throw new IllegalArgumentException(Constants.TOPIC_MODIFICATION_BY_CREATOR_ONLY);
+        }
         Student student = studentService.findOneById(studentId);
         topic.setStudent(student);
         topic.setStatus(TopicStatus.RESERVED);
@@ -212,10 +241,25 @@ public class TopicServiceImplementation implements TopicService {
 
     @Override
     public void setTopicDone(Long topicId) {
-        Topic topic = topicRepository.findOne(topicId);
-        if (topic.getStatus() != TopicStatus.RESERVED || topic.getStudent() == null) return;
+        Topic topic = findOne(topicId);
+        if (loggedInUserService.getLoggedInSupervisor().getId() != topic.getSupervisor().getId()) {
+            log.error("Topic can be modified only by its creator: {}, but attempted by {}", topicId, loggedInUserService.getLoggedInSupervisor().getId());
+            throw new IllegalArgumentException(Constants.TOPIC_MODIFICATION_BY_CREATOR_ONLY);
+        }
+        if (topic.getStatus() != TopicStatus.RESERVED || topic.getStudent() == null) {
+            log.error("Topic cannot be set done at its state: {}", topicId);
+            throw new IllegalStateException();
+        }
         topic.setStatus(TopicStatus.DONE);
         topicRepository.save(topic);
+    }
+
+    private Topic findOne(Long id) {
+        if (!topicRepository.exists(id)) {
+            log.error("No topic exists with id: {}", id);
+            throw new IllegalArgumentException(Constants.TOPIC_NOT_EXISTS);
+        }
+        return topicRepository.findOne(id);
     }
 
     private String buildQuery(TopicFilters filters, Pageable pageable, String sql) {

@@ -31,24 +31,16 @@ public class ExcelGeneratorService {
     }
 
     public byte[] generate() throws IOException {
-
         init();
 
         for (int sheetIndex = 0; sheetIndex < headers.size(); sheetIndex++) {
             createHeader(sheetIndex);
-
             writeData(sheetIndex);
-
             autoSizeColumns(sheetIndex);
         }
-
         return writeWbToOutput();
-
     }
 
-    /**
-     * Write data to excel.
-     */
     private void writeData(int sheetIndex) {
         //0 -> header
         int rowIndex = 1;
@@ -79,12 +71,6 @@ public class ExcelGeneratorService {
         }
     }
 
-    /**
-     * Write workbook to ServletOutputStream
-     *
-     * @return excel in byte[]
-     * @throws IOException if the OS is null
-     */
     private byte[] writeWbToOutput() throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         workbook.write(bos);
@@ -92,18 +78,12 @@ public class ExcelGeneratorService {
     }
 
 
-    /**
-     * Autosize columns
-     */
     private void autoSizeColumns(int sheetIndex) {
         for (int j = 0; j < headers.get(sheetIndex).getColumns().size(); j++) {
             sheets.get(sheetIndex).autoSizeColumn(j);
         }
     }
 
-    /**
-     * Creates workbook and sheets
-     */
     private void init() {
         workbook = new XSSFWorkbook();
         sheets = new ArrayList<>();
@@ -112,9 +92,6 @@ public class ExcelGeneratorService {
         }
     }
 
-    /**
-     * Create Header
-     */
     private void createHeader(int sheetIndex) {
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);

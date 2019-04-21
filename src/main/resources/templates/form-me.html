@@ -39,7 +39,7 @@
                 <div class="col-md-7">
                     <input type="text" class="form-control"
                     v-model="topic.name"
-                    v-bind:class="{error: $v.topic.name.$error}"/>
+                    :class="{error: $v.topic.name.$error}"/>
                 </div>
             </div>
             <div class="form-group row messages" v-if="$v.topic.name.$dirty &amp;&amp; !$v.topic.name.required">
@@ -54,9 +54,9 @@
                 <div class="col-md-4">
                     <select class="form-control"
                         v-model="topic.type"
-                        v-bind:class="{error: $v.topic.type.$error}">
+                        :class="{error: $v.topic.type.$error}">
                       <option disabled="true" selected='true'></option>
-                      <option v-for="type in values.types" v-bind:value="type.id">{{ type.name }}</option>
+                      <option v-for="type in values.types" :value="type.id">{{ type.name }}</option>
                     </select>
                 </div>
             </div>
@@ -72,9 +72,9 @@
                 <div class="col-md-5">
                     <select class="form-control"
                         v-model="topic.category"
-                        v-bind:class="{error: $v.topic.category.$error}">
+                        :class="{error: $v.topic.category.$error}">
                       <option disabled="true" selected='true'></option>
-                      <option v-for="category in values.categories" v-bind:value="category">{{ category.name }}</option>
+                      <option v-for="category in values.categories" :value="category">{{ category.name }}</option>
                     </select>
                 </div>
             </div>
@@ -90,7 +90,7 @@
                 <div class="col-md-7">
                     <textarea class="form-control"
                         v-model="topic.description"
-                        v-bind:class="{error: $v.topic.description.$error}"></textarea>
+                        :class="{error: $v.topic.description.$error}"></textarea>
                 </div>
             </div>
             <div class="form-group row messages" v-if="$v.topic.description.$dirty &amp;&amp; !$v.topic.description.required">
@@ -102,19 +102,19 @@
             
             <div class="form-group row" v-for="(attachment, index) in topic.attachments">
                 <label class="col-md-3 text-right col-form-label">{{ index == 0 ? 'mellékletek' : ''}}</label>
-                <div class="controls col-md-8">
-                    <a v-bind:href="getFileLink(attachment)">{{attachment.name}}</a>
+                <div class="col-md-8">
+                    <a :href="getFileLink(attachment)">{{attachment.name}}</a>
                 </div>
-                <div class="controls col-md-1">
+                <div class="col-md-1">
                     <span v-on:click="removeAttachment(index)"><i class="fas fa-times"></i></span>
                 </div>
             </div>
             <div class="form-group row" v-for="(file, index) in files">
                 <label class="control-label col-md-3">{{ index == 0 ? 'új mellékletek' : ''}}</label>
-                <div class="controls col-md-7">
-                    <input type="file" class="form-control" v-bind:id="'file_' + index"/>
+                <div class="col-md-7">
+                    <input type="file" class="form-control" :id="'file_' + index"/>
                 </div>
-                <div class="controls col-md-1">
+                <div class="col-md-1">
                     <span v-if="files.length > 1" v-on:click="removeFile(index)"><i class="fas fa-times"></i></span>
                     <span v-on:click="addFile"><i class="fas fa-plus"></i></span>
                 </div>
@@ -253,7 +253,7 @@
 
                             // if files are saved send topic
                             console.log(self.topic);
-                            axios.post(contextPath + 'api/supervisors/' + self.getSupervisorId() + '/topics', self.topic, apiHeader )
+                            axios.post(`${contextPath}api/supervisors/${self.getSupervisorId()}/topics`, self.topic, apiHeader )
                                 .then(function(response) {
                                     console.log(response);
                                     redirect(`${contextPath}topics/${response.data.id}`);

@@ -1,14 +1,17 @@
 package temakereso.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import temakereso.entity.Account;
 import temakereso.helper.AccountDto;
+import temakereso.helper.Constants;
 import temakereso.repository.AccountRepository;
 import temakereso.service.AccountService;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImplementation implements AccountService {
@@ -21,15 +24,13 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public void createAccount(Account account) {
+        if (accountRepository.existsByUsername(account.getUsername())) {
+            log.error("User already exists by username: {}", account.getUsername());
+            throw new IllegalArgumentException(Constants.DUPLICATED_USERNAME);
+        }
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         accountRepository.save(account);
-    }
-
-    @Override
-    public void modifyEmail(String username, String email) {
-        Account savedAccount = null; // TODO accountRepository.findByUsername(username);
-        savedAccount.setEmail(email);
-        accountRepository.save(savedAccount);
+        log.info("Account created with username: {}", account.getUsername());
     }
 
     @Override
@@ -40,7 +41,7 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public AccountDto findById(Long id) {
         Account account = accountRepository.findOne(id);
-        return account != null ? modelMapper.map(account, AccountDto.class) : null;
+        return modelMapper.map(account, AccountDto.class);
     }
 
 }

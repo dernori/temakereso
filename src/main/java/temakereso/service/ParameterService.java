@@ -15,24 +15,55 @@ public interface ParameterService {
      */
     List<Parameter> getAll();
 
-    // TODO
+    /**
+     * Returns the id of the BSc topic form
+     *
+     * @return id of the BSc topic form
+     */
     Long getBscTopicFormId();
 
-    // TODO
+    /**
+     * Returns the id of the MSc topic form
+     *
+     * @return id of the MSc topic form
+     */
     Long getMscTopicFormId();
 
-    // TODO
+    /**
+     * Returns the id of the BSc consultation form
+     *
+     * @return id of the BSc consultation form
+     */
     Long getBscConsultationFormId();
 
-    // TODO
+    /**
+     * Returns the id of the MSc consultation form
+     *
+     * @return id of the MSc consultation form
+     */
     Long getMscConsultationFormId();
 
-    // TODO
+    /**
+     * Returns the timeout of topic archiving.
+     *
+     * @return timeout of topic archiving
+     */
     Integer getArchiveTimeout();
 
-    // TODO
+    /**
+     * Modifies the form connected to the given type of forms.
+     *
+     * @param identifier identifier of form
+     * @param file       file connected to form
+     * @throws IOException when file could not be saved
+     */
     void modifyForm(String identifier, MultipartFile file) throws IOException;
 
-    // TODO
+    /**
+     * Finds a parameter by its identifier.
+     *
+     * @param identifier identifier of parameter
+     * @return parameter with the given identifier
+     */
     Parameter findByIdentifier(String identifier);
 }

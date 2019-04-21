@@ -1,6 +1,7 @@
 package temakereso.restcontroller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,33 +24,13 @@ public class SupervisorController {
 
     // ------------------------ GET -------------------------- //
 
-    /**
-     * Returns supervisors <br>
-     * If filters are not given all the supervisors will be returned
-     *
-     * @return a page of supervisors
-     */
+    @PreAuthorize("hasAnyRole('ROLE_SUPERVISOR', 'ROLE_STUDENT')")
     @GetMapping(path = "/supervisors")
     public List<SupervisorDto> getSupervisors() {
         return supervisorService.getAll();
     }
 
-    /**
-     * Returns a supervisor selected by its id
-     *
-     * @param id
-     * @return a supervisor
-     */
-    @GetMapping(path = "/supervisors/{id}")
-    public SupervisorDto getSupervisor(@PathVariable(name = "id") Long id) {
-        return supervisorService.getOneById(id);
-    }
-
-    /**
-     * Returns the unconfirmed supervisors
-     *
-     * @return a list of supervisors
-     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(path = "/supervisors/unconfirmed")
     public List<SupervisorDto> getUnconfirmedSupervisors() {
         return supervisorService.getUnconfirmed();
@@ -57,12 +38,6 @@ public class SupervisorController {
 
     // ------------------------ POST ------------------------- //
 
-    /**
-     * Saves the given supervisor
-     *
-     * @param supervisor to be saved
-     * @return saved supervisor
-     */
     @PostMapping(path = "/supervisors")
     public SupervisorDto createSupervisor(@RequestBody Supervisor supervisor) {
         return supervisorService.createSupervisor(supervisor);
@@ -70,22 +45,7 @@ public class SupervisorController {
 
     // ------------------------ PUT -------------------------- //
 
-    /**
-     * Modifies the given supervisor
-     *
-     * @param supervisor to be modified
-     * @return modified supervisor
-     */
-    @PutMapping(path = "/supervisors")
-    public SupervisorDto modifySupervisor(@RequestBody Supervisor supervisor) {
-        return supervisorService.modifySupervisor(supervisor);
-    }
-
-    /**
-     * Comfirms the supervisor selected by its id
-     *
-     * @param id
-     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping(path = "/supervisors/{id}/confirm")
     public void confirmSupervisor(@PathVariable(name = "id") Long id) {
         supervisorService.confirm(id);

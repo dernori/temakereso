@@ -12,6 +12,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import temakereso.entity.Account;
+import temakereso.helper.Constants;
 import temakereso.service.MailSenderService;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class MailSenderServiceImplementation implements MailSenderService {
     public void sendMail(Account fromAccount, Account toAccount, String subjectStr, String bodyStr) {
         if (toAccount.getEmail() == null) {
             log.error("Message could not be sent to {} as no email address was provided", fromAccount.getUsername(), toAccount.getUsername());
-            return;
+            throw new IllegalArgumentException(Constants.SENDER_ADDRESS_NOT_PROVIDED);
         }
         sendMail(fromAccount.getEmail() != null ? fromAccount.getEmail() : systemEmail, toAccount.getEmail(), subjectStr, bodyStr);
     }
@@ -54,12 +55,11 @@ public class MailSenderServiceImplementation implements MailSenderService {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             Response response = sg.api(request);
-            System.out.println(response.getStatusCode());
-            System.out.println(response.getBody());
-            System.out.println(response.getHeaders());
+            log.info("Mail api request status code: {}", response.getStatusCode());
         } catch (IOException ex) {
             log.error("Mail could not be sent.");
             ExceptionUtils.printRootCauseStackTrace(ex);
+            throw new IllegalArgumentException(Constants.MAIL_COULD_NOT_BE_SENT);
         }
     }
 

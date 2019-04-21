@@ -1,6 +1,7 @@
 package temakereso.restcontroller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -59,11 +60,13 @@ public class ConstantController {
 
     // ------------------------ POST -------------------------- //
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(path = "/categories")
     public void createCategory(@RequestBody Category category) {
         categoryService.createCategory(category);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(path = "/departments")
     public void createDepartment(@RequestBody Department department) {
         departmentService.createDepartment(department);
@@ -71,11 +74,13 @@ public class ConstantController {
 
     // ------------------------ PUT -------------------------- //
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping(path = "/categories")
     public void modifyCategory(@RequestBody Category category) {
         categoryService.modifyCategory(category);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping(path = "/departments")
     public void modifyDepartment(@RequestBody Department department) {
         departmentService.modifyDepartment(department);

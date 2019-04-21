@@ -1,9 +1,11 @@
 package temakereso.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import temakereso.entity.Parameter;
+import temakereso.helper.Constants;
 import temakereso.repository.ParameterRepository;
 import temakereso.service.FileService;
 import temakereso.service.ParameterService;
@@ -11,6 +13,7 @@ import temakereso.service.ParameterService;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ParameterServiceImplementation implements ParameterService {
@@ -26,6 +29,10 @@ public class ParameterServiceImplementation implements ParameterService {
 
     @Override
     public Parameter findByIdentifier(String identifier) {
+        if (!parameterRepository.existsByIdentifier(identifier)) {
+            log.error("No parameter exists with identier: {}", identifier);
+            throw new IllegalArgumentException(Constants.PARAMETER_NOT_EXISTS);
+        }
         return parameterRepository.findByIdentifier(identifier);
     }
 

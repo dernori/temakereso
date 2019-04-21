@@ -1,6 +1,7 @@
 package temakereso.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.CharacterRun;
 import org.apache.poi.hwpf.usermodel.Paragraph;
@@ -8,6 +9,7 @@ import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.hwpf.usermodel.Section;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.stereotype.Service;
+import temakereso.helper.Constants;
 import temakereso.helper.ConsultationForm;
 import temakereso.helper.Form;
 import temakereso.helper.FormLevel;
@@ -21,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FormFillerServiceImplementation implements FormFillerService {
@@ -47,10 +50,9 @@ public class FormFillerServiceImplementation implements FormFillerService {
             }
             return saveWord();
         } catch (IOException e) {
-            // TODO normal LOGGING!!
-            e.printStackTrace();
+            log.error("Error while filling the form:", e);
+            throw new IllegalArgumentException(Constants.FORM_FILLING_ERROR);
         }
-        return null;
     }
 
     private byte[] getFileToFill(Form form) {

@@ -1,11 +1,13 @@
 package temakereso.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import temakereso.entity.Role;
 import temakereso.entity.Student;
+import temakereso.helper.Constants;
 import temakereso.helper.StudentDto;
 import temakereso.helper.TopicDto;
 import temakereso.repository.StudentRepository;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StudentServiceImplementation implements StudentService {
@@ -39,6 +42,10 @@ public class StudentServiceImplementation implements StudentService {
 
     @Override
     public StudentDto createStudent(Student student) {
+        if (student.getId() != null) {
+            log.error("Student has id: {}", student.getId());
+            throw new IllegalArgumentException(Constants.STUDENT_ALREADY_EXISTS);
+        }
         Role studentRole = roleService.findByName("STUDENT");
         student.getAccount().setRoles(Arrays.asList(studentRole != null ? studentRole : new Role("STUDENT")));
         student.getAccount().setPassword(passwordEncoder.encode(student.getAccount().getPassword()));
@@ -46,18 +53,8 @@ public class StudentServiceImplementation implements StudentService {
     }
 
     @Override
-    public StudentDto modifyStudent(Student student) {
-        return modelMapper.map(studentRepository.save(student), StudentDto.class);
-    }
-
-    @Override
     public StudentDto getOneById(Long id) {
         return modelMapper.map(studentRepository.findOne(id), StudentDto.class);
-    }
-
-    @Override
-    public StudentDto getByUsername(String username) {
-        return modelMapper.map(studentRepository.getByUsername(username), StudentDto.class);
     }
 
     @Override
@@ -76,7 +73,6 @@ public class StudentServiceImplementation implements StudentService {
         return student != null ? modelMapper.map(student, StudentDto.class) : null;
     }
 
-    // DO NOT FORGET csak belső használatra, mapper nélkül!!
     @Override
     public Student findOneById(Long studentId) {
         return studentRepository.findOne(studentId);

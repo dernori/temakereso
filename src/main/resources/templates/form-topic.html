@@ -10,7 +10,7 @@
 
 <main id="form-topic" class="container" role="main" style="display: none;">
 
-    <h2 class="text-center topic-list">{{topic.id ? 'téma szerkesztése' : 'új téma'}}</h2>
+    <h2 class="text-center">{{topic.id ? 'téma szerkesztése' : 'új téma'}}</h2>
 
     <form>
         <div class="form-group row">
@@ -80,18 +80,17 @@
             </div>
         </div>
 
-        <div class="form-group row" v-if="topic.id" v-for="(attachment, index) in attachments" :key="index">
+        <div class="row" v-for="(attachment, index) in attachments" :key="index">
             <label class="col-md-3 my-0 py-0 text-right col-form-label">{{ index == 0 ? 'mellékletek' : ''}}</label>
-            <div class="controls col-md-7">
+            <div class="inline-controls col-md-7">
+                <span v-on:click="removeAttachment(attachment.id)" title="melléklet törlése"><i class="fas fa-times"></i></span>
                 <a :href="getFileLink(attachment)">{{attachment.name}}</a>
             </div>
-            <div class="controls col-md-1">
-                <span v-on:click="removeAttachment(attachment.id)"><i class="fas fa-times"></i></span>
-            </div>
         </div>
+
         <div class="form-group row" v-if="topic.id">
             <label class="control-label col-md-3">új melléklet</label>
-            <div class="controls col-md-7">
+            <div class="col-md-7">
                 <input type="file" class="form-control" v-on:change="saveAttachment" ref="file"/>
             </div>
         </div>
@@ -235,7 +234,7 @@
               this.$refs.file.value = '';
               console.log(response)
               let attachment = { name: response.data.name, fileId: response.data.fileId }
-              axios.post(contextPath + 'api/topics/' + this.topic.id + '/attachments', attachment)
+              axios.post(`${contextPath}api/topics/${this.topic.id}/attachments`, attachment)
                 .then(function (response) {
                   console.log(response)
                   this.getTopic()

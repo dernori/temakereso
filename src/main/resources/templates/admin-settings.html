@@ -8,77 +8,57 @@
 
 <main id="admin-settings" class="container" role="main" style="display: none;">
 
-    <div class="row">
-        <div class="col-md-8">
-            <h1>sablonok</h1>
-        </div>
-    </div>
+    <h2 class="text-center mb-4">sablonok</h2>
 
     <div class="row mt-4" v-if="parameters.bscTopicForm">
         <label class="control-label col-md-3 text-right">BSc. témabejelentő</label>
-        <div class="col-md-9"><a v-bind:href="getFileLink(parameters.bscTopicForm)">jelenlegi dokumentum</a></div>
+        <div class="col-md-9"><a :href="getFileLink(parameters.bscTopicForm)">jelenlegi dokumentum</a></div>
     </div>
     <div class="form-group row">
-        <label class="control-label col-md-3 file-uploader-label">új BSc. témabejelentő feltöltése</label>
-        <div class="controls col-md-4">
-            <input type="file" class="form-control" id="bsc_topic_form"/>
-        </div>
-        <div class="col-md-3">
-            <input type="button" class="btn btn-primary simple-button" v-on:click="saveForm('bsc_topic')" value="feltöltés"/>
+        <label class="control-label col-md-3 file-uploader-label">új feltöltése</label>
+        <div class="col-md-7">
+            <input type="file" class="form-control" id="bsc_topic_form" v-on:change="saveForm('bsc_topic')" ref="file"/>
         </div>
     </div>
 
     <div class="row mt-4" v-if="parameters.mscTopicForm">
         <label class="control-label col-md-3 text-right">MSc. témabejelentő</label>
-        <div class="col-md-9"><a v-bind:href="getFileLink(parameters.mscTopicForm)">jelenlegi dokumentum</a></div>
+        <div class="col-md-9"><a :href="getFileLink(parameters.mscTopicForm)">jelenlegi dokumentum</a></div>
     </div>
     <div class="form-group row">
-        <label class="control-label col-md-3 file-uploader-label">új MSc. témabejelentő feltöltése</label>
-        <div class="controls col-md-4">
-            <input type="file" class="form-control" id="msc_topic_form"/>
-        </div>
-        <div class="col-md-3">
-            <input type="button" class="btn btn-primary simple-button" v-on:click="saveForm('msc_topic')" value="feltöltés"/>
+        <label class="control-label col-md-3 file-uploader-label">új feltöltése</label>
+        <div class="col-md-7">
+            <input type="file" class="form-control" id="msc_topic_form" v-on:change="saveForm('msc_topic')" ref="file"/>
         </div>
     </div>
 
     <div class="row mt-4" v-if="parameters.bscConsultationForm">
         <label class="control-label col-md-3 text-right">BSc. konzultációs lap</label>
-        <div class="col-md-9"><a v-bind:href="getFileLink(parameters.bscTopicForm)">jelenlegi dokumentum</a></div>
+        <div class="col-md-9"><a :href="getFileLink(parameters.bscTopicForm)">jelenlegi dokumentum</a></div>
     </div>
     <div class="form-group row">
-        <label class="control-label col-md-3 file-uploader-label">új BSc. konzultációs lap feltöltése</label>
-        <div class="controls col-md-4">
-            <input type="file" class="form-control" id="bsc_consultation_form"/>
-        </div>
-        <div class="col-md-3">
-            <input type="button" class="btn btn-primary simple-button" v-on:click="saveForm('bsc_consultation')" value="feltöltés"/>
+        <label class="control-label col-md-3 file-uploader-label">új feltöltése</label>
+        <div class="col-md-7">
+            <input type="file" class="form-control" id="bsc_consultation_form" v-on:change="saveForm('bsc_consultation')" ref="file"/>
         </div>
     </div>
 
     <div class="row mt-4" v-if="parameters.mscConsultationForm">
         <label class="control-label col-md-3 text-right">MSc. konzultációs lap</label>
-        <div class="col-md-9"><a v-bind:href="getFileLink(parameters.mscConsultationForm)">jelenlegi dokumentum</a></div>
+        <div class="col-md-9"><a :href="getFileLink(parameters.mscConsultationForm)">jelenlegi dokumentum</a></div>
     </div>
     <div class="form-group row">
-        <label class="control-label col-md-3 file-uploader-label">új MSc. konzultációs lap feltöltése</label>
-        <div class="controls col-md-4">
-            <input type="file" class="form-control" id="msc_consultation_form"/>
-        </div>
-        <div class="col-md-3">
-            <input type="button" class="btn btn-primary simple-button" v-on:click="saveForm('msc_consultation')" value="feltöltés"/>
+        <label class="control-label col-md-3 file-uploader-label">új feltöltése</label>
+        <div class="col-md-7">
+            <input type="file" class="form-control" id="msc_consultation_form" v-on:change="saveForm('msc_consultation')" ref="file"/>
         </div>
     </div>
 
     <form v-if="supervisors.length > 0">
-        <div class="row mt-5">
-            <div class="col-md-8">
-                <h1>hitelesítés</h1>
-            </div>
-        </div>
+        <h2 class="text-center mt-5 mb-4">hitelesítés</h2>
         <div class="table-responsive">
             <table class="table">
-                <thead>
+                <thead class="thead-light">
                 <tr>
                     <th>#</th>
                     <th>név</th>
@@ -103,8 +83,8 @@
                     <td>{{supervisor.email}}</td>
                     <td>{{supervisor.phone}}</td>
                     <td>{{supervisor.website}}</td>
-                    <td>
-                        <button class="btn btn-primary simple-button" v-on:click="confirm(supervisor)">hitelesít</button>
+                    <td class="text-right">
+                        <span class="clickable" v-on:click="confirm(supervisor)" title="hitelesít"><i class="fas fa-check"></i></span>
                     </td>
                 </tr>
                 </tbody>
@@ -113,33 +93,29 @@
     </form>
 
     <form>
-        <div class="row mt-5">
-            <div class="col-md-8">
-                <h1>kategóriák</h1>
-            </div>
-        </div>
+        <h2 class="text-center mt-5 mb-4">kategóriák</h2>
         <div class="table-responsive">
             <table class="table">
-                <thead>
+                <thead class="thead-light">
                 <tr>
                     <th>#</th>
                     <th>megnevezés</th>
-                    <th>műveletek</th>
+                    <th  style="width: 90px">műveletek</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="(category, index) in categories" :key="index">
                     <td>{{category.id}}</td>
-                    <td><input type="text" class="form-control" v-model:value="category.name"/></td>
-                    <td>
-                        <button class="btn btn-primary simple-button" v-on:click="saveCategory(category)">mentés</button>
+                    <td class="td-input"><input type="text" class="form-control" v-model:value="category.name"/></td>
+                    <td class="text-right">
+                        <span class="clickable" v-on:click="saveCategory(category)" title="mentés"><i class="fas fa-save"></i></span>
                     </td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><input type="text" class="form-control" v-model:value="newCategory.name"/></td>
-                    <td>
-                        <button class="btn btn-primary simple-button" v-on:click="saveCategory(newCategory)">mentés</button>
+                    <td class="td-input"><input type="text" class="form-control" v-model:value="newCategory.name"/></td>
+                    <td class="text-right">
+                        <span class="clickable" v-on:click="saveCategory(newCategory)" title="mentés"><i class="fas fa-save"></i></span>
                     </td>
                 </tr>
                 </tbody>
@@ -148,33 +124,29 @@
     </form>
 
     <form>
-        <div class="row mt-5">
-            <div class="col-md-8">
-                <h1>tanszékek</h1>
-            </div>
-        </div>
+        <h2 class="text-center mt-5 mb-4">tanszékek</h2>
         <div class="table-responsive">
             <table class="table">
-                <thead>
+                <thead class="thead-light">
                 <tr>
                     <th>#</th>
                     <th>megnevezés</th>
-                    <th>műveletek</th>
+                    <th style="width: 90px">műveletek</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="(department, index) in departments" :key="index">
                     <td>{{department.id}}</td>
-                    <td><input type="text" class="form-control" v-model:value="department.name"/></td>
-                    <td>
-                        <button class="btn btn-primary simple-button" v-on:click="saveDepartment(department)">mentés</button>
+                    <td class="td-input"><input type="text" class="form-control" v-model:value="department.name"/></td>
+                    <td class="text-right">
+                        <span class="clickable" v-on:click="saveDepartment(department)" title="mentés"><i class="fas fa-save"></i></span>
                     </td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><input type="text" class="form-control" v-model:value="newDepartment.name"/></td>
-                    <td>
-                        <button class="btn btn-primary simple-button" v-on:click="saveDepartment(newDepartment)">mentés</button>
+                    <td class="td-input"><input type="text" class="form-control" v-model:value="newDepartment.name"/></td>
+                    <td class="text-right">
+                        <span class="clickable" v-on:click="saaveDepartment(newDepartment)" title="mentés"><i class="fas fa-save"></i></span>
                     </td>
                 </tr>
                 </tbody>
@@ -244,31 +216,31 @@
     },
     methods: {
       getUnconfirmedSupervisors: function () {
-        axios.get(contextPath + 'api/supervisors/unconfirmed')
+        axios.get(`${contextPath}api/supervisors/unconfirmed`)
           .then(function (response) {
             this.supervisors = response.data
           }.bind(this))
       },
       getCategories: function () {
-        axios.get(contextPath + 'api/constants/categories')
+        axios.get(`${contextPath}api/constants/categories`)
           .then(function (response) {
             this.categories = response.data
           }.bind(this))
       },
       getDepartments: function () {
-        axios.get(contextPath + 'api/constants/departments')
+        axios.get(`${contextPath}api/constants/departments`)
           .then(function (response) {
             this.departments = response.data
           }.bind(this))
       },
       getParameterValue: function (identifier) {
-        return axios.get(contextPath + 'api/parameters/' + identifier)
+        return axios.get(`${contextPath}api/parameters/${identifier}`)
       },
       getFileLink: function (id) {
-        return contextPath + 'api/files/' + id
+        return `${contextPath}api/files/${id}`
       },
       confirm: function (supervisor) {
-        axios.put(contextPath + 'api/supervisors/' + supervisor.id + '/confirm')
+        axios.put(`${contextPath}api/supervisors/${supervisor.id}/confirm`)
           .then(function () {
             this.getUnconfirmedSupervisors()
           }.bind(this))
@@ -278,14 +250,14 @@
         console.log(category)
         let promise = null
         if (category.id) {
-          promise = axios.put(contextPath + 'api/constants/categories', category)
+          promise = axios.put(`${contextPath}api/constants/categories`, category)
         } else {
-          promise = axios.post(contextPath + 'api/constants/categories', category)
+          promise = axios.post(`${contextPath}api/constants/categories`, category)
         }
         promise
           .then(function (response) {
             console.log(response)
-            redirect(contextPath + 'settings')
+            redirect(`${contextPath}settings`)
           })
       },
       saveDepartment: function (department) {
@@ -293,28 +265,28 @@
         console.log(department)
         let promise = null
         if (department.id) {
-          promise = axios.put(contextPath + 'api/constants/departments', department)
+          promise = axios.put(`${contextPath}api/constants/departments`, department)
         } else {
-          promise = axios.post(contextPath + 'api/constants/departments', department)
+          promise = axios.post(`${contextPath}api/constants/departments`, department)
         }
         promise
           .then(function (response) {
             console.log(response)
-            redirect(contextPath + 'settings')
+            redirect(`${contextPath}settings`)
           })
       },
       saveForm: function (type) {
         // TODO validation
         console.log(type)
         let data = new FormData()
-        let currentFile = $('#' + type + '_form')[0]
+        let currentFile = $(`#${type}_form`)[0]
         console.log(currentFile)
         if (currentFile && currentFile.files[0] != null) {
           data.append('file', currentFile.files[0])
-          axios.put(contextPath + 'api/parameters/' + type.toUpperCase() + '_FORM', data)
+          axios.put(`${contextPath}api/parameters/${type.toUpperCase()}_FORM`, data)
             .then(function (response) {
               console.log(response.data)
-              redirect(contextPath + 'settings')
+              redirect(`${contextPath}settings`)
             })
         }
       }

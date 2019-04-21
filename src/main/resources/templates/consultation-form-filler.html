@@ -10,7 +10,7 @@
 
 <main id="consultation-form-filler" class="container" role="main" style="display: none;">
 
-    <h2 class="text-center topic-list">konzultációs lap kitöltése</h2>
+    <h2 class="text-center">konzultációs lap kitöltése</h2>
 
     <form>
         <div class="form-group row">
@@ -64,7 +64,7 @@
         <div class="form-group row">
             <label class="col-md-3 col-form-label"></label>
             <div class="col-md-7">
-                <a class="btn btn-primary simple-button" v-bind:href="fillForm()">kitöltés</a>
+                <a class="btn btn-primary simple-button" :href="fillForm()">kitöltés</a>
             </div>
         </div>
     </form>
@@ -108,7 +108,7 @@
     },
     methods: {
       getTopic: function () {
-        axios.get(contextPath + 'api/topics/' + this.getTopicId())
+        axios.get(`${contextPath}api/topics/${this.getTopicId()}`)
           .then(function (response) {
             let topic = response.data
             console.log(topic)
@@ -118,7 +118,7 @@
           }.bind(this))
       },
       getStudent: function () {
-        axios.get(contextPath + 'api/me/student/')
+        axios.get(`${contextPath}api/me/student/`)
           .then(function (response) {
             let student = response.data
             this.form.name = student.name

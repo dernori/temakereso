@@ -10,6 +10,7 @@ public interface FileService {
 
     /**
      * Saves file to the database
+     *
      * @param file to be saved
      * @return if of the saved file
      * @throws IOException when file could not be saved
@@ -18,6 +19,7 @@ public interface FileService {
 
     /**
      * Returns a file by its id
+     *
      * @param id of file
      * @return file
      */
