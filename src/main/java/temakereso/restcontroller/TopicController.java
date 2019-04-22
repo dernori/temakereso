@@ -43,7 +43,6 @@ public class TopicController {
         return topicService.getOneById(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
     @GetMapping(path = "/topics/{id}/students")
     public Set<StudentDto> getAppliedStudents(@PathVariable(name = "id") Long topicId) {
         return topicService.getAppliedStudents(topicId);

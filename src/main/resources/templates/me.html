@@ -8,9 +8,11 @@
 
 <main id="me" class="container" role="main" style="display: none;">
 
+    <div th:replace="fragments/notifications :: notifications"></div>
+
     <section v-if="account">
 
-        <h2 class="text-center">{{account.name}}</h2>
+        <h2 class="text-center mb-4">{{account.name}}</h2>
 
         <div class="row">
             <label class="control-label col-md-3 text-right">felhasználónév</label>
@@ -96,34 +98,57 @@
 <script>
 
   /*<![CDATA[*/
-  var app = new Vue({
+  new Vue({
     el: '#me',
     data: {
       account: null,
 
       supervisor: null,
-      student: null
+      student: null,
+
+      messages: [],
+      errors: []
     },
     created: function () {
       this.getAccount()
         .then(function (response) {
           this.account = response.data
         }.bind(this))
+        .catch(function (error) {
+          console.log(error)
+          this.showError(error.response.data.error)
+        }.bind(this))
 
       this.getSupervisor()
         .then(function (response) {
           this.supervisor = response.data
+        }.bind(this))
+        .catch(function (error) {
+          console.log(error)
+          this.showError(error.response.data.error)
         }.bind(this))
 
       this.getStudent()
         .then(function (response) {
           this.student = response.data
         }.bind(this))
+        .catch(function (error) {
+          console.log(error)
+          this.showError(error.response.data.error)
+        }.bind(this))
     },
     mounted: function () {
       setDisplay('#me', 'block') // it doesn't show up by default
     },
     methods: {
+      showError: function (text) {
+        this.errors.push({ text: text})
+      },
+      showMessage: function (text) {
+        let id = 'message-' + new Date().getTime()
+        this.messages.push({ id: id, text: text})
+        hideMessage(id)
+      },
       getAccount: function () {
         return axios.get(`${contextPath}api/me`)
       },

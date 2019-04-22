@@ -27,4 +27,7 @@ public class Parameter {
     @Column(length = 250, nullable = false)
     private String description;
 
+    @Column(nullable = false)
+    private boolean modifiable = true;
+
 }

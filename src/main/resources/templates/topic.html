@@ -10,9 +10,11 @@
 
 <main id="view-topic" class="container" role="main" style="display: none;">
 
+    <div th:replace="fragments/notifications :: notifications"></div>
+
     <section v-if="topic &amp;&amp; appliedStudents">
 
-        <h2 class="text-center">{{topic.name}}</h2>
+        <h2 class="text-center mb-4">{{topic.name}}</h2>
 
         <div class="row justify-content-center button-row">
             <input type="button" class="btn btn-primary simple-button"
@@ -155,13 +157,16 @@
 <script>
 
   /*<![CDATA[*/
-  var app = new Vue({
+  new Vue({
     el: '#view-topic',
     data: {
       topic: null,
       appliedStudents: null,
       student: null,
-      supervisor: null
+      supervisor: null,
+
+      messages: [],
+      errors: []
     },
     computed: {
       isTopicFree: function () {
@@ -183,62 +188,96 @@
       setDisplay('#view-topic', 'block'); // it doesn't show up by default
     },
     methods: {
+      showError: function (text) {
+        this.errors.push({ text: text})
+      },
+      showMessage: function (text) {
+        let id = 'message-' + new Date().getTime()
+        this.messages.push({ id: id, text: text})
+        hideMessage(id)
+      },
       getTopic: function () {
         axios.get(`${contextPath}api/topics/${this.getTopicId()}`)
           .then(function (response) {
-            this.topic = response.data;
-          }.bind(this));
+            this.topic = response.data
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       getTopicId: function () {
         let topic = $('#topic')[0];
-        return (topic ? topic.innerHTML : -1);
+        return (topic ? topic.innerHTML : -1)
       },
       getStudent: function () {
         axios.get(`${contextPath}api/me/student`)
           .then(function (response) {
-            this.student = response.data;
-          }.bind(this));
+            this.student = response.data
+          }.bind(this))
+          .catch(function (error) {
+          console.log(error)
+          this.showError(error.response.data.error)
+        }.bind(this))
       },
       getSupervisor: function () {
         axios.get(`${contextPath}api/me/supervisor`)
           .then(function (response) {
-            this.supervisor = response.data;
-          }.bind(this));
+            this.supervisor = response.data
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       getAppliedStudents: function () {
         axios.get(`${contextPath}api/topics/${this.getTopicId()}/students`)
           .then(function (response) {
             console.log(response.data)
-            this.appliedStudents = response.data;
-          }.bind(this));
+            this.appliedStudents = response.data
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       getFileLink: function (attachment) {
-        return `${contextPath}api/files/${attachment.fileId}`;
+        return `${contextPath}api/files/${attachment.fileId}`
       },
       formatDate: function (longTime, formatText) {
-        return formatDate(longTime, formatText);
+        return formatDate(longTime, formatText)
       },
       formatBoolean: function (value) {
-        return value != null ? (value == true ? 'igen' : 'nem') : '';
+        return value != null ? (value == true ? 'igen' : 'nem') : ''
       },
       fillTopicForm: function () {
-        redirect(`${contextPath}forms/topics/${this.getTopicId()}`);
+        redirect(`${contextPath}forms/topics/${this.getTopicId()}`)
       },
       fillConsultationForm: function () {
-        redirect(`${contextPath}forms/consultation/${this.getTopicId()}`);
+        redirect(`${contextPath}forms/consultation/${this.getTopicId()}`)
       },
       applyStudent: function () {
         if (!this.student.id) return; // error message
         axios.post(`${contextPath}api/topics/${this.getTopicId()}/students`, {studentId: this.student.id})
           .then(function (response) {
-            this.getAppliedStudents();
-          }.bind(this));
+            this.getAppliedStudents()
+            this.showMessage()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       acceptApplication: function (student) {
         axios.put(`${contextPath}api/topics/${this.getTopicId()}/student`, {studentId: student.id})
           .then(function (response) {
-            this.getTopic();
-          }.bind(this));
+            this.getTopic()
+            this.showMessage()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       }
     }
   });

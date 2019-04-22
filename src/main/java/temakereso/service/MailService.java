@@ -1,9 +1,11 @@
 package temakereso.service;
 
+import temakereso.entity.Account;
 import temakereso.entity.Student;
 import temakereso.entity.Topic;
 import temakereso.helper.MailDto;
 
+import java.util.List;
 import java.util.Set;
 
 public interface MailService {
@@ -41,9 +43,22 @@ public interface MailService {
     void applicationCleared(Set<Student> students, Topic topic);
 
     /**
+     * Sends a mail to administrators when a supervisor registered.
+     */
+    void supervisorRegistered();
+
+    /**
      * Sends a mail with the given data.
      *
      * @param mailDto data of the mail to be sent
      */
     void sendSimpleMail(MailDto mailDto);
+
+    /**
+     * Reminds administrators.
+     */
+    void remindAdministrators();
+
+    void remindAccounts(List<Account> accounts);
+
 }

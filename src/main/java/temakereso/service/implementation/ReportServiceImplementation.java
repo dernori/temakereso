@@ -52,8 +52,8 @@ public class ReportServiceImplementation implements ReportService {
                     topic.getSupervisor().getWorkplace(),
                     topic.getStudent() != null ? topic.getStudent().getName() : "",
                     topic.getStudent() != null ? topic.getStudent().getCode() : "",
-                    formatDate(topic.getCreationDate()),
-                    formatDate(topic.getLastModificationDate())
+                    topic.getCreationDate() != null ? formatDate(topic.getCreationDate()) : "",
+                    topic.getLastModificationDate() != null ? formatDate(topic.getLastModificationDate()) : ""
             ));
         }
         return new ReportData(Arrays.asList(headerData), Arrays.asList(data));

@@ -8,7 +8,9 @@
 
 <main id="supervisor-topics" class="container" role="main" style="display: none;">
 
-    <h2 class="text-center">témáim</h2>
+    <div th:replace="fragments/notifications :: notifications"></div>
+
+    <h2 class="text-center mb-4">témáim</h2>
 
     <div class="table-responsive" v-if="topics &amp;&amp; topics.length > 0">
         <table class="table table-hover">
@@ -52,14 +54,14 @@
 <script>
 
   /*<![CDATA[*/
-  var app = new Vue({
+  new Vue({
     el: '#supervisor-topics',
     data: {
       topics: null,
-      supervisor: null
+      supervisor: null,
 
-      // messages: [],
-      // errors: []
+      messages: [],
+      errors: []
     },
     created: function () {
       this.getSupervisor()
@@ -69,9 +71,17 @@
         }.bind(this))
     },
     mounted: function () {
-      setDisplay('#supervisor-topics', 'block'); // it doesn't show up by default
+      setDisplay('#supervisor-topics', 'block') // it doesn't show up by default
     },
     methods: {
+      showError: function (text) {
+        this.errors.push({ text: text})
+      },
+      showMessage: function (text) {
+        let id = 'message-' + new Date().getTime()
+        this.messages.push({ id: id, text: text})
+        hideMessage(id)
+      },
       getSupervisor: function () {
         return axios.get(`${contextPath}api/me/supervisor/`)
       },
@@ -79,36 +89,55 @@
         axios.get(`${contextPath}api/supervisors/${this.supervisor.id}/topics`)
           .then(function (response) {
             this.topics = response.data;
-          }.bind(this));
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       getTopicLink: function (topic) {
-        return `${contextPath}topics/${topic.id}`;
+        return `${contextPath}topics/${topic.id}`
       },
       formatBoolean: function (value) {
-        return value != null ? (value == true ? 'igen' : 'nem') : '';
+        return value != null ? (value == true ? 'igen' : 'nem') : ''
       },
       isTopicInProgress: function(topic) {
         return topic.status.id === 'RESERVED' && topic.student !== null
       },
       editTopic: function (id) {
-        redirect(`${contextPath}topics/${id}/edit`);
+        redirect(`${contextPath}topics/${id}/edit`)
       },
       setStatusDone: function (id) {
         axios.put(`${contextPath}api/topics/${id}/done`)
           .then(function (response) {
             this.getSupervisorTopics()
-          }.bind(this));
+            this.showMessage()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       archiveTopic: function (id) {
         axios.delete(`${contextPath}api/topics/${id}`)
           .then(function (response) {
             this.getSupervisorTopics()
+            this.showMessage()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
           }.bind(this))
       },
       unarchiveTopic: function (id) {
         axios.put(`${contextPath}api/topics/${id}/unarchive`)
           .then(function (response) {
             this.getSupervisorTopics()
+            this.showMessage()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
           }.bind(this))
       }
     }

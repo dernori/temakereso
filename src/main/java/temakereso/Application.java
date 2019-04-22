@@ -27,8 +27,6 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class Application extends SpringBootServletInitializer {
 
-    // TODO refactor
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 

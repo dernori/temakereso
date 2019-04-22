@@ -8,6 +8,8 @@
 
 <main id="admin-settings" class="container" role="main" style="display: none;">
 
+    <div th:replace="fragments/notifications :: notifications"></div>
+
     <h2 class="text-center mb-4">sablonok</h2>
 
     <div class="row mt-4" v-if="parameters.bscTopicForm">
@@ -92,67 +94,88 @@
         </div>
     </form>
 
-    <form>
-        <h2 class="text-center mt-5 mb-4">kategóriák</h2>
-        <div class="table-responsive">
-            <table class="table">
-                <thead class="thead-light">
-                <tr>
-                    <th>#</th>
-                    <th>megnevezés</th>
-                    <th  style="width: 90px">műveletek</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(category, index) in categories" :key="index">
-                    <td>{{category.id}}</td>
-                    <td class="td-input"><input type="text" class="form-control" v-model:value="category.name"/></td>
-                    <td class="text-right">
-                        <span class="clickable" v-on:click="saveCategory(category)" title="mentés"><i class="fas fa-save"></i></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td class="td-input"><input type="text" class="form-control" v-model:value="newCategory.name"/></td>
-                    <td class="text-right">
-                        <span class="clickable" v-on:click="saveCategory(newCategory)" title="mentés"><i class="fas fa-save"></i></span>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </form>
+    <h2 class="text-center mt-5 mb-4">kategóriák</h2>
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="thead-light">
+            <tr>
+                <th>#</th>
+                <th>megnevezés</th>
+                <th  style="width: 90px">műveletek</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(category, index) in categories" :key="index">
+                <td>{{category.id}}</td>
+                <td class="td-input"><input type="text" class="form-control" v-model:value="category.name"/></td>
+                <td class="text-right">
+                    <span class="clickable" v-on:click="saveCategory(category)" title="mentés"><i class="fas fa-save"></i></span>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="td-input"><input type="text" class="form-control" v-model:value="newCategory.name"/></td>
+                <td class="text-right">
+                    <span class="clickable" v-on:click="saveCategory(newCategory)" title="mentés"><i class="fas fa-save"></i></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <form>
-        <h2 class="text-center mt-5 mb-4">tanszékek</h2>
-        <div class="table-responsive">
-            <table class="table">
-                <thead class="thead-light">
-                <tr>
-                    <th>#</th>
-                    <th>megnevezés</th>
-                    <th style="width: 90px">műveletek</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(department, index) in departments" :key="index">
-                    <td>{{department.id}}</td>
-                    <td class="td-input"><input type="text" class="form-control" v-model:value="department.name"/></td>
-                    <td class="text-right">
-                        <span class="clickable" v-on:click="saveDepartment(department)" title="mentés"><i class="fas fa-save"></i></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td class="td-input"><input type="text" class="form-control" v-model:value="newDepartment.name"/></td>
-                    <td class="text-right">
-                        <span class="clickable" v-on:click="saaveDepartment(newDepartment)" title="mentés"><i class="fas fa-save"></i></span>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </form>
+    <h2 class="text-center mt-5 mb-4">tanszékek</h2>
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="thead-light">
+            <tr>
+                <th>#</th>
+                <th>megnevezés</th>
+                <th style="width: 90px">műveletek</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(department, index) in departments" :key="index">
+                <td>{{department.id}}</td>
+                <td class="td-input"><input type="text" class="form-control" v-model:value="department.name"/></td>
+                <td class="text-right">
+                    <span class="clickable" v-on:click="saveDepartment(department)" title="mentés"><i class="fas fa-save"></i></span>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="td-input"><input type="text" class="form-control" v-model:value="newDepartment.name"/></td>
+                <td class="text-right">
+                    <span class="clickable" v-on:click="saveDepartment(newDepartment)" title="mentés"><i class="fas fa-save"></i></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2 class="text-center mt-5 mb-4">paraméterek</h2>
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="thead-light">
+            <tr>
+                <th>#</th>
+                <th>leírás</th>
+                <th>érték</th>
+                <th style="width: 90px">műveletek</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(parameter, index) in generalParameters" :key="index">
+                <td>{{parameter.identifier}}</td>
+                <td>{{parameter.description}}</td>
+                <td class="td-input"><input type="number" class="form-control" v-model:value="parameter.value"/></td>
+                <td class="text-right">
+                    <span class="clickable" v-on:click="saveParameter(parameter)" title="mentés"><i class="fas fa-save"></i></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
 </main>
 
 <div th:replace="fragments/scripts :: scripts"></div>
@@ -163,10 +186,7 @@
 
   /*<![CDATA[*/
 
-  Vue.use(window.vuelidate.default)
-  let required = window.validators.required
-
-  let app = new Vue({
+  new Vue({
     el: '#admin-settings',
     data: {
       parameters: {
@@ -177,6 +197,7 @@
       },
 
       supervisors: [],
+      generalParameters: [],
 
       categories: [],
       newCategory: {
@@ -186,10 +207,10 @@
       departments: [],
       newDepartment: {
         name: null
-      }
+      },
 
-      //     messages: [],
-      //     errors: []
+      messages: [],
+      errors: []
     },
     created: function () {
       // collecting params
@@ -209,16 +230,29 @@
       this.getUnconfirmedSupervisors()
       this.getCategories()
       this.getDepartments()
+      this.getParameters()
 
     },
     mounted: function () {
       setDisplay('#admin-settings', 'block') // it doesn't show up by default
     },
     methods: {
+      showError: function (text) {
+        this.errors.push({ text: text})
+      },
+      showMessage: function (text) {
+        let id = 'message-' + new Date().getTime()
+        this.messages.push({ id: id, text: text})
+        hideMessage(id)
+      },
       getUnconfirmedSupervisors: function () {
         axios.get(`${contextPath}api/supervisors/unconfirmed`)
           .then(function (response) {
             this.supervisors = response.data
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
           }.bind(this))
       },
       getCategories: function () {
@@ -226,11 +260,29 @@
           .then(function (response) {
             this.categories = response.data
           }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       getDepartments: function () {
         axios.get(`${contextPath}api/constants/departments`)
           .then(function (response) {
             this.departments = response.data
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
+      },
+      getParameters: function () {
+        axios.get(`${contextPath}api/parameters`)
+          .then(function (response) {
+            this.generalParameters = response.data
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
           }.bind(this))
       },
       getParameterValue: function (identifier) {
@@ -243,11 +295,18 @@
         axios.put(`${contextPath}api/supervisors/${supervisor.id}/confirm`)
           .then(function () {
             this.getUnconfirmedSupervisors()
+            this.showMessage()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
           }.bind(this))
       },
       saveCategory: function (category) {
-        // TODO validation
-        console.log(category)
+        if (!category.name || category.name.trim() === "") {
+          this.showError("Nem lehet üres megnevezés")
+          return
+        }
         let promise = null
         if (category.id) {
           promise = axios.put(`${contextPath}api/constants/categories`, category)
@@ -257,12 +316,20 @@
         promise
           .then(function (response) {
             console.log(response)
-            redirect(`${contextPath}settings`)
-          })
+            this.showMessage()
+            this.getCategories()
+            this.newCategory.name = null
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       saveDepartment: function (department) {
-        // TODO validation
-        console.log(department)
+        if (!department.name || department.name.trim() === "") {
+          this.showError("Nem lehet üres megnevezés")
+          return
+        }
         let promise = null
         if (department.id) {
           promise = axios.put(`${contextPath}api/constants/departments`, department)
@@ -272,22 +339,47 @@
         promise
           .then(function (response) {
             console.log(response)
-            redirect(`${contextPath}settings`)
-          })
+            this.showMessage()
+            this.getDepartments()
+            this.newDepartment.name = null
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
+      },
+      saveParameter: function (parameter) {
+        if (!parameter.value) {
+          this.showError("Nem lehet üres érték")
+          return
+        }
+        axios.put(`${contextPath}api/parameters/${parameter.identifier}`, {value: parameter.value})
+          .then(function (response) {
+            console.log(response)
+            this.showMessage()
+            this.getParameters()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       saveForm: function (type) {
-        // TODO validation
-        console.log(type)
         let data = new FormData()
         let currentFile = $(`#${type}_form`)[0]
         console.log(currentFile)
         if (currentFile && currentFile.files[0] != null) {
           data.append('file', currentFile.files[0])
-          axios.put(`${contextPath}api/parameters/${type.toUpperCase()}_FORM`, data)
+          axios.put(`${contextPath}api/parameters/forms/${type.toUpperCase()}_FORM`, data)
             .then(function (response) {
               console.log(response.data)
+              this.showMessage()
               redirect(`${contextPath}settings`)
-            })
+            }.bind(this))
+            .catch(function (error) {
+              console.log(error)
+              this.showError(error.response.data.error)
+            }.bind(this))
         }
       }
     }

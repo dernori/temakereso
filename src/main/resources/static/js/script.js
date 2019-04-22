@@ -39,3 +39,11 @@ function overlayOn() {
 function overlayOff() {
   document.getElementById('overlay').style.display = 'none'
 }
+
+function hideMessage(id) {
+  window.setTimeout(function() {
+    $('#'+id).fadeTo(500, 0).slideUp(500, function(){
+      $(this).remove();
+    })
+  }, 2000)
+}

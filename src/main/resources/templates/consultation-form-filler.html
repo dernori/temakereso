@@ -10,7 +10,7 @@
 
 <main id="consultation-form-filler" class="container" role="main" style="display: none;">
 
-    <h2 class="text-center">konzultációs lap kitöltése</h2>
+    <h2 class="text-center mb-4">konzultációs lap kitöltése</h2>
 
     <form>
         <div class="form-group row">
@@ -78,10 +78,7 @@
 
   /*<![CDATA[*/
 
-  Vue.use(window.vuelidate.default)
-  let required = window.validators.required
-
-  let app = new Vue({
+  new Vue({
     el: '#consultation-form-filler',
     data: {
       form: {
@@ -92,15 +89,11 @@
         supervisorName: null,
         title: null
       }
-
-      //     messages: [],
-      //     errors: []
     },
     created: function () {
       if (this.getTopicId() !== -1) { // if we are filling a form form an existing topic
         this.getTopic()
       }
-
       this.getStudent()
     },
     mounted: function () {

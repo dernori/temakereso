@@ -10,7 +10,9 @@
 
 <main id="form-topic" class="container" role="main" style="display: none;">
 
-    <h2 class="text-center">{{topic.id ? 'téma szerkesztése' : 'új téma'}}</h2>
+    <div th:replace="fragments/notifications :: notifications"></div>
+
+    <h2 class="text-center mb-4">{{topic.id ? 'téma szerkesztése' : 'új téma'}}</h2>
 
     <form>
         <div class="form-group row">
@@ -115,7 +117,7 @@
   Vue.use(window.vuelidate.default)
   var required = window.validators.required
 
-  var app = new Vue({
+  new Vue({
     el: '#form-topic',
     data: {
       supervisor: null,
@@ -135,10 +137,10 @@
         types: []
       },
 
-      files: [{}]
+      files: [{}],
 
-      //     messages: [],
-      //     errors: []
+      messages: [],
+      errors: []
     },
     validations: {
       topic: {
@@ -168,7 +170,11 @@
       this.getSupervisor()
         .then(function (response) {
           this.supervisor = response.data;
-        }.bind(this));
+        }.bind(this))
+        .catch(function (error) {
+          console.log(error)
+          this.showError(error.response.data.error)
+        }.bind(this))
 
       // if we edit a topic
       if (this.getTopicId() != -1) {
@@ -180,6 +186,14 @@
       setDisplay('#form-topic', 'block'); // it doesn't show up by default
     },
     methods: {
+      showError: function (text) {
+        this.errors.push({ text: text})
+      },
+      showMessage: function (text) {
+        let id = 'message-' + new Date().getTime()
+        this.messages.push({ id: id, text: text})
+        hideMessage(id)
+      },
       getValues: function (name) {
         return axios.get(`${contextPath}api/constants/${name}`);
       },
@@ -187,7 +201,7 @@
         let topic = $('#topic')[0].innerHTML;
         return (topic == '' ? -1 : topic);
       },
-      getSupervisorId: function () {    // TODO
+      getSupervisorId: function () {
         return this.supervisor.id;
       },
       getFileLink: function (attachment) {
@@ -202,11 +216,15 @@
             this.topic.id = response.data.id
             this.topic.name = response.data.name
             this.topic.description = response.data.description
-            this.topic.categoryId = response.data.category.id;
-            this.topic.type = response.data.type.id;
+            this.topic.categoryId = response.data.category.id
+            this.topic.type = response.data.type.id
 
             this.attachments = response.data.attachments
-          }.bind(this));
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       saveTopic: function () {
         this.$v.topic.$touch();
@@ -221,9 +239,13 @@
         }
         promise
           .then(function (response) {
-            console.log(response);
+            this.showMessage()
             redirect(`${contextPath}topics/${response.data}`);
-          });
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       saveAttachment: function () {
         if (this.$refs.file.files.length > 0) {
@@ -238,15 +260,28 @@
                 .then(function (response) {
                   console.log(response)
                   this.getTopic()
+                  this.showMessage()
                 }.bind(this))
+                .catch(function (error) {
+                  console.log(error)
+                  this.showError(error.response.data.error)
+                }.bind(this))
+            }.bind(this))
+            .catch(function (error) {
+              console.log(error)
+              this.showError(error.response.data.error)
             }.bind(this))
         }
       },
       removeAttachment: function (id) {
         axios.delete(`${contextPath}api/topics/${this.topic.id}/attachments/${id}`)
           .then(function (response) {
-            console.log(response)
             this.getTopic()
+            this.showMessage()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
           }.bind(this))
       },
     }

@@ -11,6 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -36,6 +39,15 @@ public class Account {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Role> roles;
+
+    @Temporal(TemporalType.DATE)
+    private Date lastSuccessfulLogin = new Date();
+
+    @Temporal(TemporalType.DATE)
+    private Date creationDate;
+
+    @Column(nullable = false)
+    private boolean deleted;
 
     public Account(String name, String email, String username, String password, List<Role> roles) {
         this.name = name;

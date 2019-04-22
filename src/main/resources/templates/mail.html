@@ -8,29 +8,50 @@
 
 <main id="mail" class="container" role="main" style="display: none;">
 
-    <h2 class="text-center">üzenetküldés</h2>
+    <div th:replace="fragments/notifications :: notifications"></div>
+
+    <h2 class="text-center mb-4">üzenetküldés</h2>
     <form>
         <div class="form-group row">
             <label class="col-md-3 text-right col-form-label">címzett</label>
             <div class="col-md-4">
-                <select class="form-control" v-model="mail.to">
+                <select class="form-control" v-model="mail.to" :class="{error: $v.mail.to.$error}">
                     <option selected='true'></option>
                     <option v-for="student in students" :value="student.account.id">{{ student.name }} {{student.code ?  ('- ' + student.code) : ''}}</option>
                     <option v-for="supervisor in supervisors" :value="supervisor.account.id">{{ supervisor.name }} {{supervisor.department ? ('- ' + supervisor.department.name) : (supervisor.workplace ? ('- ' + supervisor.workplace) : '' )}}</option>
                 </select>
             </div>
         </div>
+        <div class="form-group row messages" v-if="$v.mail.to.$dirty &amp;&amp; !$v.mail.to.required">
+            <label class="col-md-3 col-form-label"></label>
+            <div class="col-md-7 errors">
+                <span>A mező kitöltése kötelező!</span>
+            </div>
+        </div>
+
         <div class="form-group row">
             <label class="col-md-3 text-right col-form-label">tárgy</label>
             <div class="col-md-7">
-                <input type="text" class="form-control" v-model="mail.subject"/>
+                <input type="text" class="form-control" v-model="mail.subject" :class="{error: $v.mail.subject.$error}"/>
+            </div>
+        </div>
+        <div class="form-group row messages" v-if="$v.mail.subject.$dirty &amp;&amp; !$v.mail.subject.required">
+            <label class="col-md-3 col-form-label"></label>
+            <div class="col-md-7 errors">
+                <span>A mező kitöltése kötelező!</span>
             </div>
         </div>
 
         <div class="form-group row">
             <label class="col-md-3 text-right col-form-label">tartalom</label>
             <div class="col-md-7">
-                <textarea class="form-control" v-model="mail.body"></textarea>
+                <textarea class="form-control" v-model="mail.body" :class="{error: $v.mail.body.$error}"></textarea>
+            </div>
+        </div>
+        <div class="form-group row messages" v-if="$v.mail.body.$dirty &amp;&amp; !$v.mail.body.required">
+            <label class="col-md-3 col-form-label"></label>
+            <div class="col-md-7 errors">
+                <span>A mező kitöltése kötelező!</span>
             </div>
         </div>
 
@@ -50,8 +71,11 @@
 
 <script>
 
+  Vue.use(window.vuelidate.default)
+  var required = window.validators.required
+
   /*<![CDATA[*/
-  var app = new Vue({
+  new Vue({
     el: '#mail',
     data: {
       student: null,
@@ -64,29 +88,52 @@
         to: null,
         subject: null,
         body: null
-      }
+      },
 
-      // messages: [],
-      // errors: []
+      messages: [],
+      errors: []
+    },
+    validations: {
+      mail: {
+        to: {required: required},
+        subject: {required: required},
+        body: {required: required}
+      }
     },
     created: function () {
       this.getSupervisor()
         .then(function (response) {
           this.supervisor = response.data;
           if (this.supervisor.id) this.getStudents()
-        }.bind(this));
+        }.bind(this))
+        .catch(function (error) {
+          console.log(error)
+          this.showError(error.response.data.error)
+        }.bind(this))
 
       this.getStudent()
         .then(function (response) {
           this.student = response.data;
           if (this.student.id) this.getSupervisors()
-        }.bind(this));
+        }.bind(this))
+        .catch(function (error) {
+          console.log(error)
+          this.showError(error.response.data.error)
+        }.bind(this))
 
     },
     mounted: function () {
       setDisplay('#mail', 'block'); // it doesn't show up by default
     },
     methods: {
+      showError: function (text) {
+        this.errors.push({ text: text})
+      },
+      showMessage: function (text) {
+        let id = 'message-' + new Date().getTime()
+        this.messages.push({ id: id, text: text})
+        hideMessage(id)
+      },
       getSupervisor: function () {
         return axios.get(`${contextPath}api/me/supervisor/`)
       },
@@ -98,20 +145,37 @@
           .then(function (response) {
             this.supervisors = response.data
           }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       getStudents: function () {
         axios.get(`${contextPath}api/students`)
           .then(function (response) {
             this.students = response.data
           }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       sendMail: function () {
+        this.$v.mail.$touch();
+        if (this.$v.mail.$error) return;
+
         axios.post(`${contextPath}api/mail`, this.mail)
           .then(function (response) {
             console.log(response)
             this.mail.to = null
             this.mail.subject = null
             this.mail.body = null
+            this.$v.mail.$reset()
+            this.showMessage()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
           }.bind(this))
       }
     }

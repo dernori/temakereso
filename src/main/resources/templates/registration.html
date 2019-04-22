@@ -8,7 +8,9 @@
 
 <main id="registration" class="container" role="main" style="display: none;">
 
-    <h2 class="text-center">regisztráció</h2>
+    <div th:replace="fragments/notifications :: notifications"></div>
+
+    <h2 class="text-center mb-4">regisztráció</h2>
 
     <form>
         <div class="form-group row">
@@ -223,14 +225,14 @@
 
   /*<![CDATA[*/
 
-  Vue.use(window.vuelidate.default);
-  var required = window.validators.required;
-  var requiredIf = window.validators.requiredIf;
-  var requiredUnless = window.validators.requiredUnless;
-  var minLength = window.validators.minLength;
-  var email = window.validators.email;
+  Vue.use(window.vuelidate.default)
+  var required = window.validators.required
+  var requiredIf = window.validators.requiredIf
+  var requiredUnless = window.validators.requiredUnless
+  var minLength = window.validators.minLength
+  var email = window.validators.email
 
-  var app = new Vue({
+  new Vue({
     el: '#registration',
     data: {
       isSupervisor: null,
@@ -262,10 +264,10 @@
         training: null
       },
 
-      departments: []
+      departments: [],
 
-      //     messages: [],
-      //     errors: []
+      messages: [],
+      errors: []
     },
     validations: {
       account: {
@@ -276,7 +278,7 @@
         password2: {required: required, minLength: minLength(8)},
         passwordsAreSame: {
           passwordsAreSame: function () {
-            return this.account.password === this.account.password2;
+            return this.account.password === this.account.password2
           }
         }
       },
@@ -291,47 +293,64 @@
       this.getDepartments()
     },
     mounted: function () {
-      setDisplay('#registration', 'block'); // it doesn't show up by default
+      setDisplay('#registration', 'block') // it doesn't show up by default
     },
     methods: {
+      showError: function (text) {
+        this.errors.push({ text: text})
+      },
+      showMessage: function (text) {
+        let id = 'message-' + new Date().getTime()
+        this.messages.push({ id: id, text: text})
+        hideMessage(id)
+      },
       saveUser: function () {
         overlayOn()
-        if (this.isSupervisor) this.supervisor.name = this.account.name;
-        else this.student.name = this.account.name;
+        if (this.isSupervisor) this.supervisor.name = this.account.name
+        else this.student.name = this.account.name
 
-        this.$v.account.$touch();
-        if (this.$v.account.$error) return;
+        this.$v.account.$touch()
+        if (this.$v.account.$error) return
         if (this.isSupervisor) {
-          this.$v.supervisor.$touch();
-          if (this.$v.supervisor.$error) return;
+          this.$v.supervisor.$touch()
+          if (this.$v.supervisor.$error) return
         } else {
-          this.$v.student.$touch();
-          if (this.$v.student.$error) return;
+          this.$v.student.$touch()
+          if (this.$v.student.$error) return
         }
 
         let promise = null
         if (this.isSupervisor) {
-          this.supervisor.account = this.account;
+          this.supervisor.account = this.account
           promise = axios.post(`${contextPath}api/supervisors`, this.supervisor)
         } else {
-          this.student.account = this.account;
+          this.student.account = this.account
           promise = axios.post(`${contextPath}api/students`, this.student)
         }
 
         promise
           .then(function (response) {
-            console.log(response);
-            redirect(`${contextPath}login`);
-          });
+            console.log(response)
+            this.showMessage()
+            redirect(`${contextPath}login`)
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       },
       getDepartments: function () {
         axios.get(`${contextPath}api/constants/departments`)
           .then(function (response) {
             this.departments = response.data
           }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       }
     }
-  });
+  })
   /*]]>*/
 </script>
 

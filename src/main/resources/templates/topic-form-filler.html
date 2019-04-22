@@ -10,7 +10,7 @@
 
 <main id="topic-form-filler" class="container" role="main" style="display: none;">
 
-    <h2 class="text-center">témabejelentő kitöltése</h2>
+    <h2 class="text-center mb-4">témabejelentő kitöltése</h2>
 
     <form>
         <div class="form-group row">
@@ -119,10 +119,7 @@
 
   /*<![CDATA[*/
 
-  Vue.use(window.vuelidate.default)
-  let required = window.validators.required
-
-  let app = new Vue({
+  new Vue({
     el: '#topic-form-filler',
     data: {
       form: {
@@ -138,9 +135,6 @@
         date: null,
         description: null
       }
-
-      //     messages: [],
-      //     errors: []
     },
     created: function () {
       if (this.getTopicId() !== -1) { // if we are filling a form form an existing topic

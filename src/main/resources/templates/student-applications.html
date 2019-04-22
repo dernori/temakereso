@@ -8,7 +8,9 @@
 
 <main id="applications" class="container" role="main" style="display: none;">
 
-    <h2 class="title">jelentkezéseim</h2>
+    <div th:replace="fragments/notifications :: notifications"></div>
+
+    <h2 class="mb-4 text-center">jelentkezéseim</h2>
 
     <div class="table-responsive" v-if="appliedTopics &amp;&amp; appliedTopics.length > 0">
         <table class="table table-hover">
@@ -75,54 +77,67 @@
 <script>
 
   /*<![CDATA[*/
-  var app = new Vue({
+  new Vue({
     el: '#applications',
     data: {
       student: null,
       appliedTopics: null,
-      assignedTopics: null
+      assignedTopics: null,
 
-      // messages: [],
-      // errors: []
+      messages: [],
+      errors: []
     },
     created: function () {
       this.getStudent()
         .then(function (response) {
-          this.student = response.data;
-          this.getTopicsAssignedToStudent();
-          this.getStudentAppliedTopics();
-        }.bind(this));
+          this.student = response.data
+          this.getTopicsAssignedToStudent()
+          this.getStudentAppliedTopics()
+        }.bind(this))
     },
     mounted: function () {
-      setDisplay('#applications', 'block'); // it doesn't show up by default
+      setDisplay('#applications', 'block') // it doesn't show up by default
     },
     methods: {
+      showError: function (text) {
+        this.errors.push({ text: text})
+      },
+      showMessage: function (text) {
+        let id = 'message-' + new Date().getTime()
+        this.messages.push({ id: id, text: text})
+        hideMessage(id)
+      },
       getStudent: function () {
         return axios.get(`${contextPath}api/me/student`)
       },
       getStudentAppliedTopics: function () {
         axios.get(`${contextPath}api/students/${this.student.id}/topics/applied`)
           .then( function (response) {
-            this.appliedTopics = response.data;
-          }.bind(this));
+            this.appliedTopics = response.data
+          }.bind(this))
       },
       getTopicsAssignedToStudent: function () {
         axios.get(`${contextPath}api/students/${this.student.id}/topics/assigned`)
           .then( function (response) {
-            this.assignedTopics = response.data;
-          }.bind(this));
+            this.assignedTopics = response.data
+          }.bind(this))
       },
       getTopicLink: function (topic) {
-        return `${contextPath}topics/${topic.id}`;
+        return `${contextPath}topics/${topic.id}`
       },
       removeApplication: function (topic) {
         axios.delete(`${contextPath}api/topics/${topic.id}/students/${this.student.id}`)
           .then( function (response) {
-            this.getStudentAppliedTopics();
-          }.bind(this));
+            this.getStudentAppliedTopics()
+            this.showMessage()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
       }
     }
-  });
+  })
   /*]]>*/
 </script>
 

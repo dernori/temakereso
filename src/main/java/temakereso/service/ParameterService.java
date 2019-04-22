@@ -2,6 +2,8 @@ package temakereso.service;
 
 import org.springframework.web.multipart.MultipartFile;
 import temakereso.entity.Parameter;
+import temakereso.helper.ParameterDto;
+import temakereso.helper.ParameterInputDto;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,42 +15,7 @@ public interface ParameterService {
      *
      * @return a list of parameters
      */
-    List<Parameter> getAll();
-
-    /**
-     * Returns the id of the BSc topic form
-     *
-     * @return id of the BSc topic form
-     */
-    Long getBscTopicFormId();
-
-    /**
-     * Returns the id of the MSc topic form
-     *
-     * @return id of the MSc topic form
-     */
-    Long getMscTopicFormId();
-
-    /**
-     * Returns the id of the BSc consultation form
-     *
-     * @return id of the BSc consultation form
-     */
-    Long getBscConsultationFormId();
-
-    /**
-     * Returns the id of the MSc consultation form
-     *
-     * @return id of the MSc consultation form
-     */
-    Long getMscConsultationFormId();
-
-    /**
-     * Returns the timeout of topic archiving.
-     *
-     * @return timeout of topic archiving
-     */
-    Integer getArchiveTimeout();
+    List<ParameterDto> getAllModifiable();
 
     /**
      * Modifies the form connected to the given type of forms.
@@ -66,4 +33,35 @@ public interface ParameterService {
      * @return parameter with the given identifier
      */
     Parameter findByIdentifier(String identifier);
+
+    /**
+     * Modifies parameter value.
+     *
+     * @param identifier   identifier of parameter
+     * @param parameterDto contains value to be modified
+     */
+    void modifyParameter(String identifier, ParameterInputDto parameterDto);
+
+    Long getBscTopicFormId();
+
+    Long getMscTopicFormId();
+
+    Long getBscConsultationFormId();
+
+    Long getMscConsultationFormId();
+
+    Integer getArchiveTimeout();
+
+    Integer getStudentLoginTimeout();
+
+    Integer getSupervisorLoginTimeout();
+
+    Integer getSpringTermReminderMonth();
+
+    Integer getSpringTermReminderDay();
+
+    Integer getSummerTermReminderMonth();
+
+    Integer getSummerTermReminderDay();
+
 }

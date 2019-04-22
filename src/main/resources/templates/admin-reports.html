@@ -8,7 +8,7 @@
 
 <main id="admin-reports" class="container" role="main" style="display: none;">
 
-    <h2 class="text-center">riportok</h2>
+    <h2 class="text-center mb-4">riportok</h2>
 
     <div class="row">
         <div class="col-md-3">
@@ -110,9 +110,9 @@
     <div class="form-group row">
         <label class="col-md-3 col-form-label"></label>
         <div class="col-md-9">
-            <a class="btn btn-primary simple-button mr-2 mb-2" :href="getDepartmentReport">tanszék szerint</a>
-            <a class="btn btn-primary simple-button mr-2 mb-2" :href="getCategoryReport">kategória szerint</a>
-            <a class="btn btn-primary simple-button mr-2 mb-2" :href="getTypeReport">típus szerint</a>
+            <a class="btn btn-primary simple-button mr-2 mb-2" :class="{disabled: datesMissing}" :href="getDepartmentReport">tanszék szerint</a>
+            <a class="btn btn-primary simple-button mr-2 mb-2" :class="{disabled: datesMissing}" :href="getCategoryReport">kategória szerint</a>
+            <a class="btn btn-primary simple-button mr-2 mb-2" :class="{disabled: datesMissing}" :href="getTypeReport">típus szerint</a>
         </div>
     </div>
 
@@ -126,10 +126,7 @@
 
   /*<![CDATA[*/
 
-  Vue.use(window.vuelidate.default)
-  let required = window.validators.required
-
-  let app = new Vue({
+  new Vue({
     el: '#admin-reports',
     data: {
 
@@ -152,15 +149,6 @@
         types: [],
         supervisors: [],
         statuses: []
-      }
-
-      //     messages: [],
-      //     errors: []
-    },
-    validations: {
-      specificReportFilters: {
-        startDate: required,
-        endDate: required
       }
     },
     created: function () {
@@ -185,6 +173,9 @@
       setDisplay('#admin-reports', 'block') // it doesn't show up by default
     },
     computed: {
+      datesMissing: function () {
+        return !this.specificReportFilters.startDate || !this.specificReportFilters.endDate
+      },
       getGeneralReport: function () {
         let params = {}
         for (let key in this.generalFilters) {

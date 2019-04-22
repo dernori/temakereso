@@ -92,6 +92,39 @@ a, a:hover, a:visited, a:link, a:active {
     color: #874d63;
 }
 
+/* ---------- PLACEHOLDER ------------- */
+
+::-webkit-input-placeholder {
+    color: #dfdfdf !important;
+}
+
+:-ms-input-placeholder {
+    color: #dfdfdf !important;
+}
+
+::placeholder {
+    color: #dfdfdf !important;
+}
+
+/* ---------- ALERTS ------------- */
+
+.alerts {
+    position: fixed;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    z-index: 2000;
+}
+
+.alert {
+    width: 80%;
+    margin: 0 auto;
+    z-index: 2000;
+    border-radius: initial;
+    border: 0;
+    margin-top: 20px;
+}
+
 /* ---------- FORM ------------- */
 
 form label {
@@ -227,6 +260,16 @@ textarea.form-control {
 .button-row button, .button-row input[type="button"] {
     margin: 0 5px;
 }
+
+.btn.focus, .btn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(135, 77, 99, .5) !important;
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+    background-color: #c98573;
+    border-color: #c98573;
+}
+
 
 /* ---------- ERROR ------------- */
 

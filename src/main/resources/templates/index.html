@@ -121,7 +121,7 @@
     <script>
 
       /*<![CDATA[*/
-      let app = new Vue({
+      new Vue({
         el: '#search',
         data: {
           topics: null,
@@ -141,9 +141,6 @@
             supervisors: [],
             statuses: []
           }
-
-          // messages: [],
-          // errors: []
         },
         created: function () {
           // collecting params
