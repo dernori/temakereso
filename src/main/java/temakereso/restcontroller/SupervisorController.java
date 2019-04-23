@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import temakereso.entity.Supervisor;
 import temakereso.helper.SupervisorDto;
+import temakereso.service.MailService;
 import temakereso.service.SupervisorService;
 
 import java.util.List;
@@ -21,6 +22,8 @@ import java.util.List;
 public class SupervisorController {
 
     private final SupervisorService supervisorService;
+
+    private final MailService mailService;
 
     // ------------------------ GET -------------------------- //
 
@@ -40,7 +43,9 @@ public class SupervisorController {
 
     @PostMapping(path = "/supervisors")
     public SupervisorDto createSupervisor(@RequestBody Supervisor supervisor) {
-        return supervisorService.createSupervisor(supervisor);
+        SupervisorDto supervisorDto = supervisorService.createSupervisor(supervisor);
+        mailService.supervisorRegistered();
+        return supervisorDto;
     }
 
     // ------------------------ PUT -------------------------- //
