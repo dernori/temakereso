@@ -115,7 +115,7 @@
   /*<![CDATA[*/
 
   Vue.use(window.vuelidate.default)
-  var required = window.validators.required
+  let required = window.validators.required
 
   new Vue({
     el: '#form-topic',
@@ -161,7 +161,7 @@
 
       // after everything arrived, loop through the responses and bind to the data
       axios.all(promises).then(function (response) {
-        for (var i = 0; i < response.length; i++) {
+        for (let i = 0; i < response.length; i++) {
           this.values[values[i]] = response[i].data
         }
       }.bind(this))

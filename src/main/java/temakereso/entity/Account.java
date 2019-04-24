@@ -49,6 +49,9 @@ public class Account {
     @Column(nullable = false)
     private boolean deleted;
 
+    @Column(length = 50)
+    private String token;
+
     public Account(String name, String email, String username, String password, List<Role> roles) {
         this.name = name;
         this.email = email;

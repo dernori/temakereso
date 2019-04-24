@@ -41,4 +41,15 @@ public class HomeController {
         return "topic";
     }
 
+    @GetMapping(value = {"/reset"})
+    public String passwordForgot() {
+        return "password-forgot";
+    }
+
+    @GetMapping(value = {"/reset/{token}"})
+    public String resetAccount(@PathVariable("token") String token, Model model) {
+        model.addAttribute("token", token);
+        return "reset-account";
+    }
+
 }

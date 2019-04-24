@@ -19,4 +19,5 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     List<Account> findByRolesContainsAndLastSuccessfulLogin(Role role, Date date);
 
+    Account findByToken(String token);
 }

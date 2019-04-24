@@ -5,11 +5,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import temakereso.entity.Student;
 import temakereso.helper.StudentDto;
+import temakereso.helper.StudentInputDto;
 import temakereso.helper.TopicDto;
 import temakereso.service.StudentService;
 
@@ -43,6 +45,13 @@ public class StudentController {
     public Long createStudent(@RequestBody Student student) {
         StudentDto savedStudent = studentService.createStudent(student);
         return savedStudent.getId();
+    }
+
+    // ------------------------ PUT ------------------------- //
+
+    @PutMapping(path = "/students/{id}")
+    public void modifyStudent(@PathVariable(name = "id") Long id, @RequestBody StudentInputDto student) {
+        studentService.modifyStudent(id, student);
     }
 
 }

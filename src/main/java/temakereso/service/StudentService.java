@@ -2,6 +2,7 @@ package temakereso.service;
 
 import temakereso.entity.Student;
 import temakereso.helper.StudentDto;
+import temakereso.helper.StudentInputDto;
 import temakereso.helper.TopicDto;
 
 import java.util.List;
@@ -55,4 +56,8 @@ public interface StudentService {
      * @return student data
      */
     Student findOneById(Long studentId);
+
+    void modifyNameByAccountId(Long accountId, String name);
+
+    void modifyStudent(Long id, StudentInputDto studentInputDto);
 }

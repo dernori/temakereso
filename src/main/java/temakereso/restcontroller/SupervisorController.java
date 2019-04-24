@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import temakereso.entity.Supervisor;
 import temakereso.helper.SupervisorDto;
+import temakereso.helper.SupervisorInputDto;
+import temakereso.service.AccountService;
 import temakereso.service.MailService;
 import temakereso.service.SupervisorService;
 
@@ -24,6 +26,8 @@ public class SupervisorController {
     private final SupervisorService supervisorService;
 
     private final MailService mailService;
+
+    private final AccountService accountService;
 
     // ------------------------ GET -------------------------- //
 
@@ -44,7 +48,7 @@ public class SupervisorController {
     @PostMapping(path = "/supervisors")
     public SupervisorDto createSupervisor(@RequestBody Supervisor supervisor) {
         SupervisorDto supervisorDto = supervisorService.createSupervisor(supervisor);
-        mailService.supervisorRegistered();
+        mailService.supervisorRegistered(accountService.findAdministrators());
         return supervisorDto;
     }
 
@@ -54,6 +58,11 @@ public class SupervisorController {
     @PutMapping(path = "/supervisors/{id}/confirm")
     public void confirmSupervisor(@PathVariable(name = "id") Long id) {
         supervisorService.confirm(id);
+    }
+
+    @PutMapping(path = "/supervisors/{id}")
+    public void modifyStudent(@PathVariable(name = "id") Long id, @RequestBody SupervisorInputDto supervisor) {
+        supervisorService.modifySupervisor(id, supervisor);
     }
 
 }

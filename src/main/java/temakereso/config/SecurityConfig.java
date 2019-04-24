@@ -53,6 +53,8 @@ public class SecurityConfig {
                         "/forms/consultation",
                         "/forms/topics",
                         "/topics/{\\d+}",
+                        "/reset",
+                        "/reset/*",
                         "/css/**",
                         "/img/**",
                         "/js/**",

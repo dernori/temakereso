@@ -20,17 +20,17 @@ public class UserController {
         return "me";
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_STUDENT')")
+    @GetMapping(value = {"/me/edit"})
+    public String editMe() {
+        return "form-me";
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_SUPERVISOR', 'ROLE_STUDENT')")
     @GetMapping(value = {"/mail"})
     public String mail() {
         return "mail";
     }
-
-    //    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_STUDENT')")
-    //    @GetMapping(value = {"/me/edit"})
-    //    public String editMe() {
-    //        return "form-me";
-    //    }
 
     @PreAuthorize("hasRole('ROLE_SUPERVISOR')")
     @GetMapping(value = {"/topics/add"})

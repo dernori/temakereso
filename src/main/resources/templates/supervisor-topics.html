@@ -108,7 +108,8 @@
         redirect(`${contextPath}topics/${id}/edit`)
       },
       setStatusDone: function (id) {
-        axios.put(`${contextPath}api/topics/${id}/done`)
+        // axios.put(`${contextPath}api/topics/${id}/done`)
+        axios.put(`${contextPath}api/topics/99/done`)
           .then(function (response) {
             this.getSupervisorTopics()
             this.showMessage()

@@ -3,12 +3,16 @@ package temakereso.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import temakereso.entity.Role;
 import temakereso.entity.Supervisor;
+import temakereso.helper.AccountDetails;
 import temakereso.helper.Constants;
 import temakereso.helper.SupervisorDto;
+import temakereso.helper.SupervisorInputDto;
 import temakereso.repository.SupervisorRepository;
 import temakereso.service.RoleService;
 import temakereso.service.SupervisorService;
@@ -83,6 +87,40 @@ public class SupervisorServiceImplementation implements SupervisorService {
     public SupervisorDto findByAccountId(Long accountId) {
         Supervisor supervisor = supervisorRepository.findByAccountId(accountId);
         return supervisor != null ? modelMapper.map(supervisor, SupervisorDto.class) : null;
+    }
+
+    @Override
+    public void modifyNameByAccountId(Long accountId, String name) {
+        Supervisor supervisor = supervisorRepository.findByAccountId(accountId);
+        supervisor.setName(name);
+        supervisorRepository.save(supervisor);
+    }
+
+    @Override
+    public void modifySupervisor(Long id, SupervisorInputDto supervisorInputDto) {
+        Supervisor supervisor = findOneById(id);
+        if (getLoggedInUserId() != supervisor.getAccount().getId()) {
+            log.error("Account ids are not the same");
+            throw new IllegalArgumentException();
+        }
+        supervisor.setTitle(supervisorInputDto.getTitle());
+        supervisor.setDepartment(supervisorInputDto.getDepartment());
+        supervisor.setWorkplace(supervisorInputDto.getWorkplace());
+        supervisor.setPhone(supervisorInputDto.getPhone());
+        supervisor.setWebsite(supervisorInputDto.getWebsite());
+        supervisor.setRoom(supervisorInputDto.getRoom());
+        supervisor.setOfficeHours(supervisorInputDto.getOfficeHours());
+        supervisor.setExternal(supervisorInputDto.getExternal());
+        supervisorRepository.save(supervisor);
+    }
+
+    private Long getLoggedInUserId() {
+        if (SecurityContextHolder.getContext().getAuthentication() != null
+                && SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+                && !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+            return ((AccountDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        }
+        return null;
     }
 
 }

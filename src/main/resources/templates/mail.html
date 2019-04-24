@@ -72,7 +72,7 @@
 <script>
 
   Vue.use(window.vuelidate.default)
-  var required = window.validators.required
+  let required = window.validators.required
 
   /*<![CDATA[*/
   new Vue({
@@ -103,24 +103,21 @@
     created: function () {
       this.getSupervisor()
         .then(function (response) {
-          this.supervisor = response.data;
+          this.supervisor = response.data
           if (this.supervisor.id) this.getStudents()
         }.bind(this))
         .catch(function (error) {
           console.log(error)
-          this.showError(error.response.data.error)
         }.bind(this))
 
       this.getStudent()
         .then(function (response) {
-          this.student = response.data;
+          this.student = response.data
           if (this.student.id) this.getSupervisors()
         }.bind(this))
         .catch(function (error) {
           console.log(error)
-          this.showError(error.response.data.error)
         }.bind(this))
-
     },
     mounted: function () {
       setDisplay('#mail', 'block'); // it doesn't show up by default

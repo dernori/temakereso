@@ -6,19 +6,15 @@
 
 <header th:replace="fragments/header :: header"></header>
 
-<main id="registration" class="container" role="main" style="display: none;">
+<main id="form-me" class="container" role="main" style="display: none;">
 
     <div th:replace="fragments/notifications :: notifications"></div>
 
-    <h2 class="text-center mb-4">regisztráció</h2>
+    <h2 class="text-center mb-4">adataim szerkesztése</h2>
 
     <form>
-        <div class="form-group row">
-            <label class="col-md-3 text-right col-form-label">témavezetőként?</label>
-            <div class="col-md-4">
-                <input type="checkbox" value="true" v-model="isSupervisor" id="is-supervisor"/>
-                <label for="is-supervisor"></label>
-            </div>
+        <div class="row">
+            <div class="col-md-3"><h4>felhasználó</h4></div>
         </div>
 
         <div class="form-group row">
@@ -30,21 +26,6 @@
             </div>
         </div>
         <div class="form-group row messages" v-if="$v.account.name.$dirty &amp;&amp; !$v.account.name.required">
-            <label class="col-md-3 col-form-label"></label>
-            <div class="col-md-7 errors">
-                <span>A mező kitöltése kötelező!</span>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-md-3 text-right col-form-label">felhasználónév</label>
-            <div class="col-md-4">
-                <input type="text" class="form-control" autocomplete="username"
-                       v-model="account.username"
-                       :class="{error: $v.account.username.$error}"/>
-            </div>
-        </div>
-        <div class="form-group row messages" v-if="$v.account.username.$dirty &amp;&amp; !$v.account.username.required">
             <label class="col-md-3 col-form-label"></label>
             <div class="col-md-7 errors">
                 <span>A mező kitöltése kötelező!</span>
@@ -73,21 +54,47 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-md-3 text-right col-form-label">jelszó</label>
-            <div class="col-md-4">
-                <input type="password" class="form-control" autocomplete="new-password"
-                       v-model="account.password"
-                       :class="{error: $v.account.password.$error || !$v.account.passwordsAreSame.passwordsAreSame}"/>
+            <label class="col-md-3 col-form-label"></label>
+            <div class="col-md-7">
+                <input type="button" class="btn btn-primary simple-button" v-on:click="saveAccount" value="mentés"/>
             </div>
         </div>
-        <div class="form-group row messages" v-if="$v.account.password.$dirty &amp;&amp; !$v.account.password.required">
+
+        <div class="row">
+            <div class="col-md-3"><h4>jelszó módosítása</h4></div>
+        </div>
+
+        <!--<div class="form-group row">-->
+            <!--<label class="col-md-3 text-right col-form-label">jelenlegi jelszó</label>-->
+            <!--<div class="col-md-4">-->
+                <!--<input type="password" class="form-control"-->
+                       <!--v-model="password.current"-->
+                       <!--:class="{error: $v.password.current.$error}"/>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="form-group row messages" v-if="$v.password.current.$dirty &amp;&amp; !$v.password.current.required">-->
+            <!--<label class="col-md-3 col-form-label"></label>-->
+            <!--<div class="col-md-7 errors">-->
+                <!--<span>A mező kitöltése kötelező!</span>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <div class="form-group row">
+            <label class="col-md-3 text-right col-form-label">új jelszó</label>
+            <div class="col-md-4">
+                <input type="password" class="form-control" autocomplete="new-password"
+                       v-model="password.password"
+                       :class="{error: $v.password.password.$error || !$v.password.passwordsAreSame.passwordsAreSame}"/>
+            </div>
+        </div>
+        <div class="form-group row messages" v-if="$v.password.password.$dirty &amp;&amp; !$v.password.password.required">
             <label class="col-md-3 col-form-label"></label>
             <div class="col-md-7 errors">
                 <span>A mező kitöltése kötelező!</span>
             </div>
         </div>
         <div class="form-group row messages"
-             v-if="$v.account.password.$dirty &amp;&amp; !$v.account.password.minLength">
+             v-if="$v.password.password.$dirty &amp;&amp; !$v.password.password.minLength">
             <label class="col-md-3 col-form-label"></label>
             <div class="col-md-7 errors">
                 <span>Minimum 8 karakter hosszú jelszó szükséges!</span>
@@ -95,36 +102,48 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-md-3 text-right col-form-label">jelszó még egyszer</label>
+            <label class="col-md-3 text-right col-form-label">új jelszó még egyszer</label>
             <div class="col-md-4">
                 <input type="password" class="form-control" autocomplete="new-password"
-                       v-model="account.password2"
-                       :class="{error: $v.account.password2.$error || !$v.account.passwordsAreSame.passwordsAreSame, valid: !$v.account.password2.$invalid &amp;&amp; $v.account.passwordsAreSame.passwordsAreSame}"/>
+                       v-model="password.password2"
+                       :class="{error: $v.password.password2.$error || !$v.password.passwordsAreSame.passwordsAreSame}"/>
             </div>
         </div>
         <div class="form-group row messages"
-             v-if="$v.account.password2.$dirty &amp;&amp; !$v.account.password2.required">
+             v-if="$v.password.password2.$dirty &amp;&amp; !$v.password.password2.required">
             <label class="col-md-3 col-form-label"></label>
             <div class="col-md-7 errors">
                 <span>A mező kitöltése kötelező!</span>
             </div>
         </div>
         <div class="form-group row messages"
-             v-if="$v.account.password2.$dirty &amp;&amp; !$v.account.password2.minLength">
+             v-if="$v.password.password2.$dirty &amp;&amp; !$v.password.password2.minLength">
             <label class="col-md-3 col-form-label"></label>
             <div class="col-md-7 errors">
                 <span>Minimum 8 karakter hosszú jelszó szükséges!</span>
             </div>
         </div>
         <div class="form-group row messages"
-             v-if="$v.account.password.$dirty &amp;&amp; $v.account.password2.$dirty &amp;&amp; $v.account.password.minLength &amp;&amp; $v.account.password2.minLength &amp;&amp; !$v.account.passwordsAreSame.passwordsAreSame">
+             v-if="$v.password.password.$dirty &amp;&amp; $v.password.password2.$dirty &amp;&amp; $v.password.password.minLength &amp;&amp; $v.password.password2.minLength &amp;&amp; !$v.password.passwordsAreSame.passwordsAreSame">
             <label class="col-md-3 col-form-label"></label>
             <div class="col-md-7 errors">
                 <span>A jelszavak nem egyeznek!</span>
             </div>
         </div>
 
-        <div v-if="isSupervisor == true">
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label"></label>
+            <div class="col-md-7">
+                <input type="button" class="btn btn-primary simple-button" v-on:click="savePassword" value="mentés"/>
+            </div>
+        </div>
+
+        <div v-if="supervisor.id">
+
+            <div class="row">
+                <div class="col-md-3"><h4>témavezetői adatok</h4></div>
+            </div>
+
             <div class="form-group row">
                 <label class="col-md-3 text-right col-form-label">beosztás</label>
                 <div class="col-md-4">
@@ -185,9 +204,21 @@
                 </div>
             </div>
 
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label"></label>
+                <div class="col-md-7">
+                    <input type="button" class="btn btn-primary simple-button" v-on:click="saveSupervisor" value="mentés"/>
+                </div>
+            </div>
+
         </div>
 
-        <div v-else="">
+        <div v-else-if="student.id">
+
+            <div class="row">
+                <div class="col-md-3"><h4>hallgatói adatok</h4></div>
+            </div>
+
             <div class="form-group row">
                 <label class="col-md-3 text-right col-form-label">neptun kód</label>
                 <div class="col-md-4">
@@ -206,15 +237,14 @@
                     </select>
                 </div>
             </div>
-        </div>
 
-        <div class="form-group row">
-            <label class="col-md-3 col-form-label"></label>
-            <div class="col-md-7">
-                <input type="button" class="btn btn-primary simple-button" v-on:click="saveUser" value="mentés"/>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label"></label>
+                <div class="col-md-7">
+                    <input type="button" class="btn btn-primary simple-button" v-on:click="saveStudent" value="mentés"/>
+                </div>
             </div>
         </div>
-
     </form>
 </main>
 
@@ -228,26 +258,27 @@
 
   Vue.use(window.vuelidate.default)
   let required = window.validators.required
-  let requiredIf = window.validators.requiredIf
-  let requiredUnless = window.validators.requiredUnless
   let minLength = window.validators.minLength
   let email = window.validators.email
 
-  new Vue({
-    el: '#registration',
+  let app = new Vue({
+    el: '#form-me',
     data: {
-      isSupervisor: null,
+      accountId: null,
 
       account: {
         name: null,
-        email: null,
-        username: null,
+        email: null
+      },
+
+      password: {
+        // current: null,
         password: null,
         password2: null
       },
 
       supervisor: {
-        name: null,
+        id: null,
         title: null,
         department: null,
         workplace: null,
@@ -255,12 +286,11 @@
         website: null,
         room: null,
         officeHours: null,
-        external: null,
-        account: {}
+        external: null
       },
 
       student: {
-        name: null,
+        id: null,
         code: null,
         training: null
       },
@@ -271,10 +301,8 @@
       errors: []
     },
     validations: {
-      account: {
-        name: {required: required},
-        email: {required: required, email: email},
-        username: {required: required},
+      password: {
+        // current: {required: required},
         password: {required: required, minLength: minLength(8)},
         password2: {required: required, minLength: minLength(8)},
         passwordsAreSame: {
@@ -283,18 +311,18 @@
           }
         }
       },
-      supervisor: {
-        name: {required: requiredIf('isSupervisor') }
-      },
-      student: {
-        name: {required: requiredUnless('isSupervisor')}
+      account: {
+        name: {required: required},
+        email: {required: required, email: email}
       }
     },
     created: function () {
-      this.getDepartments()
+      this.getAccount()
+      this.getSupervisor()
+      this.getStudent()
     },
     mounted: function () {
-      setDisplay('#registration', 'block') // it doesn't show up by default
+      setDisplay('#form-me', 'block') // it doesn't show up by default
     },
     methods: {
       showError: function (text) {
@@ -305,46 +333,90 @@
         this.messages.push({ id: id, text: text})
         hideMessage(id)
       },
-      saveUser: function () {
-        if (this.isSupervisor) this.supervisor.name = this.account.name
-        else this.student.name = this.account.name
-
-        this.$v.account.$touch()
-        if (this.$v.account.$error) return
-        if (this.isSupervisor) {
-          this.$v.supervisor.$touch()
-          if (this.$v.supervisor.$error) return
-        } else {
-          this.$v.student.$touch()
-          if (this.$v.student.$error) return
-        }
-
-        overlayOn()
-
-        let promise = null
-        if (this.isSupervisor) {
-          this.supervisor.account = this.account
-          promise = axios.post(`${contextPath}api/supervisors`, this.supervisor)
-        } else {
-          this.student.account = this.account
-          promise = axios.post(`${contextPath}api/students`, this.student)
-        }
-
-        promise
+      getAccount: function () {
+        axios.get(`${contextPath}api/me`)
           .then(function (response) {
-            console.log(response)
-            this.showMessage()
-            redirect(`${contextPath}login`)
+            this.accountId = response.data.id
+            this.account.name = response.data.name
+            this.account.email = response.data.email
+          }.bind(this))
+      },
+      getSupervisor: function () {
+        axios.get(`${contextPath}api/me/supervisor/`)
+          .then(function (response) {
+            this.supervisor = response.data
+            this.getDepartments()
+            delete this.supervisor.account
           }.bind(this))
           .catch(function (error) {
             console.log(error)
-            this.showError(error.response.data.error)
+          }.bind(this))
+      },
+      getStudent: function () {
+        axios.get(`${contextPath}api/me/student/`)
+          .then(function (response) {
+            this.student = response.data
+            if (this.student.training) this.student.training = this.student.training.id
+            delete this.student.account
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
           }.bind(this))
       },
       getDepartments: function () {
         axios.get(`${contextPath}api/constants/departments`)
           .then(function (response) {
             this.departments = response.data
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
+      },
+      clearPassword: function() {
+        this.password.current = null
+        this.password.password = null
+        this.password.password2 = null
+        this.$v.password.$reset()
+      },
+      saveAccount: function () {
+        axios.put(`${contextPath}api/accounts/${this.accountId}`, this.account)
+          .then(function (response) {
+            this.getAccount()
+            this.showMessage()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
+      },
+      savePassword: function () {
+        axios.put(`${contextPath}api/accounts/${this.accountId}/password`, this.password)
+          .then(function (response) {
+            this.showMessage()
+            this.clearPassword()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
+      },
+      saveSupervisor: function () {
+        axios.put(`${contextPath}api/supervisors/${this.supervisor.id}`, this.supervisor)
+          .then(function (response) {
+            this.getSupervisor()
+            this.showMessage()
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error)
+            this.showError(error.response.data.error)
+          }.bind(this))
+      },
+      saveStudent: function () {
+        axios.put(`${contextPath}api/students/${this.student.id}`, this.student)
+          .then(function (response) {
+            this.getStudent()
+            this.showMessage()
           }.bind(this))
           .catch(function (error) {
             console.log(error)

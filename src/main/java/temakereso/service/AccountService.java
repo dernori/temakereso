@@ -2,6 +2,10 @@ package temakereso.service;
 
 import temakereso.entity.Account;
 import temakereso.helper.AccountDto;
+import temakereso.helper.AccountInputDto;
+import temakereso.helper.ForgotPasswordDto;
+import temakereso.helper.PasswordChangeDto;
+import temakereso.helper.PasswordResetDto;
 
 import java.util.Date;
 import java.util.List;
@@ -14,13 +18,6 @@ public interface AccountService {
      * @param account account to be saved
      */
     void createAccount(Account account);
-
-    /**
-     * Modifies the given account
-     *
-     * @param account account to be modified
-     */
-    void modifyAccount(Account account);
 
     /**
      * Finds an account by its identifier.
@@ -57,4 +54,12 @@ public interface AccountService {
     List<Account> findSupervisorsToRemind(Date time);
 
     void archiveAccount(Account account);
+
+    void generateForgotPasswordToken(ForgotPasswordDto forgotPasswordDto);
+
+    void changePassword(PasswordResetDto passwordResetDto);
+
+    void changePassword(Long id, PasswordChangeDto passwordChangeDto);
+
+    void modifyAccount(Long id, AccountInputDto accountInputDto);
 }

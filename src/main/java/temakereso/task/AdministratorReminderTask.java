@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import temakereso.entity.Account;
+import temakereso.service.AccountService;
 import temakereso.service.MailService;
 import temakereso.service.ParameterService;
 
 import java.util.Calendar;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -17,6 +20,8 @@ public class AdministratorReminderTask {
     private final MailService mailService;
 
     private final ParameterService parameterService;
+
+    private final AccountService accountService;
 
     @Scheduled(cron = "0 0 0 * * *") // every day at midnight
     public void remindAdministrator() {
@@ -33,7 +38,8 @@ public class AdministratorReminderTask {
 
         if ((currentMonth == summerMonth && currentDay == summerDay) || (currentMonth == springMonth && currentDay == springDay)) {
             log.info("Reminding administrators.");
-            mailService.remindAdministrators();
+            List<Account> administrators = accountService.findAdministrators();
+            mailService.remindAdministrators(administrators);
         }
     }
 }

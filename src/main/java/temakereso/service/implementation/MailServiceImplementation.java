@@ -3,15 +3,14 @@ package temakereso.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import temakereso.entity.Account;
 import temakereso.entity.Student;
 import temakereso.entity.Topic;
-import temakereso.helper.MailDto;
-import temakereso.service.AccountService;
-import temakereso.service.LoggedInUserService;
 import temakereso.service.MailSenderService;
 import temakereso.service.MailService;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
@@ -21,10 +20,6 @@ import java.util.Set;
 public class MailServiceImplementation implements MailService {
 
     private final MailSenderService mailSenderService;
-
-    private final LoggedInUserService loggedInUserService;
-
-    private final AccountService accountService;
 
     @Override
     public void studentApplied(Student student, Topic topic) {
@@ -75,9 +70,7 @@ public class MailServiceImplementation implements MailService {
     }
 
     @Override
-    public void supervisorRegistered() {
-        List<Account> administrators = accountService.findAdministrators();
-
+    public void supervisorRegistered(List<Account> administrators) {
         String subject = "Új felhasználó regisztrált témavezetőként";
         String body = new StringBuilder()
                 .append("<p>Az új témavezetőt hitelesíteni szükséges.</p>")
@@ -90,18 +83,7 @@ public class MailServiceImplementation implements MailService {
     }
 
     @Override
-    public void sendSimpleMail(MailDto mailDto) {
-        mailSenderService.sendMail(
-                accountService.getById(loggedInUserService.getLoggedInUser().getId()),
-                accountService.getById(mailDto.getTo()),
-                mailDto.getSubject(),
-                mailDto.getBody());
-    }
-
-    @Override
-    public void remindAdministrators() {
-        List<Account> administrators = accountService.findAdministrators();
-
+    public void remindAdministrators(List<Account> administrators) {
         String subject = "Emlékeztető a témakereső rendszer frissítésére";
         String body = new StringBuilder()
                 .append("<p>A következő időszakra felkészülendő, a rendszer adatait átnézni szükséges.</p>")
@@ -124,6 +106,26 @@ public class MailServiceImplementation implements MailService {
         for (Account account : accounts) {
             mailSenderService.sendMail(account, subject, body);
         }
+    }
+
+    @Override
+    public void sendResetToken(Account account, String token) {
+        String subject = "Felhasználói fiók visszaállítása";
+        String body = new StringBuilder()
+                .append("<p>A felhasználói fiókodhoz a jelszó visszaállítását kérték. Az alábbi link segítségével nyisd meg az alkalmazást, és módosítsd a jelszavad.</p>")
+                .append("<p><a href=\"" + getApplicationUrl() + "/reset/" + token + "\">" + getApplicationUrl() + "/reset/" + token + "</a></p>")
+                .append("<p>Amennyiben nem te kérted a visszaállítást, akkor hagyd figylemen kívül a levelet.</p>")
+                .append("<br/>")
+                .append("<p><small>küldve a témakereső rendszerből</small></p>")
+                .toString();
+        mailSenderService.sendMail(account, subject, body);
+    }
+
+    private String getApplicationUrl() {
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentContextPath();
+        builder.scheme("https");
+        URI uri = builder.build().toUri();
+        return uri.toString();
     }
 
 }

@@ -65,7 +65,7 @@ a, a:hover, a:visited, a:link, a:active {
     cursor: pointer;
 }
 
-#login {
+#login, #password-forgot {
     background: #f0e6ea;
     border-radius: 5px;
     padding: 20px;

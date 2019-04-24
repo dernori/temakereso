@@ -3,12 +3,16 @@ package temakereso.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import temakereso.entity.Role;
 import temakereso.entity.Student;
+import temakereso.helper.AccountDetails;
 import temakereso.helper.Constants;
 import temakereso.helper.StudentDto;
+import temakereso.helper.StudentInputDto;
 import temakereso.helper.TopicDto;
 import temakereso.repository.StudentRepository;
 import temakereso.service.RoleService;
@@ -76,6 +80,34 @@ public class StudentServiceImplementation implements StudentService {
     @Override
     public Student findOneById(Long studentId) {
         return studentRepository.findOne(studentId);
+    }
+
+    @Override
+    public void modifyNameByAccountId(Long accountId, String name) {
+        Student student = studentRepository.findByAccountId(accountId);
+        student.setName(name);
+        studentRepository.save(student);
+    }
+
+    @Override
+    public void modifyStudent(Long id, StudentInputDto studentInputDto) {
+        Student student = findOneById(id);
+        if (getLoggedInUserId() != student.getAccount().getId()) {
+            log.error("Account ids are not the same");
+            throw new IllegalArgumentException();
+        }
+        student.setCode(studentInputDto.getCode());
+        student.setTraining(studentInputDto.getTraining());
+        studentRepository.save(student);
+    }
+
+    private Long getLoggedInUserId() {
+        if (SecurityContextHolder.getContext().getAuthentication() != null
+                && SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+                && !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+            return ((AccountDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        }
+        return null;
     }
 
 }

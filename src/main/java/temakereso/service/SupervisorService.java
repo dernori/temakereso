@@ -2,6 +2,7 @@ package temakereso.service;
 
 import temakereso.entity.Supervisor;
 import temakereso.helper.SupervisorDto;
+import temakereso.helper.SupervisorInputDto;
 
 import java.util.List;
 
@@ -59,4 +60,8 @@ public interface SupervisorService {
      * @return supervisor data
      */
     SupervisorDto findByAccountId(Long accountId);
+
+    void modifyNameByAccountId(Long accountId, String name);
+
+    void modifySupervisor(Long id, SupervisorInputDto supervisorInputDto);
 }
