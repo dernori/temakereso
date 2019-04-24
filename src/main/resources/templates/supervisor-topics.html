@@ -38,6 +38,7 @@
                     <span class="clickable" v-on:click="editTopic(topic.id)" title="szerkesztés"><i class="fas fa-edit"></i></span>
                     <span class="clickable" v-show="!topic.archive" v-on:click="archiveTopic(topic.id)" title="archiválás"><i class="fas fa-trash-alt"></i></span>
                     <span class="clickable" v-show="topic.archive" v-on:click="unarchiveTopic(topic.id)" title="archiválás visszavonása"><i class="fas fa-trash-restore-alt"></i></span>
+                    <span class="clickable" v-on:click="duplicate(topic.id)" title="duplikálás"><i class="fas fa-clone"></i></span>
                 </td>
             </tr>
             </tbody>
@@ -106,6 +107,9 @@
       },
       editTopic: function (id) {
         redirect(`${contextPath}topics/${id}/edit`)
+      },
+      duplicate: function (id) {
+        redirect(`${contextPath}topics/add?duplicate=${id}`)
       },
       setStatusDone: function (id) {
         // axios.put(`${contextPath}api/topics/${id}/done`)

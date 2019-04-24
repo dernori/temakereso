@@ -132,7 +132,7 @@
         </div>
         <div class="row">
             <label class="control-label col-md-3"></label>
-            <div class="col-md-9">{{topic.description}}</div>
+            <div class="col-md-9" v-html="description">{{description}}</div>
         </div>
 
         <div v-if="topic.attachments.length > 0">
@@ -176,6 +176,9 @@
         return this.appliedStudents.some(function (student) {
           return student.id === this.student.id;
         }.bind(this));
+      },
+      description: function () {
+        return this.topic.description.replace(new RegExp('\r?\n','g'), '<br />')
       }
     },
     created: function () {

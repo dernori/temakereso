@@ -151,7 +151,6 @@
       }
     },
     created: function () {
-
       // collecting params
       let values = ["categories", "types"]
       let promises = [] // collecting all promises
@@ -181,6 +180,7 @@
         this.getTopic();
       }
 
+      this.checkDuplication()
     },
     mounted: function () {
       setDisplay('#form-topic', 'block'); // it doesn't show up by default
@@ -210,21 +210,31 @@
       getSupervisor: function () {
         return axios.get(`${contextPath}api/me/supervisor/`);
       },
-      getTopic: function () {
-        axios.get(`${contextPath}api/topics/${this.getTopicId()}`)
+      getTopic: function (id, duplication) {
+        axios.get(`${contextPath}api/topics/${id}`)
           .then(function (response) {
-            this.topic.id = response.data.id
+            if (!duplication) this.topic.id = response.data.id
             this.topic.name = response.data.name
             this.topic.description = response.data.description
             this.topic.categoryId = response.data.category.id
             this.topic.type = response.data.type.id
 
-            this.attachments = response.data.attachments
+            if (!duplication) this.attachments = response.data.attachments
           }.bind(this))
           .catch(function (error) {
             console.log(error)
             this.showError(error.response.data.error)
           }.bind(this))
+      },
+      checkDuplication: function() {
+        let uri = window.location.search.substring(1)
+        let params = new URLSearchParams(uri)
+        let id = params.get("duplicate")
+        if (id) {
+          this.getTopic(id, true)
+          this.topic.id = null
+          this.attachments = []
+        }
       },
       saveTopic: function () {
         this.$v.topic.$touch();
@@ -259,7 +269,7 @@
               axios.post(`${contextPath}api/topics/${this.topic.id}/attachments`, attachment)
                 .then(function (response) {
                   console.log(response)
-                  this.getTopic()
+                  this.getTopic(this.getTopicId())
                   this.showMessage()
                 }.bind(this))
                 .catch(function (error) {
@@ -276,7 +286,7 @@
       removeAttachment: function (id) {
         axios.delete(`${contextPath}api/topics/${this.topic.id}/attachments/${id}`)
           .then(function (response) {
-            this.getTopic()
+            this.getTopic(this.getTopicId())
             this.showMessage()
           }.bind(this))
           .catch(function (error) {
