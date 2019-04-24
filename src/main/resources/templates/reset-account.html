@@ -21,7 +21,7 @@
             <div class="col-md-4">
                 <input type="password" class="form-control" autocomplete="new-password"
                        v-model="reset.password"
-                       :class="{error: $v.reset.password.$error || !$v.reset.passwordsAreSame.passwordsAreSame/>
+                       :class="{error: $v.reset.password.$error || !$v.reset.passwordsAreSame.passwordsAreSame}"/>
             </div>
         </div>
         <div class="form-group row messages" v-if="$v.reset.password.$dirty &amp;&amp; !$v.reset.password.required">
