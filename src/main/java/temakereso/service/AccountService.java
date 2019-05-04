@@ -51,8 +51,6 @@ public interface AccountService {
 
     List<Account> findStudentsToRemind(Date time);
 
-    List<Account> findSupervisorsToRemind(Date time);
-
     void archiveAccount(Account account);
 
     void generateForgotPasswordToken(ForgotPasswordDto forgotPasswordDto);

@@ -59,7 +59,13 @@ public class SecurityConfig {
                         "/img/**",
                         "/js/**",
                         "/fonts/**",
-                        "/perform-login").permitAll()
+                        "/perform-login",
+                        "/v2/api-docs",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/swagger-resources",
+                        "/swagger-resources/**"
+                ).permitAll()
                 .anyRequest().fullyAuthenticated()
                 .and()
                 .formLogin()

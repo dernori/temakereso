@@ -90,12 +90,6 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public List<Account> findSupervisorsToRemind(Date time) {
-        Role supervisorRole = roleService.findByName("SUPERVISOR");
-        return accountRepository.findByRolesContainsAndLastSuccessfulLogin(supervisorRole, time);
-    }
-
-    @Override
     public void archiveAccount(Account account) {
         account.setUsername("archive-" + account.getUsername());
         account.setDeleted(true);

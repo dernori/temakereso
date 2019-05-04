@@ -1,10 +1,6 @@
 spring:
   application:
     name: temakereso
-#  datasource: 
-#    url: ${JDBC_DATABASE_URL}
-#    username: ${JDBC_DATABASE_USERNAME}
-#    password: ${JDBC_DATABASE_PASSWORD}
 server:
   context-path: /
   port: 8080
