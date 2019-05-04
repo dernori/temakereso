@@ -327,6 +327,10 @@ table i {
     margin-left: 5px;
 }
 
+th i {
+    color: white;
+}
+
 .td-input {
     padding: 0px !important;
 }
