@@ -22,7 +22,6 @@ public class CategoryServiceImplementation implements CategoryService {
         return categoryRepository.findAll();
     }
 
-
     @Override
     public Category createCategory(Category category) {
         if (category.getId() != null) {

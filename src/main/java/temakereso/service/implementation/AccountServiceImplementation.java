@@ -129,10 +129,6 @@ public class AccountServiceImplementation implements AccountService {
             throw new IllegalArgumentException();
         }
         Account account = getById(id);
-        //        if (account.getPassword() != passwordEncoder.encode(passwordChangeDto.getCurrent())) {
-        //            log.error("Current password is different");
-        //            throw new IllegalArgumentException(Constants.CURRENT_PASSWORD_BAD);
-        //        }
         account.setPassword(passwordEncoder.encode(passwordChangeDto.getPassword()));
         accountRepository.save(account);
         log.info("Password changed for account: {}", account.getUsername());
