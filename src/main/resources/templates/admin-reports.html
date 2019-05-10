@@ -53,10 +53,11 @@
     <div class="form-group row">
         <label class="col-md-3 text-right col-form-label">témavezető</label>
         <div class="col-md-4">
-            <select class="form-control" v-model="generalFilters.supervisor">
-                <option :value="null"></option>
-                <option v-for="supervisor in values.supervisors" :value="supervisor.id">{{ supervisor.name }}</option>
-            </select>
+            <!--<select class="form-control" v-model="generalFilters.supervisor">-->
+                <!--<option :value="null"></option>-->
+                <!--<option v-for="supervisor in values.supervisors" :value="supervisor.id">{{ supervisor.name }}</option>-->
+            <!--</select>-->
+            <autocomplete v-model="generalFilters.supervisor" value-field="id" text-field="name" :options="values.supervisors"></autocomplete>
         </div>
     </div>
 
@@ -90,7 +91,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text input-addon-left">20</span>
                 </div>
-                <input type="text" class="form-control input-addon-right" v-model="specificReportFilters.startDate" placeholder="19.01.01"/>
+                <input type="text" class="form-control input-addon-right" id="startDate" v-model="specificReportFilters.startDate" placeholder="19.01.01"/>
             </div>
         </div>
     </div>
@@ -102,7 +103,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text input-addon-left">20</span>
                 </div>
-                <input type="text" class="form-control input-addon-right" v-model="specificReportFilters.endDate" placeholder="19.01.01"/>
+                <input type="text" class="form-control input-addon-right"  id="endDate"  v-model="specificReportFilters.endDate" placeholder="19.01.01"/>
             </div>
         </div>
     </div>
@@ -170,7 +171,21 @@
       this.specificReportFilters.endDate = ('' + d.getFullYear()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + ("0" + d.getDate()).slice(-2);
     },
     mounted: function () {
+      var self = this
       setDisplay('#admin-reports', 'block') // it doesn't show up by default
+      $.datepicker.setDefaults($.datepicker.regional['hu']);
+      $('#startDate').datepicker({
+        onSelect: function (selectedDate, datePicker) {
+          self.specificReportFilters.startDate = selectedDate
+        }
+      })
+      $('#endDate').datepicker({
+        onSelect: function (selectedDate, datePicker) {
+          self.specificReportFilters.endDate = selectedDate
+        }
+      })
+      $('#startDate').datepicker('option', 'dateFormat', 'y.mm.dd' )
+      $('#endDate').datepicker('option', 'dateFormat', 'y.mm.dd' )
     },
     computed: {
       datesMissing: function () {
