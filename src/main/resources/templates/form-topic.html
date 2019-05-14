@@ -177,10 +177,10 @@
 
       // if we edit a topic
       if (this.getTopicId() != -1) {
-        this.getTopic();
+        this.getTopic(this.getTopicId())
+      } else {
+        this.checkDuplication()
       }
-
-      this.checkDuplication()
     },
     mounted: function () {
       setDisplay('#form-topic', 'block'); // it doesn't show up by default

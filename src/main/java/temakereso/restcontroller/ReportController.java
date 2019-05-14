@@ -76,7 +76,7 @@ public class ReportController {
         ByteArrayResource resource = new ByteArrayResource(file);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "attachment; filename=" + excelFileName);
+        headers.add("Content-Disposition", "attachment; filename=\"" + excelFileName + "\"");
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentLength(file.length)

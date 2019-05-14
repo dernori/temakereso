@@ -92,6 +92,20 @@ a, a:hover, a:visited, a:link, a:active {
     color: #874d63;
 }
 
+.index-form-row label {
+    width: 100%;
+    min-width: unset;
+    display: inline-block;
+    text-align: center;
+    margin: 0;
+    padding: 0 4px;
+    font-size: .8em;
+}
+
+select.form-control:not([size]):not([multiple]) {
+    height: auto;
+}
+
 /* ---------- PLACEHOLDER ------------- */
 
 ::-webkit-input-placeholder {
@@ -270,6 +284,39 @@ textarea.form-control {
     border-color: #c98573;
 }
 
+/* ---------- AUTOCOMPLETE ------------- */
+
+.autocomplete {
+    position: relative;
+}
+
+.text-input {
+    position: relative;
+}
+
+.item-list {
+    width: 100%;
+    position: absolute;
+    margin-top: 0;
+    z-index: 1;
+    list-style-type: none;
+    text-align: left;
+    margin-bottom: 0;
+    background-color: white;
+    border: 1px solid #DDDDDD;
+    padding-inline-start: 0;
+}
+
+.item-list li {
+    padding-left: 6px;
+    cursor: default;
+}
+
+.item-list li.is-active,
+.item-list li:hover {
+    background-color: #007bff;
+    color: white;
+}
 
 /* ---------- ERROR ------------- */
 

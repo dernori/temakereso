@@ -53,7 +53,7 @@ public class Application extends SpringBootServletInitializer {
     public void authenticationManager(AuthenticationManagerBuilder builder, AccountRepository repository, AccountService service) throws Exception {
         //Setup db with admin
         if (repository.count() == 0) {
-            service.createAccount(new Account("admin", "leah@inf.elte.hu", "admin", "admin", Arrays.asList(new Role("ADMIN"))));
+            service.createAccount(new Account("admin", "saci@inf.elte.hu", "admin", "admin", Arrays.asList(new Role("ADMIN"))));
         }
         builder.userDetailsService(userDetailsService(repository)).passwordEncoder(passwordEncoder);
     }

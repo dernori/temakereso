@@ -15,11 +15,13 @@
         <div class="form-group row">
             <label class="col-md-3 text-right col-form-label">címzett</label>
             <div class="col-md-4">
-                <select class="form-control" v-model="mail.to" :class="{error: $v.mail.to.$error}">
-                    <option selected='true'></option>
-                    <option v-for="student in students" :value="student.account.id">{{ student.name }} {{student.code ?  ('- ' + student.code) : ''}}</option>
-                    <option v-for="supervisor in supervisors" :value="supervisor.account.id">{{ supervisor.name }} {{supervisor.department ? ('- ' + supervisor.department.name) : (supervisor.workplace ? ('- ' + supervisor.workplace) : '' )}}</option>
-                </select>
+                <!--<select class="form-control" v-model="mail.to" :class="{error: $v.mail.to.$error}">-->
+                    <!--<option selected='true'></option>-->
+                    <!--<option v-for="student in students" :value="student.account.id">{{ student.name }} {{student.code ?  ('- ' + student.code) : ''}}</option>-->
+                    <!--<option v-for="supervisor in supervisors" :value="supervisor.account.id">{{ supervisor.name }} {{supervisor.department ? ('- ' + supervisor.department.name) : (supervisor.workplace ? ('- ' + supervisor.workplace) : '' )}}</option>-->
+                <!--</select>-->
+                <autocomplete v-if="students" v-model="mail.to" value-field="account.id" text-field="label" :options="students" :error="$v.mail.to.$error"></autocomplete>
+                <autocomplete v-if="supervisors" v-model="mail.to" value-field="account.id" text-field="label" :options="supervisors" :error="$v.mail.to.$error"></autocomplete>
             </div>
         </div>
         <div class="form-group row messages" v-if="$v.mail.to.$dirty &amp;&amp; !$v.mail.to.required">
@@ -141,6 +143,7 @@
         axios.get(`${contextPath}api/supervisors`)
           .then(function (response) {
             this.supervisors = response.data
+            this.supervisors.map(supervisor => supervisor.label = supervisor.name + (supervisor.department ? ('- ' + supervisor.department.name) : (supervisor.workplace ? ('- ' + supervisor.workplace) : '')))
           }.bind(this))
           .catch(function (error) {
             console.log(error)
@@ -151,6 +154,7 @@
         axios.get(`${contextPath}api/students`)
           .then(function (response) {
             this.students = response.data
+            this.students.map(student => student.label = student.name + (student.code ?  ('- ' + student.code) : ''))
           }.bind(this))
           .catch(function (error) {
             console.log(error)

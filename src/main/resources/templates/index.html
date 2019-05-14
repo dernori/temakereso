@@ -16,32 +16,38 @@
         </div>
 
         <form>
-            <div class="form-row justify-content-center">
+            <div class="form-row justify-content-center index-form-row">
                 <div class="col-md-4">
-                    <input type="text" class="form-control" v-model="filters.name" placeholder="cím"/>
+                    <label>típus</label>
+                    <select class="form-control" v-model="filters.type">
+                        <option value=""></option>
+                        <option v-for="type in values.types" :value="type.id">{{ type.name }}</option>
+                    </select>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" v-model="filters.description" placeholder="leírás"/>
+                    <label>kategória</label>
+                    <select class="form-control" v-model="filters.category">
+                        <option :value="null"></option>
+                        <option v-for="category in values.categories" :value="category.id">{{ category.name }}</option>
+                    </select>
                 </div>
             </div>
-            <div class="form-row">
+            <div class="form-row index-form-row">
                 <div class="col-md-4">
-                    <select class="form-control" v-model="filters.type">
-                      <option :value="null">típus</option>
-                      <option v-for="type in values.types" :value="type.id">{{ type.name }}</option>
-                    </select>
+                    <label>cím</label>
+                    <input type="text" class="form-control" v-model="filters.name"/>
                 </div>
                 <div class="col-md-4">
-                    <select class="form-control" v-model="filters.category">
-                      <option :value="null">kategória</option>
-                      <option v-for="category in values.categories" :value="category.id">{{ category.name }}</option>
-                    </select>
+                    <label>leírás</label>
+                    <input type="text" class="form-control" v-model="filters.description"/>
                 </div>
                 <div class="col-md-4">
-                    <select class="form-control" v-model="filters.supervisor">
-                      <option :value="null">témavezető</option>
-                      <option v-for="supervisor in values.supervisors" :value="supervisor.id">{{ supervisor.name }}</option>
-                    </select>
+                    <label>témavezető</label>
+                    <!--<select class="form-control" v-model="filters.supervisor">-->
+                      <!--<option :value="null"></option>-->
+                      <!--<option v-for="supervisor in values.supervisors" :value="supervisor.id">{{ supervisor.name }}</option>-->
+                    <!--</select>-->
+                    <autocomplete v-model="filters.supervisor" value-field="id" text-field="name" :options="values.supervisors"></autocomplete>
                 </div>
             </div>
             <div class="form-row justify-content-center">
@@ -50,8 +56,9 @@
                     <label class="form-check-label" :for="'radio' + status.id">{{status.name}}</label>
                 </div>
             </div>
-            <div class="form-row justify-content-center">
-                <input type="button" class="btn btn-primary button" v-on:click="getTopics(0, 10)" value="keresés" style="margin: 40px 10px; font-weight:300"></input>
+            <div class="form-row justify-content-center" style="margin-top: 20px;">
+                <input type="button" class="btn btn-primary button" v-on:click="clearFilters" value="szűrők törlése" style="margin: 5px 10px; font-weight:300; background: transparent; color: #c98573;"></input>
+                <input type="button" class="btn btn-primary button" v-on:click="getTopics(0, 10)" value="keresés" style="margin: 5px 10px; font-weight:300"></input>
             </div>
 
         </form>
@@ -182,10 +189,18 @@
                 Vue.nextTick()
                   .then(function () {
                     $('html').animate({
-                      scrollTop: $("#topic-list").offset().top
+                      scrollTop: $("#topic-list-title").offset().top
                     }, 500)
                   })
               }.bind(this))
+          },
+          clearFilters: function () {
+            this.filters.name = null
+            this.filters.description = null
+            this.filters.type = null
+            this.filters.category = null
+            this.filters.supervisor = null
+            this.filters.status = null
           },
           getTopicsWithSort: function (prop) {
             this.getTopics(0, this.topics.size, [{

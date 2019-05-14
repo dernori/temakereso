@@ -97,7 +97,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text input-addon-left">20</span>
                     </div>
-                    <input type="text" class="form-control input-addon-right" v-model="form.date" placeholder="18.01.01"/>
+                    <input type="text" class="form-control input-addon-right" id="date" v-model="form.date" placeholder="18.01.01"/>
                 </div>
             </div>
         </div>
@@ -149,6 +149,14 @@
     },
     mounted: function () {
       setDisplay('#topic-form-filler', 'block') // it doesn't show up by default
+      var self = this
+      $.datepicker.setDefaults($.datepicker.regional['hu']);
+      $('#date').datepicker({
+        onSelect: function (selectedDate, datePicker) {
+          self.form.date = selectedDate
+        }
+      })
+      $('#date').datepicker('option', 'dateFormat', 'y.mm.dd' )
     },
     methods: {
       getTopic: function () {
